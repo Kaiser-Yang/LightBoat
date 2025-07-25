@@ -2,6 +2,39 @@
 vim.g.big_file_limit = 5 * 1024 * 1024 -- 5 MB
 vim.g.big_file_limit_per_line = 1 * 1024 -- 1 KB
 vim.g.visible_buffer_limit = 10
+vim.g.use_mason_bin_first = false
+vim.g.mason_ensure_installed = {
+    -- LSP
+    'bash-language-server',
+    'clangd',
+    'shellcheck',
+    'jdtls',
+    'lua-language-server',
+    'markdown-oxide',
+    'eslint-lsp',
+    'json-lsp',
+    'lemminx',
+    'neocmakelsp',
+    'tailwindcss-language-server',
+    'typescript-language-server',
+    'vue-language-server',
+    'yaml-language-server',
+    'pyright',
+    'bazelrc-lsp',
+
+    -- Formatters
+    'clang-format',
+    'google-java-format',
+    'stylua',
+    'prettier',
+    'buildifier',
+    'autopep8',
+
+    -- Tools for debugging and testing
+    'java-debug-adapter',
+    'java-test',
+    'codelldb',
+}
 
 -- System options for Neovim
 vim.g.mapleader = '<space>'
