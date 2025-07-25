@@ -48,4 +48,15 @@ function M.get_visible_bufs()
     return res
 end
 
+--- Wrap a callback function to check if the file is too big before executing it.
+function M.big_file_check_wrap(callback)
+    return function()
+        if M.is_big_file() then
+            vim.notify('File is too big to search, operation aborted', vim.log.levels.WARN)
+            return
+        end
+        callback()
+    end
+end
+
 return M
