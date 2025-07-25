@@ -9,22 +9,24 @@ local function can_repeat(fu) return type(fu) == 'function' end
 -- WARN:
 -- f, F, T, and t can not be used in macro mode
 -- We do not support 'o' mode now
-map({ 'n', 'x' }, ',', function()
-    if can_repeat(vim.b.last_prev_function) then
-        local res = vim.b.last_prev_function()
-        if type(res) == 'string' then feedkeys(res, 'n') end
-    else
-        feedkeys(',', 'n')
-    end
-end, { desc = 'Exteneded comma' })
-map({ 'n', 'x' }, ';', function()
-    if can_repeat(vim.b.last_next_function) then
-        local res = vim.b.last_next_function()
-        if type(res) == 'string' then feedkeys(res, 'n') end
-    else
-        feedkeys(';', 'n')
-    end
-end, { desc = 'Extended semicolon' })
+if vim.g.enable_rep_move then
+    map({ 'n', 'x' }, ',', function()
+        if can_repeat(vim.b.last_prev_function) then
+            local res = vim.b.last_prev_function()
+            if type(res) == 'string' then feedkeys(res, 'n') end
+        else
+            feedkeys(',', 'n')
+        end
+    end, { desc = 'Exteneded comma' })
+    map({ 'n', 'x' }, ';', function()
+        if can_repeat(vim.b.last_next_function) then
+            local res = vim.b.last_next_function()
+            if type(res) == 'string' then feedkeys(res, 'n') end
+        else
+            feedkeys(';', 'n')
+        end
+    end, { desc = 'Extended semicolon' })
+end
 
 -- builtin and can be repeated by comma and semicolon
 local builtin_motions = { 'b', 'w', 'B', 'W', 'ge', 'e', 'gE', 'E', 'F', 'f', 'T', 't' }
@@ -184,6 +186,7 @@ end
 --- @param next_func function|string
 --- @return function, function
 function M.make(prev_func, next_func)
+    if not vim.g.enable_rep_move then return prev_func, next_func end
     return repeat_wrap(prev_func, next_func, true), repeat_wrap(prev_func, next_func, false)
 end
 
