@@ -36,6 +36,21 @@ vim.g.mason_ensure_installed = {
     'java-test',
     'codelldb',
 }
+vim.g.lsp_hijack_names = {
+    'bashls',
+    'clangd',
+    'eslint',
+    'jsonls',
+    'lemminx',
+    'lua_ls',
+    'neocmake',
+    'pyright',
+    'tailwindcss',
+    'ts_ls',
+    'vue_ls',
+    'yamlls',
+    'markdown_oxide',
+}
 
 -- System options for Neovim
 vim.g.mapleader = '<space>'
