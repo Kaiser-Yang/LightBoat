@@ -3,6 +3,7 @@ vim.g.big_file_limit = 5 * 1024 * 1024 -- 5 MB
 vim.g.big_file_limit_per_line = 1 * 1024 -- 1 KB
 vim.g.visible_buffer_limit = 10
 vim.g.use_mason_bin_first = false
+vim.g.root_markers = { '.vscode', '.nvim', '.git' }
 vim.g.mason_ensure_installed = {
     -- LSP
     'bash-language-server',

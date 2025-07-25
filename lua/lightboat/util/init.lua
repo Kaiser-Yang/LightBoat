@@ -1,4 +1,4 @@
-return {
+local M = {
     search = require('lightboat.util.search'),
     lfu = require('lightboat.util.lfu'),
     buffer = require('lightboat.util.buffer'),
