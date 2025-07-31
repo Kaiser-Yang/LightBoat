@@ -1,0 +1,32 @@
+local util = require('lightboat.util')
+local config = require('lightboat.config')
+local c
+local operation = {
+  ['<leader>?'] = function() require('which-key').show() end,
+  ['s'] = '<cmd>WhichKey n s<cr>',
+}
+local spec = {
+  'folke/which-key.nvim',
+  event = 'VeryLazy',
+  opts = {
+    delay = vim.o.timeoutlen,
+    sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
+    plugins = { spelling = { enabled = false } },
+  },
+  keys = {},
+}
+
+local M = {}
+
+function M.spec() return spec end
+
+function M.clear() spec.keys = {} end
+
+M.setup = util.setup_check_wrap('lightboat.plugin.which_key', function()
+  c = config.get().which_key
+  if not c.enabled then return nil end
+  spec.keys = util.key.get_lazy_keys(operation, c.keys)
+  return spec
+end, M.clear)
+
+return M

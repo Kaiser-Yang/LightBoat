@@ -1,0 +1,78 @@
+local M = {}
+local util = require('lightboat.util')
+local config = require('lightboat.config')
+local c
+local group
+
+local operation = {
+  ['<leader>sn'] = function()
+    if not Snacks then return end
+    require('noice.integrations.snacks').open(c.keys['<leader>sn'].opts)
+  end,
+}
+
+local spec = {
+  'folke/noice.nvim',
+  -- HACK:
+  -- The experience of notify is not good enough
+  dependencies = {
+    'MunifTanjim/nui.nvim',
+    'rcarriga/nvim-notify',
+  },
+  event = 'VeryLazy',
+  opts = {
+    lsp = {
+      override = {
+        ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+        ['vim.lsp.util.stylize_markdown'] = true,
+      },
+      signature = { enabled = false },
+      documentation = { enabled = false },
+    },
+    presets = { long_message_to_split = true, lsp_doc_border = true },
+    messages = { view_search = false },
+  },
+  keys = {},
+}
+
+function M.spec() return spec end
+
+function M.clear()
+  spec.keys = {}
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
+  c = nil
+end
+
+M.setup = util.setup_check_wrap('lightboat.plugin.ui.noice', function()
+  c = config.get().noice
+  if not c.enabled then return nil end
+  spec.keys = util.key.get_lazy_keys(operation, c.keys)
+  group = vim.api.nvim_create_augroup('LightBoatNoice', {})
+  local macro_recording_status = false
+  vim.api.nvim_create_autocmd('RecordingEnter', {
+    group = group,
+    callback = function()
+      local msg = string.format('Recording @%s', vim.fn.reg_recording())
+      macro_recording_status = true
+      vim.notify(msg, nil, {
+        title = 'Macro Recording',
+        keep = function() return macro_recording_status end,
+        timeout = 0,
+      })
+    end,
+  })
+  vim.api.nvim_create_autocmd('RecordingLeave', {
+    group = group,
+    callback = function() macro_recording_status = false end,
+  })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'noice',
+    group = group,
+    callback = function() util.key.set('n', '<esc>', 'q', { remap = true, buffer = true }) end,
+  })
+  return spec
+end, M.clear)
+return M
