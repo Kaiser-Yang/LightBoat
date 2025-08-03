@@ -311,6 +311,9 @@ function M.clear()
     vim.on_key(nil, on_key_ns_id)
     on_key_ns_id = nil
   end
+  spec.opts.picker.previewers.file = {}
+  spec.keys = {}
+  if not c then return end
   if c.snack.keys['<c-f>'] then
     spec.opts.picker.win.input.keys[c.snack.keys['<c-f>'].key] = nil
     spec.opts.picker.win.list.keys[c.snack.keys['<c-f>'].key] = nil
@@ -326,8 +329,6 @@ function M.clear()
     spec.opts.picker.win.list.keys[c.snack.keys['<c-y>'].key] = nil
     spec.opts.picker.win.preview.keys[c.snack.keys['<c-y>'].key] = nil
   end
-  spec.opts.picker.previewers.file = {}
-  spec.keys = {}
   c = nil
 end
 
