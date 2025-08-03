@@ -36,9 +36,9 @@ local function normalize_keys(t)
   for k, v in pairs(t) do
     if k == 'keys' and type(v) == 'table' then
       for key, entry in pairs(v) do
-        assert(entry.key and type(entry.key) == 'string')
+        assert(not entry or entry.key and type(entry.key) == 'string')
         local new_key = lower_brackets(key)
-        entry.key = lower_brackets(entry.key)
+        if entry and entry.key then entry.key = lower_brackets(entry.key) end
         if new_key ~= key then
           v[new_key] = v[key]
           v[key] = nil
