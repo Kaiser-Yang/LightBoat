@@ -259,7 +259,7 @@ local spec = {
       },
     },
     filesystem = {
-      filterd_items = {
+      filtered_items = {
         hide_dotfiles = not util.in_config_dir(),
         hide_hidden = not util.in_config_dir(),
       },
