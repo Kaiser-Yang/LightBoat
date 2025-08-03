@@ -12,20 +12,10 @@ return {
   --- @param res string The number will be shown
   format = function(res) return string.format('%3s', res) end,
   keys = {
-    C = {
-      key = 'C',
-      mode = 'n',
-      expr = true,
-      desc = 'Line wise C',
-      opts = { increase_count = true, consider_invisble = true },
-    },
-    D = {
-      key = 'D',
-      mode = 'n',
-      expr = true,
-      desc = 'Line wise D',
-      opts = { increase_count = true, consider_invisble = true },
-    },
+    C = { key = 'C', expr = true, desc = 'Line wise C', opts = { increase_count = true, consider_invisble = true } },
+    D = { key = 'D', expr = true, desc = 'Line wise D', opts = { increase_count = true, consider_invisble = true } },
+    dd = { key = 'dd', expr = true, desc = 'Line wise dd', opts = { increase_count = true, consider_invisble = true } },
+    cc = { key = 'cc', expr = true, desc = 'Line wise cc', opts = { increase_count = true, consider_invisble = true } },
     J = {
       key = 'J',
       mode = { 'n', 'x' },
@@ -54,20 +44,6 @@ return {
         increase_count = false,
         consider_invisble = true,
       },
-    },
-    dd = {
-      key = 'dd',
-      mode = 'n',
-      expr = true,
-      desc = 'Line wise dd',
-      opts = { increase_count = true, consider_invisble = true },
-    },
-    cc = {
-      key = 'cc',
-      mode = 'n',
-      expr = true,
-      desc = 'Line wise cc',
-      opts = { increase_count = true, consider_invisble = true },
     },
   },
 }
