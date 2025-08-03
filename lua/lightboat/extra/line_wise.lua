@@ -12,6 +12,7 @@ local map = util.key.set
 local del = util.key.del
 local convert = util.key.convert
 local config = require('lightboat.config')
+local group
 local c
 
 local labels = {}
@@ -138,6 +139,10 @@ function M.clear()
     del(v.mode, v.key, { buffer = v.buffer })
     ::continue::
   end
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
   c = nil
   labels = {}
 end
@@ -145,6 +150,18 @@ end
 M.setup = util.setup_check_wrap('lightboat.extra.line_wise', function()
   c = config.get().extra.line_wise
   if not c.enabled then return end
+  group = vim.api.nvim_create_augroup('LightBoatLineWise', {})
+  vim.api.nvim_create_autocmd('ModeChanged', {
+    group = group,
+    pattern = 'i:n',
+    callback = function()
+      local _, col = unpack(vim.api.nvim_win_get_cursor(0))
+      -- When the cursor is at the beginning,
+      -- nvim will not trigger the redraw for line numbers.
+      -- Therefore, we trigger this by auto command
+      if col == 0 then vim.cmd('redraw') end
+    end,
+  })
   generate_labels()
   for k, v in pairs(c.keys) do
     if not v then goto continue end
