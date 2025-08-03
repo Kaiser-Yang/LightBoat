@@ -81,7 +81,7 @@ local M = {}
 --- @return number
 local function get_actual_count(go_up, consider_invisible)
   local mode = vim.fn.mode()
-  local line_mode = mode == 'i' and c.insert or mode == 'c' and c.command_line or c.other
+  local line_mode = mode == 'i' and util.get(c.insert) or mode == 'c' and util.get(c.command_line) or util.get(c.other)
   local v_count = vim.v.count
   if line_mode ~= 'line_wise' and line_mode ~= 'abs_line_wise' then return v_count end
   if consider_invisible then return labels[tostring(vim.v.count)] or vim.v.count end
