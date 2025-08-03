@@ -23,6 +23,7 @@ end
 
 local function quit(buf)
   buf = util.buffer.normalize_buf(buf)
+  if not vim.api.nvim_buf_is_valid(buf) then return end
   local tabs = vim.api.nvim_list_tabpages()
   local cur_win = vim.api.nvim_get_current_win()
   local cur_tab = vim.api.nvim_get_current_tabpage()
@@ -40,6 +41,10 @@ local function quit(buf)
     local res
     for _, b in pairs(visible_bufs) do
       if b == buf or not visible and vim.tbl_contains(cur_tab_visible_bufs, b) then goto continue end
+      if not vim.api.nvim_buf_is_valid(b) then
+        buffer_cache:del(b)
+        goto continue
+      end
       if not res then
         res = b
         goto continue
@@ -145,6 +150,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.buffer', function()
       local deleted_buf, _ = buffer_cache:set(ev.buf, true)
       if deleted_buf then should_delete[deleted_buf] = true end
       for buf in pairs(should_delete) do
+        if not vim.api.nvim_buf_is_valid(buf) then goto continue end
         local res = vim.api.nvim_cmd({
           cmd = 'bdelete',
           args = { buf },
@@ -158,6 +164,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.buffer', function()
           buffer_cache:set_capacity(buffer_cache.capacity + 1)
           buffer_cache:set(buf, true)
         end
+        ::continue::
       end
     end,
   })
