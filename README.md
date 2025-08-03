@@ -93,7 +93,7 @@ the window, you just need to update the `key` fields of the origin key mappings:
 vim.g.lightboat_opts = {}
 vim.g.lightboat_opts.keymap = {}
 vim.g.lightboat_opts.keymap.keys = {
-  -- Use '<c-s>' to split vertically
+  -- Use `<c-s>` to split vertically
   ['<leader>l'] = { key = '<c-s>' },
   -- Disable the `<leader>h` key mapping
   ['<leader>h'] = false,
