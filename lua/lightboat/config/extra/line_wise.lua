@@ -1,5 +1,5 @@
 local function default_line_wise()
-  if vim.bo.filetype:match('^dap') or vim.bo.filetype:match('^snack') then return 'abs' end
+  if vim.bo.filetype:match('^snack') then return 'abs' end
   return 'line_wise'
 end
 --- @class LightBoat.Opts.Extra.LineWise
@@ -14,7 +14,10 @@ return {
   --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise' | function():string
   other = default_line_wise,
   --- @param res string The number will be shown
-  format = function(res) return string.format('%3s', res) end,
+  format = function(res)
+    if vim.bo.filetype:match('^dap') and vim.fn.winnr('$') ~= 1 then return '' end
+    return string.format('%3s', res)
+  end,
   keys = {
     C = { key = 'C', expr = true, desc = 'Line wise C', opts = { increase_count = true, consider_invisble = true } },
     D = { key = 'D', expr = true, desc = 'Line wise D', opts = { increase_count = true, consider_invisble = true } },
