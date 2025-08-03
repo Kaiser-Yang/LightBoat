@@ -158,7 +158,7 @@ vim.g.lightboat_opts.comment.keys = {
   -- NOTE:
   -- `<c-/>` is a little bit special in nvim.
   -- To know what `<c-/>` really is in your terminal,
-  -- you can press '<c-v><c-/>' in insert mode, which will give you the right key to binding
+  -- you can press `<c-v><c-/>` in insert mode, which will give you the right key to binding
   ['<m-/>'] = { key = '' },
 }
 ```
