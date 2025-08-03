@@ -9,6 +9,11 @@ local config = require('lightboat.config')
 local c
 local big_file = require('lightboat.extra.big_file')
 
+-- NOTE:
+-- This requires quick typing.
+-- Press y and wait will start to copy.
+-- Press ys or yS quickly will start to surround.
+-- ds and cs are the similar.
 local operation = {
   ['ys'] = '<plug>(nvim-surround-normal)',
   ['yS'] = '<plug>(nvim-surround-normal-cur)',
