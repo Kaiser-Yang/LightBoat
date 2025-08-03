@@ -11,9 +11,7 @@ local M = {
 
 -- HACK:
 -- Better way to do this?
-function M.get_light_boat_root()
-  return (vim.env.LAZY_PATH or vim.fn.stdpath('data') .. '/lazy') .. '/LightBoat'
-end
+function M.get_light_boat_root() return (vim.env.LAZY_PATH or vim.fn.stdpath('data') .. '/lazy') .. '/LightBoat' end
 
 --- Setup plugins for LightBoat.
 --- @param plugins table A table of plugin configurations.
