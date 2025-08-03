@@ -21,7 +21,6 @@ local operation = {
   ['Y'] = line_wise_key_wrap('y$'),
   ['yy'] = line_wise_key_wrap('yy'),
   ['<leader>Y'] = line_wise_key_wrap('"+y$'),
-  ['<leader>yy'] = line_wise_key_wrap('"+yy'),
   ['<leader>y'] = function()
     local before_anonymous_reg_content = vim.fn.getreg('"')
     vim.api.nvim_create_autocmd('TextYankPost', {

@@ -7,7 +7,6 @@ return {
     ['Y'] = { key = 'Y', expr = true, desc = 'Line wise yank' },
     ['yy'] = { key = 'yy', expr = true, desc = 'Line wise copy to + reg' },
     ['<leader>Y'] = { key = '<leader>Y', expr = true, desc = 'Line wise yank to + reg' },
-    ['<leader>yy'] = { key = '<leader>yy', expr = true, desc = 'Line wise copy to + reg' },
     ['<leader>y'] = { key = '<leader>y', expr = true, desc = 'Yank to + reg', mode = { 'n', 'x' } },
     ['<c-rightmouse>'] = { key = '<c-rightmouse>', expr = true, desc = 'Paste from + reg', mode = { 'n', 'x', 'i' } },
     ['<m-v>'] = { key = '<m-v>', desc = 'Paste from + reg', mode = { 'n', 'x', 'i', 'c' }, remap = true, expr = true },
