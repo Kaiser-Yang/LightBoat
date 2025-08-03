@@ -1,6 +1,18 @@
 local util = require('lightboat.util')
 local diagnostic_win_id
 local fold_sign = require('lightboat.extra.fold_sign')
+local fts = {
+  'neo-tree',
+  'dapui_watches',
+  'dapui_stacks',
+  'dapui_breakpoints',
+  'dapui_scopes',
+  'dap-repl',
+  'dapui_console',
+  'snacks_picker_input',
+  'snacks_picker_preview',
+  'snacks_picker_list',
+}
 local spec = {
   'luukvbaal/statuscol.nvim',
   event = 'VeryLazy',
@@ -13,6 +25,7 @@ local spec = {
           namespace = { '^[^gf]' },
           colwidth = 1,
         },
+        condition = { function() return not vim.tbl_contains(fts, vim.bo.filetype) end },
       },
       {
         text = { function(args) return '%=' .. _G.get_label(args) end, ' ' },
@@ -25,6 +38,7 @@ local spec = {
           namespace = { 'git' },
           colwidth = 1,
         },
+        condition = { function() return not vim.tbl_contains(fts, vim.bo.filetype) end },
       },
     },
     clickhandlers = {
