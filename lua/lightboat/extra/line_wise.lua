@@ -61,7 +61,7 @@ function _G.get_label(args)
         end
       end
     end
-    return get_insert_label()
+    return c.format(get_insert_label())
   else
     local relativenumber = vim.wo.relativenumber
     if relativenumber == nil then relativenumber = vim.o.relativenumber end
