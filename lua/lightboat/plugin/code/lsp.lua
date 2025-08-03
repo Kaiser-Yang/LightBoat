@@ -36,7 +36,7 @@ local operation = {
   ['[d'] = prev_diagnostic,
 }
 local spec = {
-  { 'neovim/nvim-lspconfig', lazy = false },
+  { 'neovim/nvim-lspconfig' },
   {
     'nvimdev/lspsaga.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -58,6 +58,11 @@ local spec = {
       rename = { in_select = false, auto_save = true, keys = { quit = { '<c-c>' } } },
       lightbulb = { enable = false },
     },
+    config = function(_, opts)
+      local ok, lsp_saga = pcall(require, 'catppuccin.groups.integrations.lsp_saga')
+      if ok then opts.ui = { kind = lsp_saga.custom_kind() } end
+      require('lspsaga').setup(opts)
+    end,
     keys = {},
   },
 }

@@ -14,24 +14,24 @@ function M.disable_in_ft_wrap(ft_list)
   end
 end
 
+function M.search_count()
+  -- PERF: performance issue for large files
+  if big_file.is_big_file() then return '' end
+  local last_search = vim.fn.getreg('/')
+  if not last_search or last_search == '' then return '' end
+  local searchcount = vim.fn.searchcount({ maxcount = 9999 })
+  return last_search .. '[' .. searchcount.current .. '/' .. searchcount.total .. ']'
+end
+
 local sections = {
-  lualine_a = { 'progress', 'location' },
+  lualine_a = { { 'progress', fmt = M.disable_in_ft_wrap('dap') }, { 'location', fmt = M.disable_in_ft_wrap('dap') } },
   lualine_b = {
     { 'branch', fmt = M.disable_in_ft_wrap('dap') },
     { 'diff', fmt = M.disable_in_ft_wrap('dap') },
-    {
-      function()
-        -- PERF: performance issue for large files
-        if big_file.is_big_file() then return '' end
-        local last_search = vim.fn.getreg('/')
-        if not last_search or last_search == '' then return '' end
-        local searchcount = vim.fn.searchcount({ maxcount = 9999 })
-        return last_search .. '[' .. searchcount.current .. '/' .. searchcount.total .. ']'
-      end,
-    },
+    { M.search_count, fmt = M.disable_in_ft_wrap('dap') },
   },
   lualine_c = {},
-  lualine_x = { 'copilot', { 'filetype', fmt = M.disable_in_ft_wrap('dap') } },
+  lualine_x = { { 'copilot', fmt = M.disable_in_ft_wrap('dap') }, { 'filetype', fmt = M.disable_in_ft_wrap('dap') } },
   lualine_y = { 'quickfix' },
   lualine_z = { 'filename' },
 }
@@ -39,7 +39,6 @@ local sections = {
 local spec = {
   'nvim-lualine/lualine.nvim',
   dependencies = { 'nvim-tree/nvim-web-devicons', 'AndreM222/copilot-lualine' },
-  lazy = false,
   opts = {
     options = {
       icons_enabled = true,
@@ -56,8 +55,6 @@ local spec = {
     },
     sections = sections,
     inactive_sections = sections,
-    tabline = {},
-    extensions = {},
   },
 }
 

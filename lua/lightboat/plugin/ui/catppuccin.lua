@@ -3,11 +3,24 @@ local util = require('lightboat.util')
 local spec = {
   'catppuccin/nvim',
   name = 'catppuccin',
-  lazy = false,
-  priority = 1000,
-  opts = { flavour = 'mocha', integrations = { blink_cmp = false } },
+  opts = {
+    flavour = 'mocha',
+    integrations = {
+      dap = false,
+      flash = true,
+      mason = true,
+      noice = true,
+      notify = true,
+      nvim_surround = true,
+      octo = true,
+      overseer = true,
+      rainbow_delimiters = false,
+      which_key = true,
+      window_picker = true,
+    },
+  },
   config = function(_, opts)
-    require('catppuccin').setup(_, opts)
+    require('catppuccin').setup(opts)
     vim.cmd('colorscheme catppuccin')
   end,
 }

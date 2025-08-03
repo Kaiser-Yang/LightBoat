@@ -3,8 +3,8 @@ local name = 'lightboat.plugin.git'
 
 local M = {
   conflict = require('lightboat.plugin.git.conflict'),
-  sign = require('lightboat.plugin.git.sign'),
   octo = require('lightboat.plugin.git.octo'),
+  sign = require('lightboat.plugin.git.sign'),
 }
 
 function M.clear() util.clear_plugins(M, name) end

@@ -15,10 +15,7 @@ local spec = {
   'folke/noice.nvim',
   -- HACK:
   -- The experience of notify is not good enough
-  dependencies = {
-    'MunifTanjim/nui.nvim',
-    'rcarriga/nvim-notify',
-  },
+  dependencies = { 'MunifTanjim/nui.nvim', 'rcarriga/nvim-notify' },
   event = 'VeryLazy',
   opts = {
     lsp = {

@@ -40,7 +40,7 @@ local spec = {
       diagnostics_indicator = function(_, _, diagnostics_dict, _)
         local s = ' '
         for e, n in pairs(diagnostics_dict) do
-          local sym = e == 'error' and ' ' or (e == 'warning' and ' ' or '')
+          local sym = e == 'error' and ' ' or (e == 'warning' and ' ' or ' ')
           s = s .. n .. sym
         end
         return s
@@ -48,6 +48,11 @@ local spec = {
       sort_by = 'insert_after_current',
     },
   },
+  config = function(_, opts)
+    local ok, bl = pcall(require, 'catppuccin.groups.integrations.bufferline')
+    if ok then opts.highlights = bl.get() end
+    require('bufferline').setup(opts)
+  end,
   keys = {},
 }
 

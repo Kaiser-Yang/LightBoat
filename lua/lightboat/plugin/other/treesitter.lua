@@ -128,7 +128,6 @@ local spec = {
     'nvim-treesitter/nvim-treesitter',
     branch = 'main',
     build = ':TSUpdate',
-    lazy = false,
     opts = {},
   },
   {

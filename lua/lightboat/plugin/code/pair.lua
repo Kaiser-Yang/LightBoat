@@ -30,7 +30,6 @@ local operation = {
 
 local spec = {
   {
-
     'altermo/ultimate-autopair.nvim',
     event = { 'InsertEnter' },
     branch = 'v0.6',
@@ -107,15 +106,6 @@ local spec = {
   {
     'HiPhish/rainbow-delimiters.nvim',
     lazy = false,
-    config = function()
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterMagenta', { fg = '#FF79C6' })
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterTeal', { fg = '#20B2CE' })
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' })
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterCyan', { fg = '#5AF7EE' })
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterViolet', { fg = '#B253DF' })
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterBlue', { fg = '#617FFF' })
-      vim.api.nvim_set_hl(0, 'RainbowDelimiterGreen', { fg = '#98C349' })
-    end,
   },
 }
 
@@ -156,6 +146,16 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     -- This plugin may cause performance issues with large files.
     condition = function(buf) return not big_file.is_big_file(buf) end,
   }, vim.g.rainbow_delimiters or {})
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterRed', { fg = '#f38ba8' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterOrange', { fg = '#fab387' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterYellow', { fg = '#f9e2af' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterMagenta', { fg = '#FF79C6' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterTeal', { fg = '#20B2CE' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterCyan', { fg = '#5AF7EE' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterViolet', { fg = '#B253DF' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterBlue', { fg = '#617FFF' })
+  vim.api.nvim_set_hl(0, 'RainbowDelimiterGreen', { fg = '#98C349' })
   return spec
 end, M.clear)
 
