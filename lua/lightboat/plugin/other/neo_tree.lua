@@ -184,15 +184,7 @@ local spec = {
           },
         },
         prompt_message = '',
-        highlights = {
-          statusline = {
-            unfocused = {
-              fg = '#ededed',
-              bg = '#3fa4cc',
-              bold = true,
-            },
-          },
-        },
+        highlights = { statusline = { unfocused = { fg = '#ededed', bg = '#3fa4cc', bold = true } } },
       },
     },
   },
@@ -217,24 +209,10 @@ local spec = {
         width = 2,
         align = 'left',
       },
-      file_size = {
-        align = 'right',
-        required_width = 0,
-      },
-      last_modified = {
-        align = 'right',
-        required_width = 0,
-      },
-      symlink_target = {
-        enabled = true,
-        align = 'right',
-        required_width = 0,
-      },
-      created = {
-        enabled = true,
-        align = 'right',
-        required_width = 0,
-      },
+      file_size = { align = 'right', required_width = 0 },
+      last_modified = { align = 'right', required_width = 0 },
+      symlink_target = { enabled = true, align = 'right', required_width = 0 },
+      created = { enabled = true, align = 'right', required_width = 0 },
     },
     window = {
       width = function() return math.ceil(math.max(30, 0.14 * vim.o.columns)) end,
@@ -259,10 +237,7 @@ local spec = {
       },
     },
     filesystem = {
-      filtered_items = {
-        hide_dotfiles = not util.in_config_dir(),
-        hide_hidden = not util.in_config_dir(),
-      },
+      filtered_items = { hide_dotfiles = not util.in_config_dir(), hide_hidden = not util.in_config_dir() },
       window = {
         mappings = {
           ['r'] = 'rename',
@@ -272,6 +247,8 @@ local spec = {
           ['Y'] = { M.copy_node_info, desc = 'Copy node information to clipboard' },
           ['x'] = 'cut_to_clipboard',
           ['p'] = 'paste_from_clipboard',
+          -- HACK:
+          -- The input menu is too short to input
           ['a'] = { 'add', config = { show_path = 'absolute' } },
           ['m'] = { 'move', config = { show_path = 'absolute' } },
           ['c'] = { 'copy', config = { show_path = 'absolute' } },
