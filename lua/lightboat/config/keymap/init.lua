@@ -1,12 +1,10 @@
 return {
   enabled = true,
   keys = {
-    ['<leader>ay'] = { key = '<leader>ay', mode = 'n', desc = 'Yank current file to + reg' },
     ['<m-x>'] = { key = '<m-x>', mode = { 'n', 'x' }, desc = 'Cut to + reg' },
-    ['<m-a>'] = { key = '<m-a>', mode = { 'n', 'x', 'i' }, desc = 'Select all' },
+    ['<m-a>'] = { key = '<m-a>', mode = { 'n', 'x', 'i' }, expr = true, desc = 'Select all' },
     ['<c-u>'] = { key = '<c-u>', mode = 'i', desc = 'Delete to start of line' },
-    -- TODO: support in cmd line with non-ascii
-    ['<c-w>'] = { key = '<c-w>', mode = 'i', desc = 'Delete one word backwards' },
+    ['<c-w>'] = { key = '<c-w>', mode = 'i', expr = true, remap = true, desc = 'Delete one word backwards' },
     ['<c-a>'] = { key = '<c-a>', mode = { 'x', 'i', 'c' }, expr = true, desc = 'Move cursor to start of line' },
     ['<c-e>'] = { key = '<c-e>', mode = { 'x', 'i', 'c' }, desc = 'Move cursor to end of line' },
     ['<leader>l'] = { key = '<leader>l', mode = 'n', desc = 'Split right' },

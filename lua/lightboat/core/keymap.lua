@@ -3,7 +3,6 @@ if not c.enabled then return end
 local util = require('lightboat.util')
 local map = util.key.set
 local convert = util.key.convert
-local feedkeys = util.key.feedkeys
 local rep_move = require('lightboat.extra.rep_move')
 local prev_find, next_find = rep_move.make('F', 'f')
 local prev_till, next_till = rep_move.make('T', 't')
@@ -17,26 +16,15 @@ local prev_misspell, next_misspell = rep_move.make('[s', ']s')
 local prev_open_fold, next_open_fold = rep_move.make('[z', ']z')
 
 local operation = {
-  ['<leader>ay'] = function()
-    -- HACK:
-    -- highlight when the file is small?
-    vim.fn.setreg('+', vim.api.nvim_buf_get_lines(0, 0, -1, false), 'l')
-    local line_count = vim.api.nvim_buf_line_count(0)
-    vim.notify(string.format('Yanked %d lines to + register', line_count), nil, { title = 'Yank' })
-  end,
   ['<m-x>'] = '"+d',
   ['<m-a>'] = function()
     if Snacks then
       vim.g.snacks_animate_scroll = false
       vim.schedule(function() vim.g.snacks_animate_scroll = true end)
     end
-    local res
-    if vim.fn.mode() == 'n' then
-      res = 'gg0vG$'
-    else
-      res = '<esc>gg0vG$'
-    end
-    feedkeys(res, 'n')
+    local res = 'gg0vG$'
+    if vim.fn.mode() ~= 'n' then res = '<esc>' .. res end
+    return res
   end,
   ['<c-u>'] = function()
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
@@ -53,7 +41,7 @@ local operation = {
     else
       res = res .. 'hvbx<cr>'
     end
-    feedkeys(res, 'n')
+    return res
   end,
   ['<c-a>'] = function()
     local res
@@ -121,6 +109,14 @@ local operation = {
     local msg = vim.wo.spell and 'Spell check enabled' or 'Spell check disabled'
     vim.notify(msg, nil, { title = 'Settings' })
   end,
+  ['<leader>i'] = function()
+    if vim.lsp.inlay_hint.is_enabled() then
+      vim.notify('Inlay hints disabled', nil, { title = 'LSP' })
+    else
+      vim.notify('Inlay hints enabled', nil, { title = 'LSP' })
+    end
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end,
   ['<leader>ts'] = function()
     local buf = vim.api.nvim_get_current_buf()
     local status = vim.treesitter.highlighter.active[buf] ~= nil
@@ -135,14 +131,6 @@ local operation = {
         vim.notify('Treesitter started successfully', nil, { title = 'Treesitter' })
       end
     end
-  end,
-  ['<leader>i'] = function()
-    if vim.lsp.inlay_hint.is_enabled() then
-      vim.notify('Inlay hints disabled', nil, { title = 'LSP' })
-    else
-      vim.notify('Inlay hints enabled', nil, { title = 'LSP' })
-    end
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
   end,
 }
 
