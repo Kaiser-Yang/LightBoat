@@ -9,7 +9,7 @@ local group
 --- @param buf number? The buffer number, defaults to the current buffer.
 --- @return boolean True if the buffer is a big file, false otherwise.
 function M.is_big_file(buf)
-  if not c.enabled then return false end
+  if not c or not c.enabled then return false end
   buf = buffer.normalize_buf(buf)
   local fs_size
   if c.big_file_total then
