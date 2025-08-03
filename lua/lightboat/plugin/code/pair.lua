@@ -102,6 +102,15 @@ local spec = {
   {
     'HiPhish/rainbow-delimiters.nvim',
     lazy = false,
+    config = function()
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterMagenta', { fg = '#FF79C6' })
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterTeal', { fg = '#20B2CE' })
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' })
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterCyan', { fg = '#5AF7EE' })
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterViolet', { fg = '#B253DF' })
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterBlue', { fg = '#617FFF' })
+      vim.api.nvim_set_hl(0, 'RainbowDelimiterGreen', { fg = '#98C349' })
+    end,
   },
 }
 
@@ -130,9 +139,12 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
       'RainbowDelimiterRed',
       'RainbowDelimiterOrange',
       'RainbowDelimiterYellow',
-      'RainbowDelimiterBlue',
+      'RainbowDelimiterMagenta',
+      'RainbowDelimiterTeal',
+      'RainbowDelimiterGrey',
       'RainbowDelimiterCyan',
       'RainbowDelimiterViolet',
+      'RainbowDelimiterBlue',
       'RainbowDelimiterGreen',
     },
     -- PERF:
