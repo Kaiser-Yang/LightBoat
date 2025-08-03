@@ -17,7 +17,7 @@ install this distro with the starter.
 There are two types of mappings in `LightBoat`:
 
 1. The builtin key mappings, which are defined in the
-   [keymap.lua](lua/lightboat/core/keymap.lua)
+   [keymap.lua](lua/lightboat/config/keymap/init.lua)
    file. These key mappings do not depend on other plugins.
 2. The key mappings for plugins, which are defined in the plugins' files.
 
