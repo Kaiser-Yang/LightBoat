@@ -21,7 +21,7 @@ local M = {
     ['gd'] = { key = 'gd', desc = 'Go to definition' },
     ['gt'] = { key = 'gt', desc = 'Go to type definition' },
     ['gi'] = { key = 'gi', desc = 'Go to implementations' },
-    ['gr'] = { key = 'gr', desc = 'Go references' },
+    ['grr'] = { key = 'grr', desc = 'Go references' },
     ['gro'] = { key = 'gro', desc = 'Outgoing calls' },
     ['gri'] = { key = 'gri', desc = 'Incoming calls' },
     ['grn'] = { key = 'grn', desc = 'Rename' },

@@ -28,7 +28,7 @@ local operation = {
   ['gd'] = '<cmd>Lspsaga goto_definition<cr>',
   ['gt'] = '<cmd>Lspsaga goto_type_definition<cr>',
   ['gi'] = '<cmd>Lspsaga finder imp<cr>',
-  ['gr'] = '<cmd>Lspsaga finder ref<cr>',
+  ['grr'] = '<cmd>Lspsaga finder ref<cr>',
   ['gro'] = '<cmd>Lspsaga outgoing_calls<cr>',
   ['gri'] = '<cmd>Lspsaga incoming_calls<cr>',
   ['grn'] = '<cmd>Lspsaga rename mode=n<cr>',
