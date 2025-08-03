@@ -41,7 +41,9 @@ function _G.get_label(args)
 
   if c.enabled then
     local mode = vim.fn.mode()
-    local line_mode = mode == 'i' and c.insert or mode == 'c' and c.command_line or c.other
+    local line_mode = mode == 'i' and util.get(c.insert)
+      or mode == 'c' and util.get(c.command_line)
+      or util.get(c.other)
     local function get_insert_label()
       if line_mode == 'abs' then
         return c.format(tostring(lnum))

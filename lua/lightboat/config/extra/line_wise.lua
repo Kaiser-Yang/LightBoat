@@ -1,14 +1,18 @@
+local function default_line_wise()
+  if vim.bo.filetype:match('^dap') or vim.bo.filetype:match('^snack') then return 'abs' end
+  return 'line_wise'
+end
 --- @class LightBoat.Opts.Extra.LineWise
 return {
   enabled = true,
   desired_digits = '12345',
   max_len = 3,
-  --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise'
-  insert = 'abs',
-  --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise'
-  command_line = 'abs_rel',
-  --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise'
-  other = 'line_wise',
+  --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise' | function():string
+  insert = default_line_wise,
+  --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise' | function():string
+  command_line = default_line_wise,
+  --- @type 'abs' | 'rel' | 'abs_rel' | 'line_wise' | 'abs_line_wise' | function():string
+  other = default_line_wise,
   --- @param res string The number will be shown
   format = function(res) return string.format('%3s', res) end,
   keys = {
