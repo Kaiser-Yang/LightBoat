@@ -15,7 +15,7 @@ end
 --- @param mode string|string[] the mode to delete
 --- @param lhs string the key to delete
 --- @param opts? { buffer: integer|boolean }
-function M.del(mode, lhs, opts) vim.keymap.del(mode, lhs, opts) end
+function M.del(mode, lhs, opts) pcall(vim.keymap.del, mode, lhs, opts) end
 
 --- @param keys string
 --- @param mode string
