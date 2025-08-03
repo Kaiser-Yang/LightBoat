@@ -43,6 +43,8 @@ end
 local operation = {
   ['y'] = '<plug>(YankyYank)',
   ['p'] = '<plug>(YankyPutAfter)',
+  ['gp'] = '<plug>(YankyGPutAfter)',
+  ['gP'] = '<plug>(YankyGPutBefore)',
   ['P'] = '<plug>(YankyPutBefore)',
   ['Y'] = line_wise_key_wrap('y$'),
   ['yy'] = line_wise_key_wrap('yy'),

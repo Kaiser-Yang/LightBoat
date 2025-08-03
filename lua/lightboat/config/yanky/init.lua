@@ -3,6 +3,8 @@ return {
   keys = {
     ['y'] = { key = 'y', mode = { 'n', 'x' } },
     ['p'] = { key = 'p', mode = { 'n', 'x' } },
+    ['gp'] = { key = 'gp', mode = { 'n', 'x' } },
+    ['gP'] = { key = 'gP', mode = { 'n', 'x' } },
     ['P'] = { key = 'P', mode = { 'n', 'x' } },
     ['Y'] = { key = 'Y', expr = true, desc = 'Line wise yank' },
     ['yy'] = { key = 'yy', expr = true, desc = 'Line wise copy to + reg' },
