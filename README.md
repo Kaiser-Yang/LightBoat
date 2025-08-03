@@ -124,8 +124,6 @@ Let's take a look at the default key mappings or `comment`:
 ```lua
 return {
   enabled = true,
-  scroll_min_lines = 2,
-  scroll_max_lines = 1024,
   keys = {
     ['<leader>A'] = { key = '<leader>A', desc = 'Comment insert end of line' },
     ['<leader>O'] = { key = '<leader>O', desc = 'Comment insert above' },
