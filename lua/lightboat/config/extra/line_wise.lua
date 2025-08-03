@@ -1,6 +1,6 @@
 local function default_line_wise()
   if vim.bo.filetype:match('^snack') then return 'abs' end
-  return 'line_wise'
+  return 'abs_line_wise'
 end
 --- @class LightBoat.Opts.Extra.LineWise
 return {
@@ -16,7 +16,7 @@ return {
   --- @param res string The number will be shown
   format = function(res)
     if vim.bo.filetype:match('^dap') and vim.fn.winnr('$') ~= 1 then return '' end
-    return string.format('%3s', res)
+    return #res <= 3 and string.format('%3s', res) or '0'
   end,
   keys = {
     C = { key = 'C', expr = true, desc = 'Line wise C', opts = { increase_count = true, consider_invisble = true } },
