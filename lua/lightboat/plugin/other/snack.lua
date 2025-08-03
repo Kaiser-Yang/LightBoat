@@ -186,9 +186,6 @@ local spec = {
             ['<m-a>'] = { 'select_all', mode = { 'n', 'i' } },
             ['<tab>'] = { 'select_and_next', mode = { 'i', 'n' } },
             ['<s-tab>'] = { 'select_and_prev', mode = { 'i', 'n' } },
-            ['<c-f>'] = { M.grep, mode = 'i' },
-            ['<c-p>'] = { M.files, mode = 'i' },
-            ['<c-y>'] = { M.resume, mode = 'i' },
             ['?'] = 'toggle_help_input',
             ['G'] = 'list_bottom',
             ['gg'] = 'list_top',
@@ -246,9 +243,6 @@ local spec = {
             ['<tab>'] = 'select_and_next',
             ['<s-tab>'] = 'select_and_prev',
             ['<c-q>'] = 'qflist',
-            ['<c-f>'] = { M.grep, mode = 'i' },
-            ['<c-p>'] = { M.files, mode = 'i' },
-            ['<c-y>'] = { M.resume, mode = 'i' },
             ['<c-a>'] = false,
             ['<c-t>'] = false,
             ['<c-j>'] = false,
@@ -275,9 +269,6 @@ local spec = {
             ['q'] = 'close',
             ['<esc>'] = 'cancel',
             ['<a-w>'] = 'cycle_win',
-            ['<c-f>'] = { M.grep, mode = 'i' },
-            ['<c-p>'] = { M.files, mode = 'i' },
-            ['<c-y>'] = { M.resume, mode = 'i' },
           },
         },
       },
@@ -320,6 +311,21 @@ function M.clear()
     vim.on_key(nil, on_key_ns_id)
     on_key_ns_id = nil
   end
+  if c.snack.keys['<c-f>'] then
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-f>'].key] = nil
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-f>'].key] = nil
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-f>'].key] = nil
+  end
+  if c.snack.keys['<c-p>'] then
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-p>'].key] = nil
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-p>'].key] = nil
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-p>'].key] = nil
+  end
+  if c.snack.keys['<c-y>'] then
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-y>'].key] = nil
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-y>'].key] = nil
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-y>'].key] = nil
+  end
   spec.opts.picker.previewers.file = {}
   spec.keys = {}
   c = nil
@@ -335,6 +341,21 @@ M.setup = util.setup_check_wrap('lightboat.plugin.snack', function()
     }
   end
   spec.keys = util.key.get_lazy_keys(operation, c.snack.keys)
+  if c.snack.keys['<c-f>'] then
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-f>'].key] = { M.grep, mode = 'i' }
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-f>'].key] = { M.grep, mode = 'i' }
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-f>'].key] = { M.grep, mode = 'i' }
+  end
+  if c.snack.keys['<c-p>'] then
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-p>'].key] = { M.files, mode = 'i' }
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-p>'].key] = { M.files, mode = 'i' }
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-p>'].key] = { M.files, mode = 'i' }
+  end
+  if c.snack.keys['<c-y>'] then
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-y>'].key] = { M.resume, mode = 'i' }
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-y>'].key] = { M.resume, mode = 'i' }
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-y>'].key] = { M.resume, mode = 'i' }
+  end
   group = vim.api.nvim_create_augroup('LightBoatSnack', {})
   vim.api.nvim_create_autocmd('BufEnter', {
     group = group,
