@@ -30,7 +30,7 @@ local spec = {
     clickhandlers = {
       Lnum = function(args)
         -- <C-LeftMouse> or <RightMouse>
-        if args.button == 'l' and args.mods:find('c') or args.button == 'r' and args.mods:find('c') then
+        if args.button == 'l' and args.mods:find('c') or args.button == 'r' and args.mods:match('^%s*$') then
           require('lightboat.plugin.code.dap').set_condition_breakpoint()
         -- <LeftMouse>
         elseif args.button == 'l' and args.mods:match('^%s*$') then
@@ -85,7 +85,7 @@ local spec = {
     FoldOpen = function(args)
       -- <C-LeftMouse>
       if args.button == 'l' and args.mods:find('c') then
-        local fold_start = get_fold_start(args.mousepos.line)
+        local fold_start = fold_sign.get_fold_start(args.mousepos.line)
         -- reverse the order to close from the bottom up
         table.sort(fold_start, function(a, b) return a > b end)
         for _, lnum in ipairs(fold_start) do
