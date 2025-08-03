@@ -148,7 +148,7 @@ return {
 }
 ```
 
-To customize these above, you just need to update the `key` fields. For example, you want to update
+To customize these above, you just need to update the `key` fields. For example, if you want to update
 `<m-/>` into `<c-/>`, you can do this below:
 
 ```lua
