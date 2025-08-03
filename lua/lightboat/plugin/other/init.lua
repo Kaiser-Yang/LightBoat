@@ -4,6 +4,7 @@ local name = 'lightboat.plugin.other'
 local M = {
   flash = require('lightboat.plugin.other.flash'),
   guess_indent = require('lightboat.plugin.other.guess_indent'),
+  markdown = require('lightboat.plugin.other.markdown'),
   neo_tree = require('lightboat.plugin.other.neo_tree'),
   resizer = require('lightboat.plugin.other.resizer'),
   save = require('lightboat.plugin.other.save'),
