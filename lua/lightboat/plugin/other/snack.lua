@@ -317,7 +317,7 @@ function M.clear()
     group = nil
   end
   if on_key_ns_id then
-    vim.onkey(nil, on_key_ns_id)
+    vim.on_key(nil, on_key_ns_id)
     on_key_ns_id = nil
   end
   spec.opts.picker.previewers.file = {}
