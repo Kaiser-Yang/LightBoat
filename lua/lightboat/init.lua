@@ -6,6 +6,7 @@ local group
 local debug
 
 function M.clear()
+  util.clear_color_detection()
   util.git.clear()
   util.network.clear()
   require('lightboat.extra').clear()
@@ -34,6 +35,7 @@ M.setup = util.setup_check_wrap('lightboat', function()
   require('lightboat.extra').setup()
   util.network.check()
   util.git.detect()
+  util.start_to_detect_color()
 end, M.clear)
 
 return M

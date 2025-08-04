@@ -102,4 +102,66 @@ function M.get(opt, ...)
   end
 end
 
+local cache = {}
+local color_group
+function M.start_to_detect_color()
+  if vim.fn.executable('rg') == 0 or color_group then return end
+  color_group = vim.api.nvim_create_augroup('LightBoatColorDetection', {})
+  vim.api.nvim_create_autocmd('User', {
+    group = color_group,
+    pattern = 'LazyLoad',
+    callback = function(ev)
+      if ev.data ~= 'nvim-highlight-colors' then return end
+      M.clear_color_detection()
+    end,
+  })
+  vim.api.nvim_create_autocmd('BufUnload', {
+    group = color_group,
+    callback = function(ev)
+      local file = vim.api.nvim_buf_get_name(ev.buf)
+      cache[file] = nil
+    end,
+  })
+  vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
+    group = color_group,
+    callback = function(ev)
+      if require('lightboat.extra.big_file').is_big_file(ev.buf) then return end
+      local file = vim.api.nvim_buf_get_name(ev.buf)
+      if file == '' then return end
+      local current_mtime = vim.fn.getftime(file)
+      if cache[file] and cache[file] == current_mtime then return end
+      cache[file] = current_mtime
+      local patterns = {
+        [[#(?:[0-9a-fA-F]{3,4}){1,2}\b]],
+        [[\b(?:rgb|rgba|hsl|hsla)\s*\([^)]+\)]],
+        [[var\(--[a-zA-Z0-9\-]+\)]],
+        [[\b(?:text|bg|border|from|to|via|ring|stroke|fill|shadow|outline|accent|caret|divide|decoration|underline|overline|placeholder|selection|indigo|rose|pink|fuchsia|purple|violet|blue|sky|cyan|teal|emerald|green|lime|yellow|amber|orange|red|stone|neutral|zinc|gray|slate)-(?:[a-z]+-)?[0-9]{2,3}\b]],
+      }
+      local args = { '--color=never', '--no-heading', '--with-filename', '--max-count=1' }
+      for _, pat in ipairs(patterns) do
+        table.insert(args, '-e')
+        table.insert(args, pat)
+      end
+      table.insert(args, file)
+
+      vim.system({ 'rg', unpack(args) }, { text = true }, function(res)
+        if res.code == 0 and res.stdout and res.stdout ~= '' then
+          vim.schedule(function()
+            M.clear_color_detection()
+            vim.api.nvim_exec_autocmds('User', { pattern = 'ColorDetected' })
+          end)
+        end
+      end)
+    end,
+  })
+end
+
+function M.clear_color_detection()
+  cache = {}
+  if color_group then
+    vim.api.nvim_del_augroup_by_id(color_group)
+    color_group = nil
+  end
+end
+
 return M

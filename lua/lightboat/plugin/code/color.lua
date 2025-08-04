@@ -5,6 +5,7 @@ local M = {}
 local spec = {
   'brenoprata10/nvim-highlight-colors',
   cmd = 'HighlightColors',
+  event = { { event = 'User', pattern = 'ColorDetected' } },
   opts = {
     -- PERF: disabled in large files
     exclude_buffer = big_file.is_big_file,
