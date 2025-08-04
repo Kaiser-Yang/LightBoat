@@ -1,7 +1,5 @@
 return {
   enabled = true,
-  -- HACK:
-  -- Those below only work for c if and c af can not work for ci f and ca f
   keys = {
     ['af'] = { key = 'af', desc = 'Select around function', mode = { 'x', 'o' } },
     ['if'] = { key = 'if', desc = 'Select inside function', mode = { 'x', 'o' } },

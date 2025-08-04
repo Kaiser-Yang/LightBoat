@@ -2,6 +2,14 @@ return {
   enabled = true,
   delete_default_commant = true,
   delete_default_diagnostic_under_cursor = true,
+  separate_operator = {
+    ya = true,
+    yi = true,
+    ca = true,
+    ci = true,
+    da = true,
+    di = true,
+  },
   keys = {
     ['<m-x>'] = { key = '<m-x>', mode = { 'n', 'x' }, desc = 'Cut to + reg' },
     ['<m-a>'] = { key = '<m-a>', mode = { 'n', 'x', 'i' }, expr = true, desc = 'Select all' },

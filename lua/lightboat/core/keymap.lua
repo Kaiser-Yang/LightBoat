@@ -3,6 +3,7 @@ if not c.enabled then return end
 local util = require('lightboat.util')
 local map = util.key.set
 local del = util.key.del
+local feedkeys = util.key.feedkeys
 local convert = util.key.convert
 local rep_move = require('lightboat.extra.rep_move')
 local prev_find, next_find = rep_move.make('F', 'f')
@@ -20,6 +21,42 @@ if c.delete_default_commant then del({ 'n', 'o', 'x' }, 'gc') end
 if c.delete_default_diagnostic_under_cursor then
   del('n', '<c-w>d')
   del('n', '<c-w><c-d>')
+end
+if c.separate_operator.ya then
+  map('n', 'ya', function()
+    vim.schedule(function() feedkeys('a', 'n') end)
+    return '<esc>y'
+  end, { expr = true })
+end
+if c.separate_operator.yi then
+  map('n', 'yi', function()
+    vim.schedule(function() feedkeys('i', 'n') end)
+    return '<esc>y'
+  end, { expr = true })
+end
+if c.separate_operator.ca then
+  map('n', 'ca', function()
+    vim.schedule(function() feedkeys('a', 'n') end)
+    return '<esc>c'
+  end, { expr = true })
+end
+if c.separate_operator.ci then
+  map('n', 'ci', function()
+    vim.schedule(function() feedkeys('i', 'n') end)
+    return '<esc>c'
+  end, { expr = true })
+end
+if c.separate_operator.da then
+  map('n', 'da', function()
+    vim.schedule(function() feedkeys('a', 'n') end)
+    return '<esc>d'
+  end, { expr = true })
+end
+if c.separate_operator.di then
+  map('n', 'di', function()
+    vim.schedule(function() feedkeys('i', 'n') end)
+    return '<esc>d'
+  end, { expr = true })
 end
 
 local operation = {
