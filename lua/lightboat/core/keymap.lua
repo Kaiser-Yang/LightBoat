@@ -81,9 +81,9 @@ local operation = {
     local line_len = #vim.api.nvim_get_current_line()
     local res = '<c-o><cmd>normal '
     if cursor_col == line_len then
-      res = res .. 'vlbc<cr>'
+      res = res .. 'vl' .. c.keys['b'].key .. 'c<cr>'
     else
-      res = res .. 'hvbx<cr>'
+      res = res .. 'hv' .. c.keys['b'].key .. 'x<cr>'
     end
     return res
   end,
