@@ -1,4 +1,5 @@
 local util = require('lightboat.util')
+local feedkeys = util.key.feedkeys
 local disabled_filetype = { 'snacks_picker_input' }
 local rep_move = require('lightboat.extra.rep_move')
 local prev_matchup, next_matchup = rep_move.make('<plug>(matchup-g%)', '<plug>(matchup-%)')
@@ -131,6 +132,35 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   spec[1].opts.space.check_box_ft = c.extra.markdown_fts
   assert(spec[2][1] == 'kylechui/nvim-surround')
   spec[2].keys = util.key.get_lazy_keys(operation.surround, c.pair.keys)
+  table.insert(spec[2].keys, {
+    's',
+    function()
+      local res
+      if vim.v.operator == 'y' and c.pair.keys['ys'].key == 'ys' then
+        res = '<plug>(nvim-surround-normal)'
+      elseif vim.v.operator == 'd' and c.pair.keys['ds'].key == 'ds' then
+        res = '<plug>(nvim-surround-delete)'
+      elseif vim.v.operator == 'c' and c.pair.keys['cs'].key == 'cs' then
+        res = '<plug>(nvim-surround-change)'
+      end
+      if res then vim.schedule(function() feedkeys(res, 'n') end) end
+      return '<esc>'
+    end,
+    expr = true,
+    mode = 'o',
+    desc = 'Change, delete or add a surrounding pair (operator pending mode)',
+  })
+  table.insert(spec[2].keys, {
+    'S',
+    function()
+      local res
+      if vim.v.operator == 'y' and c.pair.keys['yS'].key == 'yS' then res = '<plug>(nvim-surround-normal-cur)' end
+      if res then vim.schedule(function() feedkeys(res, 'n') end) end
+      return '<esc>'
+    end,
+    mode = 'o',
+    desc = 'Change, delete or add a surrounding pair (operator pending mode, line-wise)',
+  })
   assert(spec[3][1] == 'andymass/vim-matchup')
   spec[3].keys = util.key.get_lazy_keys(operation.matchup, c.pair.keys)
   vim.g.rainbow_delimiters = vim.tbl_extend('force', {
