@@ -72,4 +72,5 @@ M.setup = util.setup_check_wrap('lightboat.plugin.ui.noice', function()
   })
   return spec
 end, M.clear)
+
 return M

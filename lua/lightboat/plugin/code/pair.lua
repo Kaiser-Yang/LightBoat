@@ -15,17 +15,21 @@ local big_file = require('lightboat.extra.big_file')
 -- Press ys or yS quickly will start to surround.
 -- ds and cs are the similar.
 local operation = {
-  ['ys'] = '<plug>(nvim-surround-normal)',
-  ['yS'] = '<plug>(nvim-surround-normal-cur)',
-  ['S'] = '<plug>(nvim-surround-visual)',
-  ['ds'] = '<plug>(nvim-surround-delete)',
-  ['cs'] = '<plug>(nvim-surround-change)',
-  ['g%'] = prev_matchup,
-  ['%'] = next_matchup,
-  ['[%'] = prev_multi_matchup,
-  [']%'] = next_multi_matchup,
-  ['z%'] = prev_inner_matchup,
-  ['Z%'] = next_inner_matchup,
+  surround = {
+    ['ys'] = '<plug>(nvim-surround-normal)',
+    ['yS'] = '<plug>(nvim-surround-normal-cur)',
+    ['S'] = '<plug>(nvim-surround-visual)',
+    ['ds'] = '<plug>(nvim-surround-delete)',
+    ['cs'] = '<plug>(nvim-surround-change)',
+  },
+  matchup = {
+    ['g%'] = prev_matchup,
+    ['%'] = next_matchup,
+    ['[%'] = prev_multi_matchup,
+    [']%'] = next_multi_matchup,
+    ['z%'] = prev_inner_matchup,
+    ['Z%'] = next_inner_matchup,
+  },
 }
 
 local spec = {
@@ -126,9 +130,9 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   assert(spec[1][1] == 'altermo/ultimate-autopair.nvim')
   spec[1].opts.space.check_box_ft = c.extra.markdown_fts
   assert(spec[2][1] == 'kylechui/nvim-surround')
-  spec[2].keys = util.key.get_lazy_keys(operation, c.pair.surround.keys)
+  spec[2].keys = util.key.get_lazy_keys(operation.surround, c.pair.keys)
   assert(spec[3][1] == 'andymass/vim-matchup')
-  spec[3].keys = util.key.get_lazy_keys(operation, c.pair.matchup.keys)
+  spec[3].keys = util.key.get_lazy_keys(operation.matchup, c.pair.keys)
   vim.g.rainbow_delimiters = vim.tbl_extend('force', {
     highlight = {
       'RainbowDelimiterRed',
