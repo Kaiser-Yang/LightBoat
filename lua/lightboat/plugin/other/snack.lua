@@ -104,21 +104,21 @@ M.preview_scroll_down = function(picker)
   picker.opts.actions.preview_scroll_down.action()
 end
 
-function M.grep() Snacks.picker.grep(c.snack.keys['<c-f>'].opts) end
+function M.grep() Snacks.picker.grep(util.resolve_opts(c.snack.keys['<c-f>'].opts)) end
 
-function M.files() Snacks.picker.files(c.snack.keys['<c-p>'].opts) end
+function M.files() Snacks.picker.files(util.resolve_opts(c.snack.keys['<c-p>'].opts)) end
 
-function M.resume() Snacks.picker.resume(c.snack.keys['<c-y>'].opts) end
+function M.resume() Snacks.picker.resume(util.resolve_opts(c.snack.keys['<c-y>'].opts)) end
 
 local operation = {
   ['<c-y>'] = M.resume,
-  ['z='] = function() Snacks.picker.spelling(c.snack.keys['z='].opts) end,
+  ['z='] = function() Snacks.picker.spelling(util.resolve_opts(c.snack.keys['z='].opts)) end,
   ['<c-p>'] = M.files,
   ['<c-f>'] = M.grep,
   -- PERF:
   -- disabled in large files
   ['<leader><leader>'] = big_file.big_file_check_wrap(
-    function() Snacks.picker.lines(c.snack.keys['<leader><leader>'].opts) end
+    function() Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts)) end
   ),
   ['<leader>r'] = M.run_single_file,
 }
@@ -144,7 +144,6 @@ local spec = {
       end,
     },
     input = { enabled = false },
-    ---@class snacks.picker.Config
     picker = {
       ui_select = true,
       save_as_last = false,
@@ -209,6 +208,7 @@ local spec = {
           },
         },
         list = {
+          --- @type table<string, string|boolean|table>
           keys = {
             ['?'] = 'toggle_help_list',
             ['<f1>'] = 'toggle_help_list',
@@ -259,6 +259,7 @@ local spec = {
           },
         },
         preview = {
+          --- @type table<string, string|boolean|table>
           keys = {
             ['i'] = 'focus_input',
             ['a'] = 'focus_input',

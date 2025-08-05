@@ -102,6 +102,15 @@ function M.get(opt, ...)
   end
 end
 
+function M.resolve_opts(opts)
+  local res = vim.deepcopy(opts)
+  for k, v in pairs(opts) do
+    res[k] = M.get(v)
+    if type(res[k]) == 'table' then res[k] = M.resolve_opts(res[k]) end
+  end
+  return res
+end
+
 local cache = {}
 local color_group
 function M.start_to_detect_color()
