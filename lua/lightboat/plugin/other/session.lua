@@ -2,8 +2,7 @@ local util = require('lightboat.util')
 local c = require('lightboat.config').get().extra
 
 local function has_root_directory()
-  if c.root_markers == nil then return nil end
-  return vim.fs.root(0, c.root_markers) ~= nil
+  return vim.fs.root(0, c.root_markers or {}) ~= nil
 end
 
 local spec = {
