@@ -18,6 +18,7 @@ local default_opts = {
   mason = require('lightboat.config.mason'),
   neo_tree = require('lightboat.config.neo_tree'),
   noice = require('lightboat.config.noice'),
+  overseer = require('lightboat.config.overseer'),
   pair = require('lightboat.config.pair'),
   resizer = require('lightboat.config.resizer'),
   sign = require('lightboat.config.sign'),

@@ -1,5 +1,12 @@
 local util = require('lightboat.util')
 local log = util.log
+local config = require('lightboat.config')
+local c
+local group
+
+local operation = {
+  ['<leader>R'] = '<cmd>OverseerRun<cr>',
+}
 
 local spec = {
   'stevearc/overseer.nvim',
@@ -51,14 +58,33 @@ local spec = {
     lualine.setup(lua_line_config)
     log.debug('Overseer loaded')
   end,
+  keys = {},
 }
 
 local M = {}
 
 function M.spec() return spec end
 
-function M.clear() end
+function M.clear()
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
+  c = nil
+  spec.keys = {}
+end
 
-M.setup = util.setup_check_wrap('lightboat.plugin.code.overseer', function() return spec end, M.clear)
+M.setup = util.setup_check_wrap('lightboat.plugin.code.overseer', function()
+  c = config.get().overseer
+  if not c.enabled then return nil end
+  spec.keys = util.key.get_lazy_keys(operation, c.keys)
+  group = vim.api.nvim_create_augroup('LightBoatOverseer', {})
+  vim.api.nvim_create_autocmd('FileType', {
+    group = group,
+    pattern = 'OverseerForm',
+    callback = function() util.key.set('n', '<esc>', 'q', { remap = true, buffer = true }) end,
+  })
+  return spec
+end, M.clear)
 
 return M
