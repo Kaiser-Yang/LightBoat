@@ -1,3 +1,8 @@
+local function default_cwd()
+  local root_markers = require('lightboat.config').get().extra.root_markers or {}
+  return vim.fs.root(vim.fn.getcwd(), root_markers) or vim.fs.root(0, root_markers)
+end
+
 local rg_ignore_patterns = {
   '*.git',
   '*.o',
@@ -32,6 +37,7 @@ return {
       key = '<c-p>',
       desc = 'Toggle find Files',
       opts = {
+        cwd = default_cwd,
         cmd = 'rg',
         hidden = util.in_config_dir(),
         pattern = function() return vim.bo.filetype == 'snacks_picker_input' and vim.api.nvim_get_current_line() or '' end,
@@ -44,7 +50,7 @@ return {
       key = '<c-f>',
       desc = 'Toggle Live Grep',
       opts = {
-        cwd = vim.fn.getcwd(),
+        cwd = default_cwd,
         cmd = 'rg',
         hidden = util.in_config_dir(),
         search = function() return vim.bo.filetype == 'snacks_picker_input' and vim.api.nvim_get_current_line() or '' end,
