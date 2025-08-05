@@ -106,7 +106,14 @@ local operation = {
   ['='] = '<cmd>wincmd =<cr>',
   ['<c-h>'] = '<c-w>h',
   ['<c-j>'] = '<c-w>j',
-  ['<c-k>'] = '<c-w>k',
+  ['<c-k>'] = function()
+    if vim.fn.mode() == 'n' then
+      return '<c-w>k'
+    else
+      local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+      vim.schedule(function() vim.api.nvim_set_current_line(vim.api.nvim_get_current_line():sub(1, cursor_col)) end)
+    end
+  end,
   ['<c-l>'] = '<c-w>l',
   ['<leader>T'] = '<cmd>tab split<cr>',
   ['<leader>t2'] = function()
@@ -176,6 +183,7 @@ local operation = {
       end
     end
   end,
+  ['<m-d>'] = '<c-g>u<cmd>normal de<cr>',
 }
 
 for k, v in pairs(c.keys) do

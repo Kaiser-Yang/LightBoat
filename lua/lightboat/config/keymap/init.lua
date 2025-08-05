@@ -24,7 +24,7 @@ return {
     ['='] = { key = '=', desc = 'Equalize windows' },
     ['<c-h>'] = { key = '<c-h>', desc = 'Cursor left' },
     ['<c-j>'] = { key = '<c-j>', desc = 'Cursor down' },
-    ['<c-k>'] = { key = '<c-k>', desc = 'Cursor up' },
+    ['<c-k>'] = { key = '<c-k>', expr = true, mode = { 'n', 'i' }, desc = 'Cursor up or delete to end of line' },
     ['<c-l>'] = { key = '<c-l>', desc = 'Cursor right' },
     ['<leader>T'] = { key = '<leader>T', desc = 'Move current window to a new tabpage' },
     ['<leader>t2'] = { key = '<leader>t2', desc = 'Set tab with 2 spaces' },
@@ -56,5 +56,6 @@ return {
     ['<leader>sc'] = { key = '<leader>sc', desc = 'Toggle spell check' },
     ['<leader>ts'] = { key = '<leader>ts', desc = 'Toggle treesitter highlight' },
     ['<leader>i'] = { key = '<leader>i', desc = 'Toggle inlay hints' },
+    ['<m-d>'] = { key = '<m-d>', mode = 'i', desc = 'Delete word forwards' },
   },
 }
