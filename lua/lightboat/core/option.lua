@@ -27,7 +27,6 @@ vim.o.shiftwidth = 4
 vim.o.foldlevel = 99
 vim.o.foldminlines = 5
 vim.o.sessionoptions = 'buffers,curdir,folds,help,tabpages,winsize,winpos'
-vim.o.formatoptions = 'jcrql'
 
 vim.filetype.add({
   pattern = {

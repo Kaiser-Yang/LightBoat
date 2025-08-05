@@ -29,3 +29,9 @@ if c.gitcommit_colorcolumn then
     callback = function() vim.wo.colorcolumn = c.gitcommit_colorcolumn end,
   })
 end
+if c.formatoptions then
+  vim.api.nvim_create_autocmd('FileType', {
+    group = group,
+    callback = function() vim.bo.formatoptions = 'crqn2lMj' end,
+  })
+end
