@@ -138,7 +138,10 @@ function M.copy_node_info(state)
           for i = 1, #options do
             if i > 10 then break end
             local key = i < 10 and tostring(i) or '0'
-            map('n', key, 'i' .. key .. '<cr>', { buffer = ev.buf, remap = true })
+            map('n', key, function()
+              vim.defer_fn(function() feedkeys('<cr>', 'm') end, 20)
+              return 'i' .. key
+            end, { buffer = ev.buf, expr = true })
           end
         end
         vim.api.nvim_del_autocmd(autocmd_id)
