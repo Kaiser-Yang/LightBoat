@@ -25,6 +25,9 @@ local operation = {
   ['f'] = next_flash_find,
   ['T'] = prev_flash_till,
   ['t'] = next_flash_till,
+  ['r'] = big_file_check_wrap(function() require('flash').remote() end),
+  ['R'] = big_file_check_wrap(function() require('flash').treesitter_search() end),
+  ['gn'] = big_file_check_wrap(function() require('flash').treesitter() end),
   ['<c-s>'] = big_file_check_wrap(function()
     local flash = require('flash')
     local function format(opts)
