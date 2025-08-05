@@ -2,6 +2,7 @@ local M = {}
 local util = require('lightboat.util')
 local spec = {
   'pwntester/octo.nvim',
+  enabled = vim.fn.executable('gh') == 1,
   dependencies = {
     'nvim-lua/plenary.nvim',
     'nvim-tree/nvim-web-devicons',
