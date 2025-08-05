@@ -10,11 +10,6 @@ local config = require('lightboat.config')
 local c
 local big_file = require('lightboat.extra.big_file')
 
--- NOTE:
--- This requires quick typing.
--- Press y and wait will start to copy.
--- Press ys or yS quickly will start to surround.
--- ds and cs are the similar.
 local operation = {
   surround = {
     ['ys'] = '<plug>(nvim-surround-normal)',
@@ -178,7 +173,7 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     },
     -- PERF:
     -- This plugin may cause performance issues with large files.
-    condition = function(buf) return not big_file.is_big_file(buf) end,
+    condition = function(buf) return not big_file.is_big_file(buf) and vim.api.nvim_buf_line_count(buf) <= 5000 end,
   }, vim.g.rainbow_delimiters or {})
   vim.api.nvim_set_hl(0, 'RainbowDelimiterRed', { fg = '#f38ba8' })
   vim.api.nvim_set_hl(0, 'RainbowDelimiterOrange', { fg = '#fab387' })
