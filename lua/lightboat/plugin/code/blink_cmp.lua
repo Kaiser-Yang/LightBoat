@@ -102,6 +102,98 @@ local operation = {
   ['<c-c>'] = { 'cancel', 'fallback' },
 }
 
+local function pr_or_issue_configure_score_offset(items)
+  -- Bonus to make sure items sorted as below:
+  local keys = {
+    -- place `kind_name` here
+    { 'openIssue', 'openedIssue', 'reopenedIssue' },
+    { 'openPR', 'openedPR' },
+    { 'lockedIssue', 'lockedPR' },
+    { 'completedIssue' },
+    { 'draftPR' },
+    { 'mergedPR' },
+    { 'closedPR', 'closedIssue', 'not_plannedIssue', 'duplicateIssue' },
+  }
+  local bonus = 999999
+  local bonus_score = {}
+  for i = 1, #keys do
+    for _, key in ipairs(keys[i]) do
+      bonus_score[key] = bonus * (#keys - i)
+    end
+  end
+  for i = 1, #items do
+    local bonus_key = items[i].kind_name
+    if bonus_score[bonus_key] then items[i].score_offset = bonus_score[bonus_key] end
+    -- sort by number when having the same bonus score
+    local number = items[i].label:match('[#!](%d+)')
+    if number then
+      if items[i].score_offset == nil then items[i].score_offset = 0 end
+      items[i].score_offset = items[i].score_offset + tonumber(number)
+    end
+  end
+end
+
+local function get_args(command, token, remote, type)
+  local args = require('blink-cmp-git.default.' .. remote)[type].get_command_args(command, token)
+  args[#args] = args[#args] .. '?state=all'
+  return args
+end
+
+local blink_cmp_git_opts = {
+  kind_icons = {
+    openPR = '',
+    openedPR = '',
+    closedPR = '',
+    mergedPR = '',
+    draftPR = '',
+    lockedPR = '',
+    openIssue = '',
+    openedIssue = '',
+    reopenedIssue = '',
+    completedIssue = '',
+    closedIssue = '',
+    not_plannedIssue = '',
+    duplicateIssue = '',
+    lockedIssue = '',
+  },
+  commit = { enable = false },
+  git_centers = {
+    github = {
+      pull_request = {
+        get_command_args = function(command, token) return get_args(command, token, 'github', 'pull_request') end,
+        get_kind_name = function(item)
+          return item.locked and 'lockedPR'
+            or item.draft and 'draftPR'
+            or item.merged_at and 'mergedPR'
+            or item.state .. 'PR'
+        end,
+        configure_score_offset = pr_or_issue_configure_score_offset,
+      },
+      issue = {
+        get_command_args = function(command, token) return get_args(command, token, 'github', 'issue') end,
+        get_kind_name = function(item)
+          return item.locked and 'lockedIssue' or (item.state_reason or item.state) .. 'Issue'
+        end,
+        configure_score_offset = pr_or_issue_configure_score_offset,
+      },
+    },
+    gitlab = {
+      pull_request = {
+        get_command_args = function(command, token) return get_args(command, token, 'gitlab', 'pull_request') end,
+        get_kind_name = function(item)
+          return item.discussion_locked and 'lockedPR' or item.draft and 'draftPR' or item.state .. 'PR'
+        end,
+        configure_score_offset = pr_or_issue_configure_score_offset,
+      },
+      issue = {
+        get_command_args = function(command, token) return get_args(command, token, 'gitlab', 'issue') end,
+        get_kind_name = function(item) return item.discussion_locked and 'lockedIssue' or item.state .. 'Issue' end,
+        configure_score_offset = pr_or_issue_configure_score_offset,
+      },
+    },
+  },
+}
+
 local spec = {
   'saghen/blink.cmp',
   version = '*',
@@ -166,6 +258,7 @@ local spec = {
         git = {
           name = 'Git',
           module = 'blink-cmp-git',
+          opts = blink_cmp_git_opts,
         },
         dictionary = {
           name = 'Dict',
