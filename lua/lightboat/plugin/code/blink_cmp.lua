@@ -324,6 +324,39 @@ end
 M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
   c = config.get().blink_cmp
   if not c.enabled then return nil end
+  util.set_hls({
+    { 0, 'BlinkCmpGitKindIconCommit', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindIconopenPR', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindIconopenedPR', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindIconclosedPR', { fg = '#f38ba8' } },
+    { 0, 'BlinkCmpGitKindIconmergedPR', { fg = '#cba6f7' } },
+    { 0, 'BlinkCmpGitKindIcondraftPR', { fg = '#9399b2' } },
+    { 0, 'BlinkCmpGitKindIconlockedPR', { fg = '#f5c2e7' } },
+    { 0, 'BlinkCmpGitKindIconopenIssue', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindIconopenedIssue', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindIconreopenedIssue', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindIconcompletedIssue', { fg = '#cba6f7' } },
+    { 0, 'BlinkCmpGitKindIconclosedIssue', { fg = '#cba6f7' } },
+    { 0, 'BlinkCmpGitKindIconnot_plannedIssue', { fg = '#9399b2' } },
+    { 0, 'BlinkCmpGitKindIconduplicateIssue', { fg = '#9399b2' } },
+    { 0, 'BlinkCmpGitKindIconlockedIssue', { fg = '#f5c2e7' } },
+    { 0, 'BlinkCmpGitKindLabelCommitId', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindLabelopenPRId', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindLabelopenedPRId', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindLabelclosedPRId', { fg = '#f38ba8' } },
+    { 0, 'BlinkCmpGitKindLabelmergedPRId', { fg = '#cba6f7' } },
+    { 0, 'BlinkCmpGitKindLabeldraftPRId', { fg = '#9399b2' } },
+    { 0, 'BlinkCmpGitKindLabellockedPRId', { fg = '#f5c2e7' } },
+    { 0, 'BlinkCmpGitKindLabelopenIssueId', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindLabelopenedIssueId', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindLabelreopenedIssueId', { fg = '#a6e3a1' } },
+    { 0, 'BlinkCmpGitKindLabelcompletedIssueId', { fg = '#cba6f7' } },
+    { 0, 'BlinkCmpGitKindLabelclosedIssueId', { fg = '#cba6f7' } },
+    { 0, 'BlinkCmpGitKindLabelnot_plannedIssueId', { fg = '#9399b2' } },
+    { 0, 'BlinkCmpGitKindLabelduplicateIssueId', { fg = '#9399b2' } },
+    { 0, 'BlinkCmpGitKindLabellockedIssueId', { fg = '#f5c2e7' } },
+    { 0, 'BlinkCmpKindDict', { fg = '#a6e3a1' } },
+  })
   for k, v in pairs(c.keys) do
     if not v or not operation[k] then goto continue end
     spec.opts.keymap[v.key] = operation[k]

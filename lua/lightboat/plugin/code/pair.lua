@@ -175,16 +175,18 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     -- This plugin may cause performance issues with large files.
     condition = function(buf) return not big_file.is_big_file(buf) and vim.api.nvim_buf_line_count(buf) <= 5000 end,
   }, vim.g.rainbow_delimiters or {})
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterRed', { fg = '#f38ba8' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterOrange', { fg = '#fab387' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterYellow', { fg = '#f9e2af' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterMagenta', { fg = '#FF79C6' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterTeal', { fg = '#20B2CE' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterCyan', { fg = '#5AF7EE' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterViolet', { fg = '#B253DF' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterBlue', { fg = '#617FFF' })
-  vim.api.nvim_set_hl(0, 'RainbowDelimiterGreen', { fg = '#98C349' })
+  util.set_hls({
+    { 0, 'RainbowDelimiterRed', { fg = '#f38ba8' } },
+    { 0, 'RainbowDelimiterOrange', { fg = '#fab387' } },
+    { 0, 'RainbowDelimiterYellow', { fg = '#f9e2af' } },
+    { 0, 'RainbowDelimiterMagenta', { fg = '#FF79C6' } },
+    { 0, 'RainbowDelimiterTeal', { fg = '#20B2CE' } },
+    { 0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' } },
+    { 0, 'RainbowDelimiterCyan', { fg = '#5AF7EE' } },
+    { 0, 'RainbowDelimiterViolet', { fg = '#B253DF' } },
+    { 0, 'RainbowDelimiterBlue', { fg = '#617FFF' } },
+    { 0, 'RainbowDelimiterGreen', { fg = '#98C349' } },
+  })
   return spec
 end, M.clear)
 

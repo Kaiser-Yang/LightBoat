@@ -173,4 +173,10 @@ function M.clear_color_detection()
   end
 end
 
+function M.set_hls(hls)
+  for _, hl in ipairs(hls) do
+    vim.api.nvim_set_hl(unpack(hl))
+  end
+end
+
 return M
