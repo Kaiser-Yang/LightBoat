@@ -31,20 +31,11 @@ local spec = {
     routes = {
       {
         filter = {
-          event = 'msg_show',
-          find = 'ServiceReady',
-        },
-      },
-      {
-        filter = {
-          event = 'msg_show',
-          find = 'Starting Java Language Server',
-        },
-      },
-      {
-        filter = {
-          event = 'msg_show',
-          find = 'Init...',
+          any = {
+            { event = 'msg_show', find = 'ServiceReady' },
+            { event = 'msg_show', find = 'Starting Java Language Server' },
+            { event = 'msg_show', find = 'Init...' },
+          },
         },
       },
     },
