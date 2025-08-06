@@ -183,6 +183,7 @@ local spec = {
               'notify',
               'smear-cursor',
               'snacks_notif',
+              'noice',
             },
             buftype = { 'terminal', 'quickfix' },
           },
