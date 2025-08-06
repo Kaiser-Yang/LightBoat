@@ -30,6 +30,13 @@ function M.get_jdtls_config()
     local jdtls_path = vim.fn.expand('$MASON/packages/jdtls')
     local bundles = vim.split(vim.fn.glob('$MASON/packages/java-debug-adapter/extension/server/*.jar'), '\n')
     vim.list_extend(bundles, vim.split(vim.fn.glob('$MASON/packages/java-test/extension/server/*.jar'), '\n'))
+    local ignored_bundles = { 'com.microsoft.java.test.runner-jar-with-dependencies.jar', 'jacocoagent.jar' }
+    local function should_ignore_bundle(bundle)
+      for _, ignored in ipairs(ignored_bundles) do
+        if string.find(bundle, ignored, 1, true) then return true end
+      end
+    end
+    bundles = vim.tbl_filter(function(bundle) return bundle ~= '' and not should_ignore_bundle(bundle) end, bundles)
     jdtls_config = {
       settings = { java = { eclipse = { downloadSources = true }, maven = { downloadSources = true } } },
       init_options = { bundles = bundles },

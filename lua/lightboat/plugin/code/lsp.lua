@@ -85,9 +85,11 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
   assert(spec[2][1] == 'nvimdev/lspsaga.nvim')
   spec[2].keys = util.key.get_lazy_keys(operation, c.lsp.keys)
   group = vim.api.nvim_create_augroup('LightBoatLsp', {})
-  for name in pairs(c.lsp.config) do
+  for name, lsp_config in pairs(c.lsp.config) do
+    if not lsp_config then goto continue end
     vim.lsp._enabled_configs[name] = {}
-    vim.lsp.config[name] = vim.tbl_extend('force', vim.lsp.config[name] or {}, c.lsp.config[name] or {})
+    vim.lsp.config(name, vim.tbl_extend('force', vim.lsp.config[name] or {}, lsp_config))
+    ::continue::
   end
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
