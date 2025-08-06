@@ -6,7 +6,6 @@ local M = {}
 local spec = {
   'MeanderingProgrammer/render-markdown.nvim',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
-  -- ft = vim.g.markdown_support_filetype,
   opts = {
     enabled = false,
     file_types = vim.g.markdown_support_filetype,
