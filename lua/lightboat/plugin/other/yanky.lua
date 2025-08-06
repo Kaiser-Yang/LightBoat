@@ -35,6 +35,7 @@ local function sys_paste()
     vim.schedule(function() vim.cmd('set nopaste') end)
     res = '<c-g>u<c-r>+'
   else
+    prepare_system_clipboard()
     res = '<plug>(YankyPutAfter)'
   end
   return res
@@ -53,10 +54,7 @@ local operation = {
   ['<m-c>'] = sys_yank,
   ['<c-rightmouse>'] = sys_paste,
   ['<m-v>'] = function() return vim.fn.mode() == 'c' and '<c-r>+' or sys_paste() end,
-  ['<leader>p'] = function()
-    prepare_system_clipboard()
-    return '<plug>(YankyPutAfter)'
-  end,
+  ['<leader>p'] = sys_paste,
   ['<leader>P'] = function()
     prepare_system_clipboard()
     return '<plug>(YankyPutBefore)'
