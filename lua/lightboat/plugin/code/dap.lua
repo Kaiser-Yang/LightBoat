@@ -68,6 +68,18 @@ local operation = {
   ['<leader>df'] = function() require('dapui').float_element() end,
   ['<leader>de'] = M.eval_expression,
   ['<leader>dl'] = M.set_log_point,
+  ['<leader>dt'] = function()
+    if vim.bo.filetype == 'java' then
+      local ok, jdtls = pcall(require, 'jdtls')
+      if not ok then
+        vim.notify('jdtls not found, please install it first.', vim.log.levels.WARN)
+        return
+      end
+      jdtls.test_nearest_method()
+    else
+      vim.notify('Not support for current filetype: ' .. vim.bo.filetype, vim.log.levels.WARN)
+    end
+  end,
   ['<f4>'] = function() require('dap').terminate() end,
   ['<f5>'] = M.continue_or_run_last,
   ['<f6>'] = function() require('dap').restart() end,
@@ -133,8 +145,8 @@ local spec = {
       dapui.setup(opts)
       dap.listeners.before.attach.dapui_config = before_start
       dap.listeners.before.launch.dapui_config = before_start
-      dap.adapters = c.adapters
-      dap.configurations = c.configurations
+      dap.adapters = vim.tbl_extend('force', dap.adapters, c.adapters)
+      dap.configurations = vim.tbl_extend('force', dap.configurations, c.configurations)
       vscode.json_decode = function(str) return vim.json.decode(json.json_strip_comments(str)) end
       log.debug('Dap loaded')
     end,

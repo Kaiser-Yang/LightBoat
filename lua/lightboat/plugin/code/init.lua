@@ -10,6 +10,7 @@ local M = {
   interesting_words = require('lightboat.plugin.code.insteresting_words'),
   lsp = require('lightboat.plugin.code.lsp'),
   mason = require('lightboat.plugin.code.mason'),
+  nvim_jdtls = require('lightboat.plugin.code.nvim_jdtls'),
   pair = require('lightboat.plugin.code.pair'),
   overseer = require('lightboat.plugin.code.overseer'),
   todo = require('lightboat.plugin.code.todo'),

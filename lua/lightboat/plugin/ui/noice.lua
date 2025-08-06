@@ -28,6 +28,26 @@ local spec = {
     },
     presets = { long_message_to_split = true, lsp_doc_border = true },
     messages = { view_search = false },
+    routes = {
+      {
+        filter = {
+          event = 'msg_show',
+          find = 'ServiceReady',
+        },
+      },
+      {
+        filter = {
+          event = 'msg_show',
+          find = 'Starting Java Language Server',
+        },
+      },
+      {
+        filter = {
+          event = 'msg_show',
+          find = 'Init...',
+        },
+      },
+    },
   },
   keys = {},
 }

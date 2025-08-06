@@ -10,6 +10,7 @@ local M = {
     ['<leader>df'] = { key = '<leader>df', desc = 'Debug float element' },
     ['<leader>de'] = { key = '<leader>de', desc = 'Debug eval expression' },
     ['<leader>dl'] = { key = '<leader>dl', desc = 'Set log point for current line' },
+    ['<leader>dt'] = { key = '<leader>dt', desc = 'Debug test under cursor' },
     ['<f4>'] = { key = '<f4>', desc = 'Debug terminate' },
     ['<f5>'] = { key = '<f5>', desc = 'Debug continue or run last' },
     ['<f6>'] = { key = '<f6>', desc = 'Debug restart' },
