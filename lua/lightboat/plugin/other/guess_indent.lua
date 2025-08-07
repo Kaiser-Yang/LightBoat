@@ -1,7 +1,7 @@
 local util = require('lightboat.util')
 local spec = {
   'NMAC427/guess-indent.nvim',
-  event = 'VeryLazy',
+  lazy = false,
   opts = {
     filetype_exclude = {
       'netrw',
