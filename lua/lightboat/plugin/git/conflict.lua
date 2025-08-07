@@ -7,9 +7,10 @@ local rep_move = require('lightboat.extra.rep_move')
 local prev_conflict, next_conflict =
   rep_move.make('<plug>(git-conflict-prev-conflict)', '<plug>(git-conflict-next-conflict)')
 local operation = {
+  ['gca'] = '<plug>(git_conflict-ancestor)',
+  ['gcb'] = '<plug>(git-conflict-both)',
   ['gcc'] = '<plug>(git-conflict-ours)',
   ['gci'] = '<plug>(git-conflict-theirs)',
-  ['gcb'] = '<plug>(git-conflict-both)',
   ['gcn'] = '<plug>(git-conflict-none)',
   [']x'] = next_conflict,
   ['[x'] = prev_conflict,
@@ -17,7 +18,7 @@ local operation = {
 local spec = {
   'akinsho/git-conflict.nvim',
   version = '*',
-  event = { { event = 'User', pattern = 'GitRepoDetected' } },
+  lazy = false,
   opts = {
     default_mappings = false,
     disable_diagnostics = true,
