@@ -1,4 +1,6 @@
 local util = require('lightboat.util')
+local map = util.key.set
+local del = util.key.del
 local line_wise_key_wrap = require('lightboat.extra.line_wise').line_wise_key_wrap
 local config = require('lightboat.config')
 local c
@@ -16,16 +18,27 @@ local M = {}
 
 local function sys_yank()
   local before_anonymous_reg_content = vim.fn.getreg('"')
+  local group
+  group = vim.api.nvim_create_augroup('LightBoatYankySysYank', {})
   vim.api.nvim_create_autocmd('TextYankPost', {
+    group = group,
     pattern = '*',
     callback = function()
-      local anonymous_reg_content = vim.fn.getreg('"')
-      vim.fn.setreg('+', anonymous_reg_content)
-      vim.fn.setreg('"', before_anonymous_reg_content)
+      vim.schedule(function() vim.fn.setreg('"', before_anonymous_reg_content) end)
     end,
     once = true,
   })
-  return '<plug>(YankyYank)'
+  vim.api.nvim_create_autocmd('ModeChanged', {
+    group = group,
+    callback = function()
+      if group then
+        vim.api.nvim_del_augroup_by_id(group)
+        group = nil
+      end
+    end,
+    once = true,
+  })
+  return '"+y'
 end
 
 local function sys_paste()
@@ -48,7 +61,6 @@ local operation = {
   ['gP'] = '<plug>(YankyGPutBefore)',
   ['P'] = '<plug>(YankyPutBefore)',
   ['Y'] = line_wise_key_wrap('y$'),
-  ['yy'] = line_wise_key_wrap('yy'),
   ['<leader>Y'] = line_wise_key_wrap('"+y$'),
   ['<leader>y'] = sys_yank,
   ['<m-c>'] = sys_yank,
@@ -76,12 +88,18 @@ local spec = {
 
 function M.clear()
   spec.keys = {}
+  if c.enabled then del('o', 'y') end
   c = nil
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.other.yanky', function()
   c = config.get().yanky
   if not c.enabled then return nil end
+  map('o', 'y', function()
+    if vim.v.operator == 'y' then
+      return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"' .. vim.v.register .. 'yy')()
+    end
+  end, { expr = true })
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)

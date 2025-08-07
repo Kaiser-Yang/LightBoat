@@ -7,7 +7,6 @@ return {
     ['gP'] = { key = 'gP', mode = { 'n', 'x' } },
     ['P'] = { key = 'P', mode = { 'n', 'x' } },
     ['Y'] = { key = 'Y', expr = true, desc = 'Line wise yank' },
-    ['yy'] = { key = 'yy', expr = true, desc = 'Line wise copy to + reg' },
     ['<leader>Y'] = { key = '<leader>Y', expr = true, desc = 'Line wise yank to + reg' },
     ['<leader>y'] = { key = '<leader>y', expr = true, desc = 'Yank to + reg', mode = { 'n', 'x' } },
     ['<m-c>'] = { key = '<m-c>', mode = { 'n', 'x' }, expr = true, desc = 'Copy to + reg' },
