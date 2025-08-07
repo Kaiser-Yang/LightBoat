@@ -125,7 +125,7 @@ local function repeat_wrap(prev_func, next_func, reversed)
   return function(...)
     local buf = vim.api.nvim_get_current_buf()
     local args = { ... }
-    if vim.tbl_contains({ 'v', 'V', 'CTRL-V', 'n' }, vim.fn.mode()) then
+    if vim.tbl_contains({ 'v', 'V', '', 'n' }, vim.fn.mode('1')) then
       if is_flash_find_till then
         assert(type(prev_key) == 'string' and type(next_key) == 'string')
         local _prev = reversed and next_key or prev_key

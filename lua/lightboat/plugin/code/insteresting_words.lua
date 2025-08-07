@@ -8,7 +8,7 @@ local prev_highlight_word, next_highlight_word =
 local operation = {
   ['<f7>'] = '<cmd>call UncolorAllWords()<cr>',
   ['<f8>'] = function()
-    if vim.fn.mode() == 'n' then
+    if vim.fn.mode('1') == 'n' then
       return "<cmd>call InterestingWords('n')<cr>"
     else
       return "<cmd>call InterestingWords('v')<cr>"

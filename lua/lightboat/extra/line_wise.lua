@@ -40,7 +40,7 @@ function _G.get_label(args)
   if virtnum ~= 0 then return c.format('') end
 
   if c.enabled then
-    local mode = vim.fn.mode()
+    local mode = vim.fn.mode('1')
     local line_mode = mode == 'i' and util.get(c.insert)
       or mode == 'c' and util.get(c.command_line)
       or util.get(c.other)
@@ -80,7 +80,7 @@ local M = {}
 --- @param consider_invisible boolean
 --- @return number
 local function get_actual_count(go_up, consider_invisible)
-  local mode = vim.fn.mode()
+  local mode = vim.fn.mode('1')
   local line_mode = mode == 'i' and util.get(c.insert) or mode == 'c' and util.get(c.command_line) or util.get(c.other)
   local v_count = vim.v.count
   if line_mode ~= 'line_wise' and line_mode ~= 'abs_line_wise' then return v_count end

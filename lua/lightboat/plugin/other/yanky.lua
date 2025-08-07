@@ -30,7 +30,7 @@ end
 
 local function sys_paste()
   local res
-  if vim.fn.mode() == 'i' then
+  if vim.fn.mode('1') == 'i' then
     vim.cmd('set paste')
     vim.schedule(function() vim.cmd('set nopaste') end)
     res = '<c-g>u<c-r>+'
@@ -53,7 +53,7 @@ local operation = {
   ['<leader>y'] = sys_yank,
   ['<m-c>'] = sys_yank,
   ['<c-rightmouse>'] = sys_paste,
-  ['<m-v>'] = function() return vim.fn.mode() == 'c' and '<c-r>+' or sys_paste() end,
+  ['<m-v>'] = function() return vim.fn.mode('1') == 'c' and '<c-r>+' or sys_paste() end,
   ['<leader>p'] = sys_paste,
   ['<leader>P'] = function()
     prepare_system_clipboard()

@@ -67,7 +67,7 @@ local operation = {
       vim.schedule(function() vim.g.snacks_animate_scroll = true end)
     end
     local res = 'gg0vG$'
-    if vim.fn.mode() ~= 'n' then res = '<esc>' .. res end
+    if vim.fn.mode('1') ~= 'n' then res = '<esc>' .. res end
     return res
   end,
   ['<c-u>'] = function()
@@ -89,9 +89,9 @@ local operation = {
   end,
   ['<c-a>'] = function()
     local res
-    if vim.fn.mode() == 'c' then
+    if vim.fn.mode('1') == 'c' then
       res = '<home>'
-    elseif vim.fn.mode() ~= 'n' then
+    elseif vim.fn.mode('1') ~= 'n' then
       res = '<c-o>^'
     else
       res = '^'
@@ -107,7 +107,7 @@ local operation = {
   ['<c-h>'] = '<c-w>h',
   ['<c-j>'] = '<c-w>j',
   ['<c-k>'] = function()
-    if vim.fn.mode() == 'n' then
+    if vim.fn.mode('1') == 'n' then
       return '<c-w>k'
     else
       local cursor_col = vim.api.nvim_win_get_cursor(0)[2]

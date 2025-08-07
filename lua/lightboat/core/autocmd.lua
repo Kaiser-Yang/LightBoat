@@ -15,7 +15,7 @@ if c.auto_disable_hlsearch then
   vim.api.nvim_create_autocmd({ 'CursorMoved' }, {
     group = group,
     callback = function()
-      local mode = vim.fn.mode()
+      local mode = vim.fn.mode('1')
       if mode ~= 'n' then return end -- Only handle normal mode
       if not search.cursor_in_match() then vim.schedule(function() vim.cmd('nohlsearch') end) end
     end,

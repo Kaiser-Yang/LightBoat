@@ -13,28 +13,28 @@ local prev_end_word, next_end_word = rep_move.make(
 
 local operation = {
   ['b'] = function()
-    if vim.fn.mode() == 'o' then
+    if vim.fn.mode('1'):find('o') then
       require('non-ascii').b()
     else
       prev_word()
     end
   end,
   ['w'] = function()
-    if vim.fn.mode() == 'o' then
+    if vim.fn.mode('1'):find('o') then
       require('non-ascii').e()
     else
       next_word()
     end
   end,
   ['ge'] = function()
-    if vim.fn.mode() == 'o' then
+    if vim.fn.mode('1'):find('o') then
       require('non-ascii').ge()
     else
       prev_end_word()
     end
   end,
   ['e'] = function()
-    if vim.fn.mode() == 'o' then
+    if vim.fn.mode('1'):find('o') then
       require('non-ascii').e()
     else
       next_end_word()

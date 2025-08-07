@@ -81,12 +81,12 @@ local operation = {
   ['<leader>c'] = '<plug>(comment_toggle_linewise)',
   ['<leader>C'] = '<Plug>(comment_toggle_blockwise)',
   ['<m-/>'] = function()
-    if vim.fn.mode() == 'i' then return M.toggle_comment_insert_mode('<f37>') end
-    return vim.fn.mode() == 'n' and line_wise_key_wrap('<f37>')() or '<Plug>(comment_toggle_linewise_visual)'
+    if vim.fn.mode('1') == 'i' then return M.toggle_comment_insert_mode('<f37>') end
+    return vim.fn.mode('1') == 'n' and line_wise_key_wrap('<f37>')() or '<Plug>(comment_toggle_linewise_visual)'
   end,
   ['<m-?>'] = function()
-    if vim.fn.mode() == 'i' then return M.toggle_comment_insert_mode('<f38>') end
-    return vim.fn.mode() == 'n' and line_wise_key_wrap('<f38>')() or '<Plug>(comment_toggle_blockwise_visual)'
+    if vim.fn.mode('1') == 'i' then return M.toggle_comment_insert_mode('<f38>') end
+    return vim.fn.mode('1') == 'n' and line_wise_key_wrap('<f38>')() or '<Plug>(comment_toggle_blockwise_visual)'
   end,
 }
 
