@@ -76,7 +76,7 @@ function M.clear()
     group = nil
   end
   spec.keys = {}
-  if c.enabled then del('o', 'y') end
+  if c and c.enabled then del('o', 'y') end
   c = nil
 end
 
