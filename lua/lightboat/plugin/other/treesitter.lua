@@ -1,30 +1,23 @@
 local util = require('lightboat.util')
 local big_file = require('lightboat.extra.big_file')
-local big_file_check_wrap = big_file.big_file_check_wrap
 local M = {}
 local group
 local config = require('lightboat.config')
 local c
 
 function M.to_select_wrap(query_string, query_group)
-  return big_file_check_wrap(
-    function() require('nvim-treesitter-textobjects.select').select_textobject(query_string, query_group) end
-  )
+  return function() require('nvim-treesitter-textobjects.select').select_textobject(query_string, query_group) end
 end
 
 --- @param direction 'next'|'previous'
 function M.to_swap_wrap(direction, query_string)
-  return big_file_check_wrap(
-    function() require('nvim-treesitter-textobjects.swap')['swap_' .. direction](query_string) end
-  )
+  return function() require('nvim-treesitter-textobjects.swap')['swap_' .. direction](query_string) end
 end
 
 --- @param direction 'next'|'previous'
 --- @param position 'start'|'end'|''
 local function to_move_wrap(direction, position, query_string)
-  return big_file_check_wrap(
-    function() require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string) end
-  )
+  return function() require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string) end
 end
 
 local rep_move = require('lightboat.extra.rep_move')

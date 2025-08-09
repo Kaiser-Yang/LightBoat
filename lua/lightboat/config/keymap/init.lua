@@ -12,7 +12,13 @@ return {
   },
   keys = {
     ['<m-x>'] = { key = '<m-x>', mode = { 'n', 'x' }, desc = 'Cut to + reg' },
-    ['<m-a>'] = { key = '<m-a>', mode = { 'n', 'x', 'i' }, expr = true, desc = 'Select all' },
+    ['<m-a>'] = {
+      key = '<m-a>',
+      prev = 'disable_snacks_animate_scroll_once',
+      mode = { 'n', 'x', 'i' },
+      expr = true,
+      desc = 'Select all',
+    },
     ['<c-u>'] = { key = '<c-u>', mode = 'i', desc = 'Delete to start of line' },
     ['<c-w>'] = { key = '<c-w>', mode = 'i', expr = true, remap = true, desc = 'Delete one word backwards' },
     ['<c-a>'] = { key = '<c-a>', mode = { 'x', 'i', 'c' }, expr = true, desc = 'Move cursor to start of line' },

@@ -60,6 +60,7 @@ return {
     },
     ['<leader><leader>'] = {
       key = '<leader><leader>',
+      prev = 'big_file_check',
       desc = 'Current buffer fuzzy find',
       opts = { layout = { preset = 'select' } },
     },

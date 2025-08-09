@@ -61,10 +61,6 @@ end
 local operation = {
   ['<m-x>'] = '"+d',
   ['<m-a>'] = function()
-    if Snacks then
-      vim.g.snacks_animate_scroll = false
-      vim.schedule(function() vim.g.snacks_animate_scroll = true end)
-    end
     local res = 'gg0vG$'
     if vim.fn.mode('1') ~= 'n' then res = '<esc>' .. res end
     return res

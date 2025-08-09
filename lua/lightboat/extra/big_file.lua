@@ -24,17 +24,6 @@ function M.is_big_file(buf)
   return false
 end
 
---- Wrap a callback function to check if the file is too big before executing it.
-function M.big_file_check_wrap(callback)
-  return function(...)
-    if M.is_big_file() then
-      vim.notify('File is too big, and operation aborted', vim.log.levels.WARN)
-      return
-    end
-    return callback(...)
-  end
-end
-
 function M.clear()
   if group then
     vim.api.nvim_del_augroup_by_id(group)

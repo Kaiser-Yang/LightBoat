@@ -80,7 +80,7 @@ local function get_compile_command(filetype, filename)
   return cmd_fn and cmd_fn() or ''
 end
 
-M.run_single_file = big_file.big_file_check_wrap(function()
+M.run_single_file = function()
   local filetype = vim.bo.filetype
   if vim.tbl_contains(c.extra.markdown_fts, filetype) then
     vim.cmd('RenderMarkdown buf_toggle')
@@ -97,7 +97,7 @@ M.run_single_file = big_file.big_file_check_wrap(function()
   local directory = vim.fn.fnamemodify(fullpath, ':h')
   command = 'cd ' .. directory .. ' && ' .. command
   Snacks.terminal(command, { start_insert = true, auto_insert = true, auto_close = false })
-end)
+end
 
 M.preview_scroll_up = function(picker)
   enable_scroll_for_filetype_once('snacks_picker_preview')
@@ -135,7 +135,7 @@ local operation = {
   -- When use this picker there will be two breadcrumbs
   -- PERF:
   -- disabled in large files
-  ['<leader><leader>'] = big_file.big_file_check_wrap(function()
+  ['<leader><leader>'] = function()
     lines_buf = vim.api.nvim_get_current_buf()
     lines_win = vim.api.nvim_get_current_win()
     local origin = vim.b.snacks_animate_scroll
@@ -153,7 +153,7 @@ local operation = {
       end,
     })
     Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts, resolve_inclusive_keys))
-  end),
+  end,
   ['<leader>r'] = M.run_single_file,
 }
 

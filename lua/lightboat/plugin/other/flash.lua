@@ -16,7 +16,6 @@ vim.g.flash_keys = {
 local rep_move = require('lightboat.extra.rep_move')
 local prev_flash_find, next_flash_find = rep_move.make(flash_indirect['F'], flash_indirect['f'])
 local prev_flash_till, next_flash_till = rep_move.make(flash_indirect['T'], flash_indirect['t'])
-local big_file_check_wrap = require('lightboat.extra.big_file').big_file_check_wrap
 
 local M = {}
 
@@ -25,10 +24,10 @@ local operation = {
   ['f'] = next_flash_find,
   ['T'] = prev_flash_till,
   ['t'] = next_flash_till,
-  ['r'] = big_file_check_wrap(function() require('flash').remote() end),
-  ['R'] = big_file_check_wrap(function() require('flash').treesitter_search() end),
-  ['gn'] = big_file_check_wrap(function() require('flash').treesitter() end),
-  ['<c-s>'] = big_file_check_wrap(function()
+  ['r'] = function() require('flash').remote() end,
+  ['R'] = function() require('flash').treesitter_search() end,
+  ['gn'] = function() require('flash').treesitter() end,
+  ['<c-s>'] = function()
     local flash = require('flash')
     local function format(opts)
       -- always show first and second label
@@ -74,7 +73,7 @@ local operation = {
         end
       end,
     })
-  end),
+  end,
 }
 
 local spec = {
