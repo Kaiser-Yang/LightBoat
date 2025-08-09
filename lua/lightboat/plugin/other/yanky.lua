@@ -39,13 +39,21 @@ local function sys_paste()
 end
 
 local operation = {
-  ['y'] = '<plug>(YankyYank)',
+  ['y'] = function()
+    if vim.fn.mode('1') == 'no' then
+      if vim.v.operator == 'y' then
+        return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"' .. vim.v.register .. 'yy', c.keys['y'].opts)()
+      end
+    else
+      return '<plug>(YankyYank)'
+    end
+  end,
   ['p'] = '<plug>(YankyPutAfter)',
   ['gp'] = '<plug>(YankyGPutAfter)',
   ['gP'] = '<plug>(YankyGPutBefore)',
   ['P'] = '<plug>(YankyPutBefore)',
-  ['Y'] = line_wise_key_wrap('y$'),
-  ['<leader>Y'] = line_wise_key_wrap('"+y$'),
+  ['Y'] = function() return line_wise_key_wrap('y$', c.keys['Y'].opts)() end,
+  ['<leader>Y'] = function() return line_wise_key_wrap('"+y$', c.keys['<leader>Y'].opts)() end,
   ['<leader>y'] = sys_yank,
   ['<m-c>'] = sys_yank,
   ['<c-rightmouse>'] = sys_paste,
@@ -83,11 +91,6 @@ end
 M.setup = util.setup_check_wrap('lightboat.plugin.other.yanky', function()
   c = config.get().yanky
   if not c.enabled then return nil end
-  map('o', 'y', function()
-    if vim.v.operator == 'y' then
-      return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"' .. vim.v.register .. 'yy')()
-    end
-  end, { expr = true })
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   if c.restore_anonymous_reg then
     group = vim.api.nvim_create_augroup('LightBoatYanky', {})
