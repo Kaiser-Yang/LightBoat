@@ -135,12 +135,18 @@ function M.line_wise_key_wrap(key, opts)
   end
 end
 
+local operation = {
+  C = function() return M.line_wise_key_wrap('C', c.keys.C.opts)() end,
+  D = function() return M.line_wise_key_wrap('D', c.keys.D.opts)() end,
+  dd = function() return M.line_wise_key_wrap('dd', c.keys.dd.opts)() end,
+  cc = function() return M.line_wise_key_wrap('cc', c.keys.cc.opts)() end,
+  J = function() return M.line_wise_key_wrap('J', c.keys.J.opts)() end,
+  j = function() return M.line_wise_key_wrap('j', c.keys.j.opts)() end,
+  k = function() return M.line_wise_key_wrap('k', c.keys.k.opts)() end,
+}
+
 function M.clear()
-  for _, v in pairs(c.keys) do
-    if not v then goto continue end
-    del(v.mode, v.key, { buffer = v.buffer })
-    ::continue::
-  end
+  util.key.clear_keys(operation, c.keys)
   if group then
     vim.api.nvim_del_augroup_by_id(group)
     group = nil
@@ -165,11 +171,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.line_wise', function()
     end,
   })
   generate_labels()
-  for k, v in pairs(c.keys) do
-    if not v then goto continue end
-    map(v.mode, v.key, M.line_wise_key_wrap(k, v.opts), convert(v))
-    ::continue::
-  end
+  util.key.set_keys(operation, c.keys)
 end, M.clear)
 
 return M

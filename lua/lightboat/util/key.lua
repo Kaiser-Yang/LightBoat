@@ -64,6 +64,7 @@ function M.prev_operation_wrap(prev, cur)
 end
 
 function M.get_lazy_keys(operation, keys)
+  if not keys or not operation then return {} end
   local res = {}
   for k, v in pairs(keys) do
     if not v or not operation[k] then goto continue end
@@ -76,6 +77,7 @@ function M.get_lazy_keys(operation, keys)
 end
 
 function M.set_keys(operation, keys)
+  if not keys or not operation then return end
   for k, v in pairs(keys) do
     if not v or not operation[k] then goto continue end
     M.set(v.mode, v.key, M.prev_operation_wrap(v.prev, operation[k]), M.convert(v))
@@ -84,6 +86,7 @@ function M.set_keys(operation, keys)
 end
 
 function M.clear_keys(operation, keys)
+  if not keys or not operation then return end
   for k, v in pairs(keys) do
     if not v or not operation[k] then goto continue end
     M.del(v.mode or 'n', v.key, { buffer = v.buffer })
