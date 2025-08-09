@@ -58,6 +58,11 @@ if c.separate_operator.di then
   end, { expr = true })
 end
 
+if c.disable_default_find_match_in_inserat then
+  map('i', '<c-p>', '<nop>')
+  map('i', '<c-n>', '<nop>')
+end
+
 local operation = {
   ['<m-x>'] = '"+d',
   ['<m-a>'] = function()
@@ -153,8 +158,6 @@ local operation = {
   [']z'] = next_open_fold,
   ['zk'] = prev_fold,
   ['zj'] = next_fold,
-  ['<c-n>'] = '<nop>',
-  ['<c-p>'] = '<nop>',
   ['<leader>sc'] = function()
     vim.wo.spell = not vim.wo.spell
     local msg = vim.wo.spell and 'Spell check enabled' or 'Spell check disabled'

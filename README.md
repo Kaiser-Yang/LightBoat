@@ -35,6 +35,7 @@ return {
   enabled = true,
   delete_default_commant = true,
   delete_default_diagnostic_under_cursor = true,
+  disable_default_find_match_in_inserat = true,
   keys = {
     ['<m-x>'] = { key = '<m-x>', mode = { 'n', 'x' }, desc = 'Cut to + reg' },
     ['<m-a>'] = { key = '<m-a>', mode = { 'n', 'x', 'i' }, expr = true, desc = 'Select all' },
@@ -76,8 +77,6 @@ return {
     [']z'] = { key = ']z', mode = { 'n', 'x' }, expr = true, desc = 'Move to end of current fold' },
     ['zk'] = { key = 'zk', mode = { 'n', 'x' }, expr = true, desc = 'To the end of the previous fold' },
     ['zj'] = { key = 'zj', mode = { 'n', 'x' }, expr = true, desc = 'To the start of the next fold' },
-    ['<c-n>'] = { key = '<c-n>', mode = 'i' },
-    ['<c-p>'] = { key = '<c-p>', mode = 'i' },
     ['<leader>sc'] = { key = '<leader>sc', desc = 'Toggle spell check' },
     ['<leader>ts'] = { key = '<leader>ts', desc = 'Toggle treesitter highlight' },
     ['<leader>i'] = { key = '<leader>i', desc = 'Toggle inlay hints' },
