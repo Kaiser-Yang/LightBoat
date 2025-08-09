@@ -38,6 +38,10 @@ local function sys_yank()
     end,
     once = true,
   })
+  if vim.tbl_contains({ 'v', 'V', '' }, vim.fn.mode('1')) then
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    vim.schedule(function() vim.api.nvim_win_set_cursor(0, cursor) end)
+  end
   return '"+y'
 end
 
