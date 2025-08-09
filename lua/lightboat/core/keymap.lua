@@ -166,27 +166,28 @@ local operation = {
     vim.notify(msg, nil, { title = 'Settings' })
   end,
   ['<leader>i'] = function()
-    if vim.lsp.inlay_hint.is_enabled() then
-      vim.notify('Inlay hints disabled', nil, { title = 'LSP' })
-    else
-      vim.notify('Inlay hints enabled', nil, { title = 'LSP' })
-    end
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    local status = not vim.lsp.inlay_hint.is_enabled()
+    local msg = status and 'Inlay hints enabled' or 'Inlay hints disabled'
+    vim.notify(msg, nil, { title = 'LSP' })
+    vim.lsp.inlay_hint.enable()
   end,
   ['<leader>ts'] = function()
     local buf = vim.api.nvim_get_current_buf()
-    local status = vim.treesitter.highlighter.active[buf] ~= nil
+    local status = vim.treesitter.highlighter.active[buf] == nil
+    local msg, level
     if status then
-      vim.treesitter.stop()
-      vim.notify('Treesitter stopped', nil, { title = 'Treesitter' })
-    else
       local ok = pcall(vim.treesitter.start)
       if not ok then
-        vim.notify('Treesitter failed to start', vim.log.levels.WARN, { title = 'Treesitter' })
+        msg = 'Treesitter failed to start'
+        level = vim.log.levels.WARN
       else
-        vim.notify('Treesitter started successfully', nil, { title = 'Treesitter' })
+        msg = 'Treesitter started successfully'
       end
+    else
+      vim.treesitter.stop()
+      msg = 'Treesitter stopped'
     end
+    vim.notify(msg, level, { title = 'Treesitter' })
   end,
   ['<m-d>'] = '<c-g>u<cmd>normal de<cr>',
 }
