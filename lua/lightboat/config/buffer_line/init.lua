@@ -12,7 +12,7 @@ return {
     ['<leader>9'] = { key = '<leader>9', desc = 'Go to the 9th buffer' },
     ['<leader>0'] = { key = '<leader>0', desc = 'Go to the 10th buffer' },
     ['gb'] = { key = 'gb', desc = 'Buffer pick' },
-    ['<m-h>'] = { key = '<m-h>', desc = 'Buffer switch left' },
-    ['<m-l>'] = { key = '<m-l>', desc = 'Buffer switch right' },
+    ['H'] = { key = 'H', desc = 'Buffer switch left' },
+    ['L'] = { key = 'L', desc = 'Buffer switch right' },
   },
 }

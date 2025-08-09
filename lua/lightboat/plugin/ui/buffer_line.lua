@@ -15,8 +15,8 @@ local operation = {
   ['<leader>9'] = function() require('bufferline').go_to(9, true) end,
   ['<leader>0'] = function() require('bufferline').go_to(10, true) end,
   ['gb'] = '<cmd>BufferLinePick<CR>',
-  ['<m-h>'] = '<cmd>BufferLineCyclePrev<cr>',
-  ['<m-l>'] = '<cmd>BufferLineCycleNext<cr>',
+  ['H'] = '<cmd>BufferLineCyclePrev<cr>',
+  ['L'] = '<cmd>BufferLineCycleNext<cr>',
 }
 local spec = {
   'akinsho/bufferline.nvim',
