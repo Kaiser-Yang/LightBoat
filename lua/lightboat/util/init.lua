@@ -102,12 +102,14 @@ function M.get(opt, ...)
   end
 end
 
-function M.resolve_opts(opts)
+function M.resolve_opts(opts, inclusive_keys)
   if not opts then return nil end
   local res = vim.deepcopy(opts)
   for k, v in pairs(opts) do
-    res[k] = M.get(v)
-    if type(res[k]) == 'table' then res[k] = M.resolve_opts(res[k]) end
+    if not inclusive_keys or inclusive_keys[k] then
+      res[k] = M.get(v)
+      if type(res[k]) == 'table' then res[k] = M.resolve_opts(res[k], inclusive_keys and inclusive_keys[k] or nil) end
+    end
   end
   return res
 end

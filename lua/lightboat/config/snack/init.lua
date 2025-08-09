@@ -39,7 +39,7 @@ return {
       opts = {
         cwd = default_cwd,
         cmd = 'rg',
-        hidden = util.in_config_dir(),
+        hidden = util.in_config_dir,
         pattern = function() return vim.bo.filetype == 'snacks_picker_input' and vim.api.nvim_get_current_line() or '' end,
         exclude = rg_ignore_patterns,
         layout = { hidden = { 'preview' } },
@@ -52,7 +52,7 @@ return {
       opts = {
         cwd = default_cwd,
         cmd = 'rg',
-        hidden = util.in_config_dir(),
+        hidden = util.in_config_dir,
         search = function() return vim.bo.filetype == 'snacks_picker_input' and vim.api.nvim_get_current_line() or '' end,
         exclude = rg_ignore_patterns,
         save_as_last = true,

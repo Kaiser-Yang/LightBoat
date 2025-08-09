@@ -109,15 +109,26 @@ M.preview_scroll_down = function(picker)
   picker.opts.actions.preview_scroll_down.action()
 end
 
-function M.grep() Snacks.picker.grep(util.resolve_opts(c.snack.keys['<c-f>'].opts)) end
+local resolve_inclusive_keys = {
+  cwd = {},
+  cmd = {},
+  hidden = {},
+  pattern = {},
+  search = {},
+  exclude = {},
+  layout = { hidden = {} },
+  sava_as_last = {},
+}
 
-function M.files() Snacks.picker.files(util.resolve_opts(c.snack.keys['<c-p>'].opts)) end
+function M.grep() Snacks.picker.grep(util.resolve_opts(c.snack.keys['<c-f>'].opts, resolve_inclusive_keys)) end
 
-function M.resume() Snacks.picker.resume(util.resolve_opts(c.snack.keys['<c-y>'].opts)) end
+function M.files() Snacks.picker.files(util.resolve_opts(c.snack.keys['<c-p>'].opts, resolve_inclusive_keys)) end
+
+function M.resume() Snacks.picker.resume(util.resolve_opts(c.snack.keys['<c-y>'].opts, resolve_inclusive_keys)) end
 
 local operation = {
   ['<c-y>'] = M.resume,
-  ['z='] = function() Snacks.picker.spelling(util.resolve_opts(c.snack.keys['z='].opts)) end,
+  ['z='] = function() Snacks.picker.spelling(util.resolve_opts(c.snack.keys['z='].opts, resolve_inclusive_keys)) end,
   ['<c-p>'] = M.files,
   ['<c-f>'] = M.grep,
   -- BUG:
@@ -141,7 +152,7 @@ local operation = {
         vim.api.nvim_del_autocmd(autocmd_id)
       end,
     })
-    Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts))
+    Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts, resolve_inclusive_keys))
   end),
   ['<leader>r'] = M.run_single_file,
 }
