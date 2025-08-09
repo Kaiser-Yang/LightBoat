@@ -35,6 +35,7 @@ local spec = {
             { event = 'msg_show', find = 'ServiceReady' },
             { event = 'msg_show', find = 'Starting Java Language Server' },
             { event = 'msg_show', find = 'Init...' },
+            { find = 'Error running git%-blame: fatal: uable to access' },
             { event = 'lsp', kind = 'progress', find = 'Building' },
             { event = 'lsp', kind = 'progress', find = 'Searching' },
             { event = 'lsp', kind = 'progress', find = 'Validate documents' },
