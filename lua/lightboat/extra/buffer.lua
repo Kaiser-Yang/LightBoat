@@ -1,7 +1,4 @@
 local util = require('lightboat.util')
-local map = util.key.set
-local del = util.key.del
-local convert = util.key.convert
 local lfu = util.lfu
 local lru = util.lru
 local config = require('lightboat.config')
@@ -103,11 +100,7 @@ function M.clear()
     vim.api.nvim_del_augroup_by_id(group)
     group = nil
   end
-  for k, v in pairs(c.keys) do
-    if not v or not operation[k] then goto continue end
-    del(v.mode, v.key, { buffer = v.buffer })
-    ::continue::
-  end
+  util.key.clear_keys(operation, c.keys)
   buffer_cache = nil
   c = nil
 end
@@ -116,11 +109,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.buffer', function()
   c = config.get().extra.buffer
   if not c.enabled then return end
 
-  for k, v in pairs(c.keys) do
-    if not v or not operation[k] then goto continue end
-    map(v.mode, v.key, operation[k], convert(v))
-    ::continue::
-  end
+  util.key.set_keys(operation, c.keys)
   local initial_buffers = get_visible_bufs()
   local capacity = math.max(c.visible_buffer_limit, #initial_buffers)
   buffer_cache = c.cache_type == 'lfu' and lfu.new(capacity) or lru.new(capacity)

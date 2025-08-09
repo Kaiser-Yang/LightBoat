@@ -4,7 +4,6 @@ local util = require('lightboat.util')
 local map = util.key.set
 local del = util.key.del
 local feedkeys = util.key.feedkeys
-local convert = util.key.convert
 local rep_move = require('lightboat.extra.rep_move')
 local prev_find, next_find = rep_move.make('F', 'f')
 local prev_till, next_till = rep_move.make('T', 't')
@@ -192,8 +191,4 @@ local operation = {
   ['<m-d>'] = '<c-g>u<cmd>normal de<cr>',
 }
 
-for k, v in pairs(c.keys) do
-  if not v or not operation[k] then goto continue end
-  map(v.mode, v.key, operation[k], convert(v))
-  ::continue::
-end
+util.key.set_keys(operation, c.keys)

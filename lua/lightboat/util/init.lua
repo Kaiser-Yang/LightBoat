@@ -103,7 +103,7 @@ function M.get(opt, ...)
 end
 
 function M.resolve_opts(opts, inclusive_keys)
-  if not opts then return nil end
+  opts = M.ensure_list(opts)
   local res = vim.deepcopy(opts)
   for k, v in pairs(opts) do
     if not inclusive_keys or inclusive_keys[k] then

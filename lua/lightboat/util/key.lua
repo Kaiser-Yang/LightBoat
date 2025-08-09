@@ -1,3 +1,4 @@
+local action = require('lightboat.action')
 local M = {}
 
 --- Set a map
@@ -37,9 +38,29 @@ function M.convert(opts, lazy)
   else
     res[1] = res.key
   end
+  res.prev = nil
   res.key = nil
   res.opts = nil
   return res
+end
+
+function M.prev_operation_wrap(prev, cur)
+  local util = require('lightboat.util')
+  prev = util.ensure_list(prev)
+  if #prev == 0 then return cur end
+  return function(...)
+    local ret
+    prev = util.ensure_list(prev)
+    for _, v in ipairs(prev) do
+      if action[v] then
+        ret = util.get(action[v], ...)
+      else
+        ret = util.get(v, ...)
+      end
+      if ret then return ret end
+    end
+    return util.get(cur, ...)
+  end
 end
 
 function M.get_lazy_keys(operation, keys)
@@ -47,11 +68,27 @@ function M.get_lazy_keys(operation, keys)
   for k, v in pairs(keys) do
     if not v or not operation[k] then goto continue end
     local key = M.convert(v, true)
-    key[2] = operation[k]
+    key[2] = M.prev_operation_wrap(v.prev, operation[k])
     table.insert(res, key)
     ::continue::
   end
   return res
+end
+
+function M.set_keys(operation, keys)
+  for k, v in pairs(keys) do
+    if not v or not operation[k] then goto continue end
+    M.set(v.mode, v.key, M.prev_operation_wrap(v.prev, operation[k]), M.convert(v))
+    ::continue::
+  end
+end
+
+function M.clear_keys(operation, keys)
+  for k, v in pairs(keys) do
+    if not v or not operation[k] then goto continue end
+    M.del(v.mode or 'n', v.key, { buffer = v.buffer })
+    ::continue::
+  end
 end
 
 return M
