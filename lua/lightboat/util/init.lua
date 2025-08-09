@@ -103,6 +103,7 @@ function M.get(opt, ...)
 end
 
 function M.resolve_opts(opts)
+  if not opts then return nil end
   local res = vim.deepcopy(opts)
   for k, v in pairs(opts) do
     res[k] = M.get(v)

@@ -3,17 +3,22 @@ local on_key_ns_id
 local config = require('lightboat.config')
 local c
 local big_file = require('lightboat.extra.big_file')
+local lines_buf
+local lines_win
 local function enable_scroll_for_filetype_once(filetype)
+  local function operate(buf, win)
+    vim.b[buf].snacks_animate_scroll = nil
+    Snacks.scroll.check(win)
+    vim.schedule(function()
+      if not vim.api.nvim_buf_is_valid(buf) then return end
+      vim.b[buf].snacks_animate_scroll = false
+    end)
+  end
+  if lines_buf and lines_win then
+    operate(lines_buf, lines_win) end
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
-    if vim.bo[buf].filetype == filetype then
-      vim.b[buf].snacks_animate_scroll = nil
-      Snacks.scroll.check(win)
-      vim.schedule(function()
-        if not vim.api.nvim_buf_is_valid(buf) then return end
-        vim.b[buf].snacks_animate_scroll = false
-      end)
-    end
+    if vim.bo[buf].filetype == filetype then operate(buf, win) end
   end
 end
 
@@ -115,11 +120,29 @@ local operation = {
   ['z='] = function() Snacks.picker.spelling(util.resolve_opts(c.snack.keys['z='].opts)) end,
   ['<c-p>'] = M.files,
   ['<c-f>'] = M.grep,
+  -- BUG:
+  -- When use this picker there will be two breadcrumbs
   -- PERF:
   -- disabled in large files
-  ['<leader><leader>'] = big_file.big_file_check_wrap(
-    function() Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts)) end
-  ),
+  ['<leader><leader>'] = big_file.big_file_check_wrap(function()
+    lines_buf = vim.api.nvim_get_current_buf()
+    lines_win = vim.api.nvim_get_current_win()
+    local origin = vim.b.snacks_animate_scroll
+    vim.b.snacks_animate_scroll = false
+    local autocmd_id
+    autocmd_id = vim.api.nvim_create_autocmd('BufEnter', {
+      group = group,
+      callback = function()
+        if vim.api.nvim_get_current_win() ~= lines_win then return end
+        vim.b.snacks_animate_scroll = origin
+        if origin then Snacks.scroll.check(lines_win) end
+        lines_buf = nil
+        lines_win = nil
+        vim.api.nvim_del_autocmd(autocmd_id)
+      end,
+    })
+    Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts))
+  end),
   ['<leader>r'] = M.run_single_file,
 }
 
