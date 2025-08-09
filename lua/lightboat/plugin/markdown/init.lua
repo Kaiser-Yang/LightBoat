@@ -2,6 +2,7 @@ local util = require('lightboat.util')
 local name = 'lightboat.plugin.markdown'
 
 local M = {
+  img_clip = require('lightboat.plugin.markdown.img_clip'),
   renderer = require('lightboat.plugin.markdown.renderer'),
   toc = require('lightboat.plugin.markdown.toc'),
 }

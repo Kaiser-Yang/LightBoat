@@ -1,0 +1,17 @@
+return {
+  enabled = true,
+  enable_spell_check = true,
+  keys = {
+    ['<localleader>f'] = { key = '<localleader>f', mode = 'i', buffer = true },
+    ['<localleader>1'] = { key = '<localleader>1', mode = 'i', buffer = true },
+    ['<localleader>2'] = { key = '<localleader>2', mode = 'i', buffer = true },
+    ['<localleader>3'] = { key = '<localleader>3', mode = 'i', buffer = true },
+    ['<localleader>4'] = { key = '<localleader>4', mode = 'i', buffer = true },
+    ['<localleader>a'] = { key = '<localleader>a', mode = 'i', buffer = true },
+    ['<localleader>b'] = { key = '<localleader>b', mode = 'i', buffer = true },
+    ['<localleader>c'] = { key = '<localleader>c', mode = 'i', buffer = true },
+    ['<localleader>t'] = { key = '<localleader>t', mode = 'i', buffer = true },
+    ['<localleader>m'] = { key = '<localleader>m', mode = 'i', buffer = true },
+    ['<localleader>d'] = { key = '<localleader>d', mode = 'i', buffer = true },
+    ['<localleader>i'] = { key = '<localleader>i', mode = 'i', buffer = true },
+    ['<localleader>M'] = { key = '<localleader>M', mode = 'i', buffer = true },

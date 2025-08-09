@@ -2,7 +2,6 @@ local util = require('lightboat.util')
 local on_key_ns_id
 local config = require('lightboat.config')
 local c
-local big_file = require('lightboat.extra.big_file')
 local lines_buf
 local lines_win
 local function enable_scroll_for_filetype_once(filetype)
@@ -155,6 +154,9 @@ local operation = {
     Snacks.picker.lines(util.resolve_opts(c.snack.keys['<leader><leader>'].opts, resolve_inclusive_keys))
   end,
   ['<leader>r'] = M.run_single_file,
+  ['<leader>sp'] = function()
+    Snacks.picker.files(util.resolve_opts(c.snack.keys['<leader>sp'].opts, resolve_inclusive_keys))
+  end,
 }
 
 local spec = {

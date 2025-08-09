@@ -13,6 +13,7 @@ local default_opts = {
   dap = require('lightboat.config.dap'),
   extra = require('lightboat.config.extra'),
   flash = require('lightboat.config.flash'),
+  img_clip = require('lightboat.config.img_clip'),
   insteresting_words = require('lightboat.config.interesting_words'),
   lsp = require('lightboat.config.lsp'),
   mason = require('lightboat.config.mason'),

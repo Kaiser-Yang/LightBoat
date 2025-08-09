@@ -7,6 +7,7 @@ function M.clear()
   require('lightboat.extra.rep_move').clear()
   require('lightboat.extra.line_wise').clear()
   require('lightboat.extra.project').clear()
+  require('lightboat.extra.markdown').clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.extra', function()
@@ -15,6 +16,7 @@ M.setup = util.setup_check_wrap('lightboat.extra', function()
   require('lightboat.extra.rep_move').setup()
   require('lightboat.extra.line_wise').setup()
   require('lightboat.extra.project').setup()
+  require('lightboat.extra.markdown').setup()
 end, M.clear)
 
 return M

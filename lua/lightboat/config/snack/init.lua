@@ -65,5 +65,20 @@ return {
       opts = { layout = { preset = 'select' } },
     },
     ['<leader>r'] = { key = '<leader>r', desc = 'Run and compile' },
+    ['<leader>sp'] = {
+      key = '<leader>sp',
+      prev = { 'disable_in_gitcommit', 'check_markdown_fts' },
+      desc = 'Paste image from the file picker',
+      opts = {
+        cwd = default_cwd,
+        cmd = 'rg',
+        hidden = util.in_config_dir,
+        ft = { 'gif', 'jpg', 'jpeg', 'png', 'webp' },
+        confirm = function(self, item, _)
+          self:close()
+          require('img-clip').paste_image({}, default_cwd() .. '/' .. item.file)
+        end,
+      },
+    },
   },
 }
