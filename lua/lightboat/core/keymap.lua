@@ -78,10 +78,15 @@ local operation = {
   end,
   ['<c-w>'] = function()
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
-    local line_len = #vim.api.nvim_get_current_line()
+    local cur_line = vim.api.nvim_get_current_line()
+    local line_len = #cur_line
     local res = '<c-o><cmd>normal '
     if cursor_col == line_len then
-      res = res .. 'vl' .. c.keys['b'].key .. 'c<cr>'
+      if cursor_col == 0 then
+        res = res .. 'v' .. c.keys['b'].key .. 'l' .. 'c<cr>'
+      else
+        res = res .. 'vl' .. c.keys['b'].key .. 'c<cr>'
+      end
     else
       res = res .. 'hv' .. c.keys['b'].key .. 'x<cr>'
     end
