@@ -14,10 +14,10 @@ local function enable_scroll_for_filetype_once(filetype)
       vim.b[buf].snacks_animate_scroll = false
     end)
   end
-  if lines_buf and lines_win then
-    operate(lines_buf, lines_win) end
+  if lines_buf and lines_win then operate(lines_buf, lines_win) end
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
+    if buf == lines_buf then Snacks.scroll.check(win) end
     if vim.bo[buf].filetype == filetype then operate(buf, win) end
   end
 end
