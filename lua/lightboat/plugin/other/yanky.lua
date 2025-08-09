@@ -4,6 +4,7 @@ local del = util.key.del
 local line_wise_key_wrap = require('lightboat.extra.line_wise').line_wise_key_wrap
 local config = require('lightboat.config')
 local c
+local group
 
 local function prepare_system_clipboard()
   local plus_reg_content = vim.fn.getreg('+'):gsub('\r', '')
@@ -17,27 +18,6 @@ end
 local M = {}
 
 local function sys_yank()
-  local before_anonymous_reg_content = vim.fn.getreg('"')
-  local group
-  group = vim.api.nvim_create_augroup('LightBoatYankySysYank', {})
-  vim.api.nvim_create_autocmd('TextYankPost', {
-    group = group,
-    pattern = '*',
-    callback = function()
-      vim.schedule(function() vim.fn.setreg('"', before_anonymous_reg_content) end)
-    end,
-    once = true,
-  })
-  vim.api.nvim_create_autocmd('ModeChanged', {
-    group = group,
-    callback = function()
-      if group then
-        vim.api.nvim_del_augroup_by_id(group)
-        group = nil
-      end
-    end,
-    once = true,
-  })
   if vim.tbl_contains({ 'v', 'V', '' }, vim.fn.mode('1')) then
     local cursor = vim.api.nvim_win_get_cursor(0)
     vim.schedule(function() vim.api.nvim_win_set_cursor(0, cursor) end)
@@ -91,6 +71,10 @@ local spec = {
 }
 
 function M.clear()
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
   spec.keys = {}
   if c.enabled then del('o', 'y') end
   c = nil
@@ -105,6 +89,23 @@ M.setup = util.setup_check_wrap('lightboat.plugin.other.yanky', function()
     end
   end, { expr = true })
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
+  if c.restore_anonymous_reg then
+    group = vim.api.nvim_create_augroup('LightBoatYanky', {})
+    local before_anonymous_reg_content
+    vim.api.nvim_create_autocmd('TextYankPost', {
+      group = group,
+      callback = function()
+        if vim.v.event.regname ~= '' and vim.v.event.regname ~= '"' then
+          vim.fn.setreg('"', before_anonymous_reg_content)
+        end
+      end,
+    })
+    vim.api.nvim_create_autocmd('ModeChanged', {
+      group = group,
+      callback = function() before_anonymous_reg_content = vim.fn.getreg('"') end,
+      once = true,
+    })
+  end
   return spec
 end, M.clear)
 

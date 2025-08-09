@@ -1,5 +1,6 @@
 return {
   enabled = true,
+  restore_anonymous_reg = true,
   keys = {
     ['y'] = { key = 'y', mode = { 'n', 'x' } },
     ['p'] = { key = 'p', mode = { 'n', 'x' } },
