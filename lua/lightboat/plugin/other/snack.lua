@@ -188,7 +188,7 @@ local spec = {
         input = {
           keys = {
             ['<up>'] = { 'history_back', mode = { 'i', 'n' } },
-            ['<down>'] = { 'history_back', mode = { 'i', 'n' } },
+            ['<down>'] = { 'history_forward', mode = { 'i', 'n' } },
             ['<c-j>'] = { 'list_down', mode = { 'n', 'i' } },
             ['<c-k>'] = { 'list_up', mode = { 'n', 'i' } },
             ['<c-u>'] = { M.preview_scroll_up, mode = { 'i', 'n' } },
