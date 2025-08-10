@@ -80,7 +80,11 @@ local function quit(buf)
       end
     end
     if target_win then vim.api.nvim_set_current_win(target_win) end
-    vim.api.nvim_win_close(cur_win, false)
+    if #visible_bufs <= 1 then
+      vim.cmd('q')
+    else
+      vim.api.nvim_win_close(cur_win, false)
+    end
     return
   end
   local target_buffer = get_target_buf()
