@@ -173,7 +173,10 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     },
     -- PERF:
     -- This plugin may cause performance issues with large files.
-    condition = function(buf) return not big_file.is_big_file(buf) and vim.api.nvim_buf_line_count(buf) <= 5000 end,
+    condition = function(buf)
+      return not big_file.is_big_file(buf)
+        and (not c.pair.rainbow_limit_lines or vim.api.nvim_buf_line_count(buf) <= c.pair.rainbow_limit_lines)
+    end,
   }, vim.g.rainbow_delimiters or {})
   util.set_hls({
     { 0, 'RainbowDelimiterRed', { fg = '#f38ba8' } },

@@ -1,5 +1,6 @@
 return {
   enabled = true,
+  rainbow_limit_lines = 5000,
   keys = {
     ['ys'] = { key = 'ys', desc = 'Add a surrounding pair around a motion (normal mode)' },
     ['yS'] = { key = 'yS', desc = 'Add a surrounding pair around the current line (normal mode)' },
