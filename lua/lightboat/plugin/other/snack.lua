@@ -128,14 +128,14 @@ local resolve_inclusive_keys = {
 }
 
 function M.grep(picker)
-  if picker then picker:close() end
   local opts = util.resolve_opts(c.snack.keys['<c-f>'].opts, resolve_inclusive_keys)
+  if picker then picker:close() end
   Snacks.picker.grep(opts)
 end
 
 function M.files(picker)
-  if picker then picker:close() end
   local opts = util.resolve_opts(c.snack.keys['<c-p>'].opts, resolve_inclusive_keys)
+  if picker then picker:close() end
   Snacks.picker.files(opts)
 end
 
