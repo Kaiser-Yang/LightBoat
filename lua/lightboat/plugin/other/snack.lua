@@ -98,14 +98,22 @@ M.run_single_file = function()
   Snacks.terminal(command, { start_insert = true, auto_insert = true, auto_close = false })
 end
 
-M.preview_scroll_up = function(picker)
-  enable_scroll_for_filetype_once('snacks_picker_preview')
-  picker.opts.actions.preview_scroll_up.action()
+M.scroll_up = function(picker)
+  if vim.fn.mode('1') == 'i' and #util.buffer.get_win_with_filetype('snacks_picker_preview') > 0 then
+    enable_scroll_for_filetype_once('snacks_picker_preview')
+    picker.opts.actions.preview_scroll_up.action()
+  else
+    picker.opts.actions.list_scroll_up.action()
+  end
 end
 
-M.preview_scroll_down = function(picker)
-  enable_scroll_for_filetype_once('snacks_picker_preview')
-  picker.opts.actions.preview_scroll_down.action()
+M.scroll_down = function(picker)
+  if vim.fn.mode('1') == 'i' and #util.buffer.get_win_with_filetype('snacks_picker_preview') > 0 then
+    enable_scroll_for_filetype_once('snacks_picker_preview')
+    picker.opts.actions.preview_scroll_down.action()
+  else
+    picker.opts.actions.list_scroll_down.action()
+  end
 end
 
 local resolve_inclusive_keys = {
@@ -193,8 +201,8 @@ local spec = {
             ['<down>'] = { 'history_forward', mode = { 'i', 'n' } },
             ['<c-j>'] = { 'list_down', mode = { 'n', 'i' } },
             ['<c-k>'] = { 'list_up', mode = { 'n', 'i' } },
-            ['<c-u>'] = { M.preview_scroll_up, mode = { 'i', 'n' } },
-            ['<c-d>'] = { M.preview_scroll_down, mode = { 'i', 'n' } },
+            ['<c-u>'] = { M.scroll_up, mode = { 'i', 'n' } },
+            ['<c-d>'] = { M.scroll_down, mode = { 'i', 'n' } },
             ['<c-c>'] = { 'close', mode = { 'n', 'i' } },
             ['<f1>'] = { 'toggle_help_input', mode = { 'i', 'n' } },
             ['<cr>'] = { 'confirm', mode = { 'n', 'i' } },
