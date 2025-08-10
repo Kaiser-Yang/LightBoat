@@ -25,6 +25,7 @@ vim.o.hlsearch = true
 vim.o.expandtab = true
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
+vim.o.foldopen = 'block,mark,percent,quickfix,search,tag,undo'
 vim.o.foldlevel = 99
 vim.o.foldminlines = 5
 vim.o.sessionoptions = 'buffers,curdir,folds,help,tabpages,winsize,winpos'

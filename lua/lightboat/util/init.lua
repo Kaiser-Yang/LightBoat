@@ -188,4 +188,13 @@ function M.define_signs(signs)
   end
 end
 
+function M.reverse_list(list)
+  if not list or #list == 0 then return list end
+  local reversed = {}
+  for i = #list, 1, -1 do
+    table.insert(reversed, list[i])
+  end
+  return reversed
+end
+
 return M

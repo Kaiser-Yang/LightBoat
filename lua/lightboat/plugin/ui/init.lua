@@ -6,6 +6,7 @@ local M = {
   lualine = require('lightboat.plugin.ui.lualine'),
   noice = require('lightboat.plugin.ui.noice'),
   statuscol = require('lightboat.plugin.ui.statuscol'),
+  ufo = require('lightboat.plugin.ui.ufo'),
 }
 
 function M.clear() util.clear_plugins(M, name) end

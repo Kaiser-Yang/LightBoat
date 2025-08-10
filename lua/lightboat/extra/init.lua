@@ -8,6 +8,7 @@ function M.clear()
   require('lightboat.extra.line_wise').clear()
   require('lightboat.extra.project').clear()
   require('lightboat.extra.markdown').clear()
+  require('lightboat.extra.fold_sign').clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.extra', function()
@@ -17,6 +18,7 @@ M.setup = util.setup_check_wrap('lightboat.extra', function()
   require('lightboat.extra.line_wise').setup()
   require('lightboat.extra.project').setup()
   require('lightboat.extra.markdown').setup()
+  require('lightboat.extra.fold_sign').setup()
 end, M.clear)
 
 return M

@@ -85,32 +85,27 @@ local spec = {
           _, diagnostic_win_id = vim.diagnostic.open_float({ border = 'rounded' })
         end
       end,
-    },
-    FoldClosed = function(args)
-      -- <C-LeftMouse>
-      if args.button == 'l' and args.mods:find('c') then
-        fold_sign.get_fold_start(args.mousepos.line)
-      -- <LeftMouse>
-      elseif args.button == 'l' and args.mods:match('^%s*$') then
-        vim.cmd('normal! zo')
-      end
-      fold_sign.update_fold_signs(vim.api.nvim_get_current_buf())
-    end,
-    FoldOpen = function(args)
-      -- <C-LeftMouse>
-      if args.button == 'l' and args.mods:find('c') then
-        local fold_start = fold_sign.get_fold_start(args.mousepos.line)
-        -- reverse the order to close from the bottom up
-        table.sort(fold_start, function(a, b) return a > b end)
-        for _, lnum in ipairs(fold_start) do
-          if vim.fn.foldclosed(lnum) == -1 then vim.cmd(lnum .. 'foldclose') end
+      FoldClosed = function(args)
+        -- <C-LeftMouse>
+        if args.button == 'l' and args.mods:find('c') then
+          fold_sign.open_recursively(args.mousepos.line)
+        -- <LeftMouse>
+        elseif args.button == 'l' and args.mods:match('^%s*$') then
+          vim.cmd('normal! zo')
+          fold_sign.update_fold_signs(vim.api.nvim_get_current_buf())
         end
-      -- <LeftMouse>
-      elseif args.button == 'l' and args.mods:match('^%s*$') then
-        vim.cmd('normal! zc')
-      end
-      fold_sign.update_fold_signs(vim.api.nvim_get_current_buf())
-    end,
+      end,
+      FoldOpen = function(args)
+        -- <C-LeftMouse>
+        if args.button == 'l' and args.mods:find('c') then
+          fold_sign.close_recursively(args.mousepos.line)
+        -- <LeftMouse>
+        elseif args.button == 'l' and args.mods:match('^%s*$') then
+          vim.cmd('normal! zc')
+          fold_sign.update_fold_signs(vim.api.nvim_get_current_buf())
+        end
+      end,
+    },
   },
 }
 
