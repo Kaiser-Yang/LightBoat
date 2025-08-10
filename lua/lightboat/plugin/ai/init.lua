@@ -2,6 +2,7 @@ local util = require('lightboat.util')
 local name = 'lightboat.plugin.ai'
 
 local M = {
+  avante = require('lightboat.plugin.ai.avante'),
   copilot = require('lightboat.plugin.ai.copilot'),
 }
 
