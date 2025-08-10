@@ -449,8 +449,8 @@ M.setup = util.setup_check_wrap('lightboat.plugin.snack', function()
   })
   on_key_ns_id = vim.on_key(function(key, typed)
     key = typed or key
-    local n = c.keymap.keys['n'] and c.keymap.keys['n'].key
-    local N = c.keymap.keys['N'] and c.keymap.keys['N'].key
+    local n = c.keymap.keys['n'] and c.keymap.keys['n'].key or 'n'
+    local N = c.keymap.keys['N'] and c.keymap.keys['N'].key or 'N'
     if key == util.key.termcodes('<ScrollWheelUp>') or key == util.key.termcodes('<ScrollWheelDown>') then
       set_key_state('monse_scroll')
     elseif key == util.key.termcodes(n) or key == util.key.termcodes(N) then
