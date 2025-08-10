@@ -16,3 +16,5 @@ return {
     ['<localleader>i'] = { key = '<localleader>i', mode = 'i', buffer = true },
     ['<localleader>M'] = { key = '<localleader>M', mode = 'i', buffer = true },
     ['gx'] = { key = 'gx', mode = { 'n', 'x' }, buffer = true, desc = 'Toggler check boxes' },
+  },
+}
