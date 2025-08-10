@@ -6,11 +6,13 @@ local log = util.log
 
 function M.ensure_packages(packages)
   packages = util.ensure_list(packages)
-  for _, package_name in ipairs(packages) do
+  for package_name, should_install in ipairs(packages) do
+    if not should_install then goto continue end
     for source in require('mason-registry.sources').iter({ include_uninstalled = true }) do
       local pkg = source:get_package(package_name)
       if pkg and not pkg:is_installed() then pkg:install() end
     end
+    ::continue::
   end
   log.debug('Mason packages installed: ' .. vim.inspect(packages))
 end

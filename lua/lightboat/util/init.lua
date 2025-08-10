@@ -62,7 +62,7 @@ function M.ensure_list(value)
     return value
   elseif type(value) == 'string' then
     return { value }
-  elseif value == nil then
+  elseif not value then
     return {}
   else
     vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR)
