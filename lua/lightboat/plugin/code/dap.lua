@@ -166,17 +166,21 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.dap', function()
   if not c.enabled then return nil end
   assert(spec[3][1] == 'rcarriga/nvim-dap-ui')
   spec[3].keys = key.get_lazy_keys(operation, c.keys)
-  vim.api.nvim_set_hl(0, 'DapStopped', { fg = '#98C379' })
-  vim.api.nvim_set_hl(0, 'DapStoppedLine', { bg = '#31353F' })
-  vim.api.nvim_set_hl(0, 'DapBreakpointRejected', { fg = '#888888' })
-  vim.api.nvim_set_hl(0, 'DapLogPoint', { fg = '#89dceb' })
-  vim.api.nvim_set_hl(0, 'DapBreakpoint', { fg = '#f38ba8' })
-  vim.api.nvim_set_hl(0, 'DapBreakpointCondition', { fg = '#f9e2af' })
-  vim.fn.sign_define('DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'DapStoppedLine' })
-  vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'DapLogPoint' })
-  vim.fn.sign_define('DapBreakpoint', { text = '●', texthl = 'DapBreakpoint' })
-  vim.fn.sign_define('DapBreakpointRejected', { text = 'x', texthl = 'DapBreakpointRejected' })
-  vim.fn.sign_define('DapBreakpointCondition', { text = '○', texthl = 'DapBreakpointCondition' })
+  util.set_hls({
+    { 0, 'DapStopped', { fg = '#98C379' } },
+    { 0, 'DapStoppedLine', { bg = '#31353F' } },
+    { 0, 'DapBreakpointRejected', { fg = '#888888' } },
+    { 0, 'DapLogPoint', { fg = '#89dceb' } },
+    { 0, 'DapBreakpoint', { fg = '#f38ba8' } },
+    { 0, 'DapBreakpointCondition', { fg = '#f9e2af' } },
+  })
+  util.define_signs({
+    { 'DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'DapStoppedLine' } },
+    { 'DapLogPoint', { text = '', texthl = 'DapLogPoint' } },
+    { 'DapBreakpoint', { text = '●', texthl = 'DapBreakpoint' } },
+    { 'DapBreakpointRejected', { text = 'x', texthl = 'DapBreakpointRejected' } },
+    { 'DapBreakpointCondition', { text = '○', texthl = 'DapBreakpointCondition' } },
+  })
   return spec
 end, M.clear)
 

@@ -182,4 +182,10 @@ function M.set_hls(hls)
   end
 end
 
+function M.define_signs(signs)
+  for _, sign in ipairs(signs) do
+    vim.fn.sign_define(unpack(sign))
+  end
+end
+
 return M
