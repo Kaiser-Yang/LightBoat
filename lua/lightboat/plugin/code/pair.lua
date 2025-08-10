@@ -13,7 +13,7 @@ local big_file = require('lightboat.extra.big_file')
 local operation = {
   surround = {
     ['ys'] = '<plug>(nvim-surround-normal)',
-    ['yS'] = '<plug>(nvim-surround-normal-cur)',
+    ['yS'] = '<plug>(nvim-surround-normal)$',
     ['S'] = '<plug>(nvim-surround-visual)',
     ['ds'] = '<plug>(nvim-surround-delete)',
     ['cs'] = '<plug>(nvim-surround-change)',
@@ -137,6 +137,8 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
         res = '<plug>(nvim-surround-delete)'
       elseif vim.v.operator == 'c' and c.pair.keys['cs'].key == 'cs' then
         res = '<plug>(nvim-surround-change)'
+      elseif vim.v.operator == 'g@' then
+        res = '<plug>(nvim-surround-normal-cur)'
       end
       if res then vim.schedule(function() feedkeys(res, 'n') end) end
       return '<esc>'

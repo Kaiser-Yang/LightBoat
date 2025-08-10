@@ -3,7 +3,7 @@ return {
   rainbow_limit_lines = 5000,
   keys = {
     ['ys'] = { key = 'ys', desc = 'Add a surrounding pair around a motion (normal mode)' },
-    ['yS'] = { key = 'yS', desc = 'Add a surrounding pair around the current line (normal mode)' },
+    ['yS'] = { key = 'yS', desc = 'Add a surrounding pair till the end of the line (normal mode)' },
     ['S'] = { key = 'S', desc = 'Add a surrounding pair around a visual selection', mode = 'x' },
     ['ds'] = { key = 'ds', desc = 'Delete a surrounding pair' },
     ['cs'] = { key = 'cs', desc = 'Change a surrounding pair' },
