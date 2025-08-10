@@ -388,19 +388,73 @@ M.setup = util.setup_check_wrap('lightboat.plugin.snack', function()
   end
   spec.keys = util.key.get_lazy_keys(operation, c.snack.keys)
   if c.snack.keys['<c-f>'] then
-    spec.opts.picker.win.input.keys[c.snack.keys['<c-f>'].key] = { M.grep, mode = 'i' }
-    spec.opts.picker.win.list.keys[c.snack.keys['<c-f>'].key] = { M.grep, mode = 'i' }
-    spec.opts.picker.win.preview.keys[c.snack.keys['<c-f>'].key] = { M.grep, mode = 'i' }
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-f>'].key] = {
+      function(picker)
+        picker:close()
+        M.grep()
+      end,
+      mode = 'i',
+    }
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-f>'].key] = {
+      function(picker)
+        picker:close()
+        M.grep()
+      end,
+      mode = 'i',
+    }
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-f>'].key] = {
+      function(picker)
+        picker:close()
+        M.grep()
+      end,
+      mode = 'i',
+    }
   end
   if c.snack.keys['<c-p>'] then
-    spec.opts.picker.win.input.keys[c.snack.keys['<c-p>'].key] = { M.files, mode = 'i' }
-    spec.opts.picker.win.list.keys[c.snack.keys['<c-p>'].key] = { M.files, mode = 'i' }
-    spec.opts.picker.win.preview.keys[c.snack.keys['<c-p>'].key] = { M.files, mode = 'i' }
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-p>'].key] = {
+      function(picker)
+        picker:close()
+        M.files()
+      end,
+      mode = 'i',
+    }
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-p>'].key] = {
+      function(picker)
+        picker:close()
+        M.files()
+      end,
+      mode = 'i',
+    }
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-p>'].key] = {
+      function(picker)
+        picker:close()
+        M.files()
+      end,
+      mode = 'i',
+    }
   end
   if c.snack.keys['<c-y>'] then
-    spec.opts.picker.win.input.keys[c.snack.keys['<c-y>'].key] = { M.resume, mode = 'i' }
-    spec.opts.picker.win.list.keys[c.snack.keys['<c-y>'].key] = { M.resume, mode = 'i' }
-    spec.opts.picker.win.preview.keys[c.snack.keys['<c-y>'].key] = { M.resume, mode = 'i' }
+    spec.opts.picker.win.input.keys[c.snack.keys['<c-y>'].key] = {
+      function(picker)
+        picker:close()
+        M.resume()
+      end,
+      mode = 'i',
+    }
+    spec.opts.picker.win.list.keys[c.snack.keys['<c-y>'].key] = {
+      function(picker)
+        picker:close()
+        M.resume()
+      end,
+      mode = 'i',
+    }
+    spec.opts.picker.win.preview.keys[c.snack.keys['<c-y>'].key] = {
+      function(picker)
+        picker:close()
+        M.resume()
+      end,
+      mode = 'i',
+    }
   end
   group = vim.api.nvim_create_augroup('LightBoatSnack', {})
   vim.api.nvim_create_autocmd('BufEnter', {
