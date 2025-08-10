@@ -339,7 +339,7 @@ local spec = {
       on_finished = on_finished,
     },
     statuscolumn = { enabled = false },
-    words = { enabled = true },
+    words = { enabled = false },
     explorer = { enabled = false },
     notifier = { enabled = false },
     quickfile = { enabled = false },
