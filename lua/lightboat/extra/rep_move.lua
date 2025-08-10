@@ -55,6 +55,9 @@ local function flash_func(key)
     -- fallback to normal find and till
     if macro() or big_file.is_big_file() then return vim.g.flash_keys[key] end
     feedkeys(key, 'm')
+    local origin = vim.o.ignorecase
+    vim.o.ignorecase = false
+    vim.schedule(function() vim.o.ignorecase = origin end)
     vim.schedule(function()
       local res = update_find_or_till_char()
       if not res then return end
@@ -69,8 +72,10 @@ local function make_flash_func(key)
   if macro() or big_file.is_big_file() then return nil end
   return function()
     if not last_motion_char then return end
-    feedkeys(key, 'm')
-    vim.schedule(function() feedkeys(last_motion_char, 'nt') end)
+    feedkeys(key .. last_motion_char, 'm')
+    local origin = vim.o.ignorecase
+    vim.o.ignorecase = false
+    vim.schedule(function() vim.o.ignorecase = origin end)
   end
 end
 
