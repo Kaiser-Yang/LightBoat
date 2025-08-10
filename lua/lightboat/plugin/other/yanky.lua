@@ -1,5 +1,4 @@
 local util = require('lightboat.util')
-local map = util.key.set
 local del = util.key.del
 local line_wise_key_wrap = require('lightboat.extra.line_wise').line_wise_key_wrap
 local config = require('lightboat.config')
@@ -17,13 +16,7 @@ end
 
 local M = {}
 
-local function sys_yank()
-  if vim.tbl_contains({ 'v', 'V', '' }, vim.fn.mode('1')) then
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    vim.schedule(function() vim.api.nvim_win_set_cursor(0, cursor) end)
-  end
-  return '"+y'
-end
+local function sys_yank() return require('yanky').yank({ register = '+' }) end
 
 local function sys_paste()
   local res
