@@ -37,24 +37,27 @@ local sections = {
 }
 
 local spec = {
-  'nvim-lualine/lualine.nvim',
-  dependencies = { 'nvim-tree/nvim-web-devicons', 'AndreM222/copilot-lualine' },
-  opts = {
-    options = {
-      icons_enabled = true,
-      theme = 'catppuccin',
-      component_separators = { left = '', right = '' },
-      section_separators = { left = '', right = '' },
-      disabled_filetypes = {
-        'neo-tree',
-        'Avante',
-        'AvanteInput',
-        'help',
+  { 'AndreM222/copilot-lualine' },
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        icons_enabled = true,
+        theme = 'catppuccin',
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
+        disabled_filetypes = {
+          'neo-tree',
+          'Avante',
+          'AvanteInput',
+          'help',
+        },
+        globalstatus = false,
       },
-      globalstatus = false,
+      sections = sections,
+      inactive_sections = sections,
     },
-    sections = sections,
-    inactive_sections = sections,
   },
 }
 

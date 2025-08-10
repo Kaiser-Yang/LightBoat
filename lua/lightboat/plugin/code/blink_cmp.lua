@@ -195,127 +195,128 @@ local blink_cmp_git_opts = {
 }
 
 local spec = {
-  'saghen/blink.cmp',
-  version = '*',
-  dependencies = {
-    'Kaiser-Yang/blink-cmp-git',
-    'Kaiser-Yang/blink-cmp-avante',
-    'Kaiser-Yang/blink-cmp-dictionary',
-    'rafamadriz/friendly-snippets',
-    'mikavilpas/blink-ripgrep.nvim',
-  },
-  event = { 'InsertEnter', 'CmdlineEnter' },
-  opts = {
-    fuzzy = { use_frecency = false },
-    completion = {
-      accept = { auto_brackets = { enabled = true } },
-      keyword = { range = 'prefix' },
-      list = { selection = { preselect = false, auto_insert = true } },
-      trigger = { show_on_insert_on_trigger_character = false },
-      menu = {
-        border = 'rounded',
-        max_height = 15,
-        scrolloff = 0,
-        draw = {
-          align_to = 'label',
-          padding = 0,
-          columns = {
-            { 'kind_icon' },
-            { 'label', 'label_description', gap = 1 },
-            { 'source_name' },
-          },
-          components = {
-            source_name = {
-              text = function(ctx) return '[' .. ctx.source_name .. ']' end,
+  { 'Kaiser-Yang/blink-cmp-git' },
+  { 'Kaiser-Yang/blink-cmp-avante' },
+  { 'Kaiser-Yang/blink-cmp-dictionary' },
+  { 'rafamadriz/friendly-snippets' },
+  { 'mikavilpas/blink-ripgrep.nvim' },
+  {
+    'saghen/blink.cmp',
+    version = '*',
+    event = { 'InsertEnter', 'CmdlineEnter' },
+    opts = {
+      fuzzy = { use_frecency = false },
+      completion = {
+        accept = { auto_brackets = { enabled = true } },
+        keyword = { range = 'prefix' },
+        list = { selection = { preselect = false, auto_insert = true } },
+        trigger = { show_on_insert_on_trigger_character = false },
+        menu = {
+          border = 'rounded',
+          max_height = 15,
+          scrolloff = 0,
+          draw = {
+            align_to = 'label',
+            padding = 0,
+            columns = {
+              { 'kind_icon' },
+              { 'label', 'label_description', gap = 1 },
+              { 'source_name' },
+            },
+            components = {
+              source_name = {
+                text = function(ctx) return '[' .. ctx.source_name .. ']' end,
+              },
             },
           },
         },
+        documentation = { auto_show = true, window = { border = 'rounded' } },
       },
-      documentation = { auto_show = true, window = { border = 'rounded' } },
-    },
-    signature = {
-      enabled = true,
-      window = { border = 'rounded', show_documentation = false },
-    },
-    --- @type table<string, string|table>
-    keymap = { preset = 'none' },
-    cmdline = {
+      signature = {
+        enabled = true,
+        window = { border = 'rounded', show_documentation = false },
+      },
       --- @type table<string, string|table>
       keymap = { preset = 'none' },
-      completion = {
-        menu = { auto_show = true },
-        ghost_text = { enabled = false },
-        list = { selection = { preselect = false, auto_insert = true } },
+      cmdline = {
+        --- @type table<string, string|table>
+        keymap = { preset = 'none' },
+        completion = {
+          menu = { auto_show = true },
+          ghost_text = { enabled = false },
+          list = { selection = { preselect = false, auto_insert = true } },
+        },
       },
-    },
-    sources = {
-      default = M.default_sources,
-      providers = {
-        avante = {
-          name = 'Avante',
-          module = 'blink-cmp-avante',
-        },
-        git = {
-          name = 'Git',
-          module = 'blink-cmp-git',
-          opts = blink_cmp_git_opts,
-        },
-        dictionary = {
-          name = 'Dict',
-          module = 'blink-cmp-dictionary',
-          min_keyword_length = 3,
-          opts = {
-            dictionary_files = {
-              util.get_light_boat_root() .. '/dict/en_dict.txt',
+      sources = {
+        default = M.default_sources,
+        providers = {
+          avante = {
+            name = 'Avante',
+            module = 'blink-cmp-avante',
+          },
+          git = {
+            name = 'Git',
+            module = 'blink-cmp-git',
+            opts = blink_cmp_git_opts,
+          },
+          dictionary = {
+            name = 'Dict',
+            module = 'blink-cmp-dictionary',
+            min_keyword_length = 3,
+            opts = {
+              dictionary_files = {
+                util.get_light_boat_root() .. '/dict/en_dict.txt',
+              },
             },
           },
-        },
-        lsp = {
-          fallbacks = {},
-          transform_items = function(_, items)
-            local TYPE_ALIAS = require('blink.cmp.types').CompletionItemKind
-            return vim.tbl_filter(function(item)
-              -- Remove snippets, texts and some keywords from completion list
-              return item.kind ~= TYPE_ALIAS.Snippet
-                and item.kind ~= TYPE_ALIAS.Text
-                and not (
-                  c.enabled
-                  and item.kind == TYPE_ALIAS.Keyword
-                  and c.ignored_keyword
-                  and c.ignored_keyword[vim.bo.filetype]
-                  and vim.tbl_contains(c.ignored_keyword[vim.bo.filetype], item.label)
-                )
-            end, items)
-          end,
-        },
-        snippets = { name = 'Snip' },
-        path = { opts = { trailing_slash = false, show_hidden_files_by_default = util.in_config_dir() } },
-        ripgrep = {
-          name = 'RG',
-          module = 'blink-ripgrep',
-          opts = {
-            prefix_min_len = 3,
-            fallback_to_regex_highlighting = true,
-            backend = {
-              context_size = 5,
-              project_root_fallback = false,
-              ripgrep = {
-                search_casing = '--smart-case',
-                additional_rg_options = { '--max-count', '5' },
+          lsp = {
+            fallbacks = {},
+            transform_items = function(_, items)
+              local TYPE_ALIAS = require('blink.cmp.types').CompletionItemKind
+              return vim.tbl_filter(function(item)
+                -- Remove snippets, texts and some keywords from completion list
+                return item.kind ~= TYPE_ALIAS.Snippet
+                  and item.kind ~= TYPE_ALIAS.Text
+                  and not (
+                    c.enabled
+                    and item.kind == TYPE_ALIAS.Keyword
+                    and c.ignored_keyword
+                    and c.ignored_keyword[vim.bo.filetype]
+                    and vim.tbl_contains(c.ignored_keyword[vim.bo.filetype], item.label)
+                  )
+              end, items)
+            end,
+          },
+          snippets = { name = 'Snip' },
+          path = { opts = { trailing_slash = false, show_hidden_files_by_default = util.in_config_dir() } },
+          ripgrep = {
+            name = 'RG',
+            module = 'blink-ripgrep',
+            opts = {
+              prefix_min_len = 3,
+              fallback_to_regex_highlighting = true,
+              backend = {
+                context_size = 5,
+                project_root_fallback = false,
+                ripgrep = {
+                  search_casing = '--smart-case',
+                  additional_rg_options = { '--max-count', '5' },
+                },
               },
             },
           },
         },
       },
     },
+    opts_extend = { 'sources.default' },
   },
-  opts_extend = { 'sources.default' },
 }
 
 function M.spec() return spec end
 
 function M.clear()
-  local ripgrep_c = spec.opts.sources.providers.ripgrep.opts
+  assert(spec[#spec][1] == 'saghen/blink.cmp')
+  local ripgrep_c = spec[#spec].opts.sources.providers.ripgrep.opts
   ripgrep_c.project_root_marker = nil
   ripgrep_c.backend.ripgrep.max_filesize = nil
   c = nil
@@ -357,14 +358,15 @@ M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
     { 0, 'BlinkCmpGitKindLabellockedIssueId', { fg = '#f5c2e7' } },
     { 0, 'BlinkCmpKindDict', { fg = '#a6e3a1' } },
   })
+  assert(spec[#spec][1] == 'saghen/blink.cmp')
   for k, v in pairs(c.keys) do
     if not v or not operation[k] then goto continue end
-    spec.opts.keymap[v.key] = operation[k]
-    if vim.tbl_contains({ '<cr>', '<c-j>', '<c-k>' }, k) then spec.opts.cmdline.keymap[v.key] = operation[k] end
+    spec[#spec].opts.keymap[v.key] = operation[k]
+    if vim.tbl_contains({ '<cr>', '<c-j>', '<c-k>' }, k) then spec[#spec].opts.cmdline.keymap[v.key] = operation[k] end
     ::continue::
   end
   local extra_c = config.get().extra
-  local ripgrep_c = spec.opts.sources.providers.ripgrep.opts
+  local ripgrep_c = spec[#spec].opts.sources.providers.ripgrep.opts
   if extra_c.big_file.enabled then ripgrep_c.backend.ripgrep.max_filesize = extra_c.big_file.big_file_total or nil end
   ripgrep_c.project_root_marker = extra_c.root_markers or nil
   return spec

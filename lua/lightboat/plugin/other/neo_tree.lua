@@ -162,203 +162,206 @@ function M.copy_node_info(state)
 end
 
 local spec = {
-  'nvim-neo-tree/neo-tree.nvim',
-  branch = 'v3.x',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons',
-    'MunifTanjim/nui.nvim',
-    {
-      's1n7ax/nvim-window-picker',
-      version = '2.*',
-      opts = {
-        hint = 'floating-big-letter',
-        filter_rules = {
-          include_current_win = false,
-          autoselect_one = true,
-          bo = {
-            filetype = {
-              'neo-tree',
-              'neo-tree-popup',
-              'notify',
-              'smear-cursor',
-              'snacks_notif',
-              'noice',
-            },
-            buftype = { 'terminal', 'quickfix' },
+
+  {
+    's1n7ax/nvim-window-picker',
+    version = '2.*',
+    opts = {
+      hint = 'floating-big-letter',
+      filter_rules = {
+        include_current_win = false,
+        autoselect_one = true,
+        bo = {
+          filetype = {
+            'neo-tree',
+            'neo-tree-popup',
+            'notify',
+            'smear-cursor',
+            'snacks_notif',
+            'noice',
           },
+          buftype = { 'terminal', 'quickfix' },
         },
-        prompt_message = '',
-        highlights = { statusline = { unfocused = { fg = '#ededed', bg = '#3fa4cc', bold = true } } },
       },
+      prompt_message = '',
+      highlights = { statusline = { unfocused = { fg = '#ededed', bg = '#3fa4cc', bold = true } } },
     },
   },
-  opts = {
-    sources = { 'filesystem', 'git_status', 'document_symbols' },
-    source_selector = {
-      winbar = true,
-      sources = { { source = 'git_status' }, { source = 'document_symbols' }, { source = 'filesystem' } },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
     },
-    sort_case_insensitive = true,
-    use_default_mappings = false,
-    default_component_configs = {
+    opts = {
+      sources = { 'filesystem', 'git_status', 'document_symbols' },
+      source_selector = {
+        winbar = true,
+        sources = { { source = 'git_status' }, { source = 'document_symbols' }, { source = 'filesystem' } },
+      },
+      sort_case_insensitive = true,
+      use_default_mappings = false,
+      default_component_configs = {
+        git_status = {
+          symbols = {
+            modified = '',
+            renamed = '➜',
+            untracked = '★',
+            ignored = '◌',
+            unstaged = '✗',
+            staged = '✓',
+          },
+          width = 2,
+          align = 'left',
+        },
+        file_size = { align = 'right', required_width = 0 },
+        last_modified = { align = 'right', required_width = 0 },
+        symlink_target = { enabled = true, align = 'right', required_width = 0 },
+        created = { enabled = true, align = 'right', required_width = 0 },
+      },
+      window = {
+        width = function() return math.ceil(math.max(30, 0.14 * vim.o.columns)) end,
+        mappings = {
+          ['e'] = 'toggle_auto_expand_width',
+          ['<c-c>'] = 'cancel',
+          ['<leader>j'] = 'split_with_window_picker',
+          ['<leader>k'] = 'split_with_window_picker',
+          ['<leader>l'] = 'vsplit_with_window_picker',
+          ['<leader>h'] = 'vsplit_with_window_picker',
+          ['<c-s>'] = 'split_with_window_picker',
+          ['<c-v>'] = 'vsplit_with_window_picker',
+          ['v'] = { function(_) feedkeys('V', 'n') end, desc = 'Visual select' },
+          ['<f5>'] = 'refresh',
+          ['?'] = 'show_help',
+          ['<2-LeftMouse>'] = { M.toggle_or_open, desc = 'Toggle or Open' },
+          ['H'] = { M.collapse_all_under_cursor, desc = 'Collapse all under cursor' },
+          ['L'] = { M.expand_all_under_cursor, desc = 'Expand all under cursor' },
+          ['<cr>'] = { M.enter_dir_or_open_file, desc = 'Enter Dir or Open File' },
+          ['h'] = { M.collapse_or_goto_parent, desc = 'Collapse or Go To Parrent' },
+          ['l'] = { M.toggle_or_open, desc = 'Toggle or Open' },
+        },
+      },
+      filesystem = {
+        filtered_items = { hide_dotfiles = not util.in_config_dir(), hide_hidden = not util.in_config_dir() },
+        window = {
+          mappings = {
+            ['r'] = 'rename',
+            ['<bs>'] = 'navigate_up',
+            ['d'] = 'delete',
+            ['y'] = 'copy_to_clipboard',
+            ['Y'] = { M.copy_node_info, desc = 'Copy node information to clipboard' },
+            ['x'] = 'cut_to_clipboard',
+            ['p'] = 'paste_from_clipboard',
+            -- HACK:
+            -- The input menu is too short to input
+            ['a'] = { 'add', config = { show_path = 'absolute' } },
+            ['m'] = { 'move', config = { show_path = 'absolute' } },
+            ['c'] = { 'copy', config = { show_path = 'absolute' } },
+            ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
+            ['oc'] = { 'order_by_created', nowait = false },
+            ['od'] = { 'order_by_diagnostics', nowait = false },
+            ['og'] = { 'order_by_git_status', nowait = false },
+            ['om'] = { 'order_by_modified', nowait = false },
+            ['on'] = { 'order_by_name', nowait = false },
+            ['os'] = { 'order_by_size', nowait = false },
+            ['ot'] = { 'order_by_type', nowait = false },
+            ['[g'] = { prev_git, desc = 'Prev Git Modified' },
+            [']g'] = { next_git, desc = 'Next Git Modified' },
+            ['<m-i>'] = 'toggle_hidden',
+            ['<m-h>'] = 'toggle_hidden',
+          },
+        },
+      },
       git_status = {
-        symbols = {
-          modified = '',
-          renamed = '➜',
-          untracked = '★',
-          ignored = '◌',
-          unstaged = '✗',
-          staged = '✓',
-        },
-        width = 2,
-        align = 'left',
-      },
-      file_size = { align = 'right', required_width = 0 },
-      last_modified = { align = 'right', required_width = 0 },
-      symlink_target = { enabled = true, align = 'right', required_width = 0 },
-      created = { enabled = true, align = 'right', required_width = 0 },
-    },
-    window = {
-      width = function() return math.ceil(math.max(30, 0.14 * vim.o.columns)) end,
-      mappings = {
-        ['e'] = 'toggle_auto_expand_width',
-        ['<c-c>'] = 'cancel',
-        ['<leader>j'] = 'split_with_window_picker',
-        ['<leader>k'] = 'split_with_window_picker',
-        ['<leader>l'] = 'vsplit_with_window_picker',
-        ['<leader>h'] = 'vsplit_with_window_picker',
-        ['<c-s>'] = 'split_with_window_picker',
-        ['<c-v>'] = 'vsplit_with_window_picker',
-        ['v'] = { function(_) feedkeys('V', 'n') end, desc = 'Visual select' },
-        ['<f5>'] = 'refresh',
-        ['?'] = 'show_help',
-        ['<2-LeftMouse>'] = { M.toggle_or_open, desc = 'Toggle or Open' },
-        ['H'] = { M.collapse_all_under_cursor, desc = 'Collapse all under cursor' },
-        ['L'] = { M.expand_all_under_cursor, desc = 'Expand all under cursor' },
-        ['<cr>'] = { M.enter_dir_or_open_file, desc = 'Enter Dir or Open File' },
-        ['h'] = { M.collapse_or_goto_parent, desc = 'Collapse or Go To Parrent' },
-        ['l'] = { M.toggle_or_open, desc = 'Toggle or Open' },
-      },
-    },
-    filesystem = {
-      filtered_items = { hide_dotfiles = not util.in_config_dir(), hide_hidden = not util.in_config_dir() },
-      window = {
-        mappings = {
-          ['r'] = 'rename',
-          ['<bs>'] = 'navigate_up',
-          ['d'] = 'delete',
-          ['y'] = 'copy_to_clipboard',
-          ['Y'] = { M.copy_node_info, desc = 'Copy node information to clipboard' },
-          ['x'] = 'cut_to_clipboard',
-          ['p'] = 'paste_from_clipboard',
-          -- HACK:
-          -- The input menu is too short to input
-          ['a'] = { 'add', config = { show_path = 'absolute' } },
-          ['m'] = { 'move', config = { show_path = 'absolute' } },
-          ['c'] = { 'copy', config = { show_path = 'absolute' } },
-          ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
-          ['oc'] = { 'order_by_created', nowait = false },
-          ['od'] = { 'order_by_diagnostics', nowait = false },
-          ['og'] = { 'order_by_git_status', nowait = false },
-          ['om'] = { 'order_by_modified', nowait = false },
-          ['on'] = { 'order_by_name', nowait = false },
-          ['os'] = { 'order_by_size', nowait = false },
-          ['ot'] = { 'order_by_type', nowait = false },
-          ['[g'] = { prev_git, desc = 'Prev Git Modified' },
-          [']g'] = { next_git, desc = 'Next Git Modified' },
-          ['<m-i>'] = 'toggle_hidden',
-          ['<m-h>'] = 'toggle_hidden',
+        window = {
+          mappings = {
+            ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
+            ['oc'] = { 'order_by_created', nowait = false },
+            ['od'] = { 'order_by_diagnostics', nowait = false },
+            ['og'] = { 'order_by_git_status', nowait = false },
+            ['om'] = { 'order_by_modified', nowait = false },
+            ['on'] = { 'order_by_name', nowait = false },
+            ['os'] = { 'order_by_size', nowait = false },
+            ['ot'] = { 'order_by_type', nowait = false },
+          },
         },
       },
-    },
-    git_status = {
-      window = {
-        mappings = {
-          ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
-          ['oc'] = { 'order_by_created', nowait = false },
-          ['od'] = { 'order_by_diagnostics', nowait = false },
-          ['og'] = { 'order_by_git_status', nowait = false },
-          ['om'] = { 'order_by_modified', nowait = false },
-          ['on'] = { 'order_by_name', nowait = false },
-          ['os'] = { 'order_by_size', nowait = false },
-          ['ot'] = { 'order_by_type', nowait = false },
+      document_symbols = {
+        renderers = {
+          root = { { 'name' } },
+          symbol = {
+            { 'indent', with_expanders = true },
+            { 'kind_icon', default = '?' },
+            { 'name' },
+            { 'kind_name' },
+          },
         },
       },
-    },
-    document_symbols = {
       renderers = {
-        root = { { 'name' } },
-        symbol = {
-          { 'indent', with_expanders = true },
-          { 'kind_icon', default = '?' },
+        file = {
+          { 'indent' },
+          { 'icon' },
+          { 'git_status' },
           { 'name' },
-          { 'kind_name' },
+          { 'diagnostics', errors_only = false },
+          { 'clipboard' },
+          {
+            'container',
+            content = {
+              { 'symlink_target', highlight = 'NeoTreeSymbolicLinkTarget', zindex = 40 },
+              { 'file_size', zindex = 30 },
+              { 'last_modified', zindex = 20 },
+              { 'created', zindex = 10 },
+            },
+          },
         },
-      },
-    },
-    renderers = {
-      file = {
-        { 'indent' },
-        { 'icon' },
-        { 'git_status' },
-        { 'name' },
-        { 'diagnostics', errors_only = false },
-        { 'clipboard' },
-        {
-          'container',
-          content = {
-            { 'symlink_target', highlight = 'NeoTreeSymbolicLinkTarget', zindex = 40 },
-            { 'file_size', zindex = 30 },
-            { 'last_modified', zindex = 20 },
-            { 'created', zindex = 10 },
+        directory = {
+          { 'indent' },
+          { 'icon' },
+          { 'current_filter' },
+          { 'git_status', hide_when_expanded = true },
+          { 'name' },
+          { 'diagnostics', errors_only = false, hide_when_expanded = true },
+          { 'clipboard' },
+          {
+            'container',
+            content = {
+              { 'symlink_target', highlight = 'NeoTreeSymbolicLinkTarget', zindex = 40 },
+              { 'file_size', zindex = 30 },
+              { 'last_modified', zindex = 20 },
+              { 'created', zindex = 10 },
+            },
           },
         },
       },
-      directory = {
-        { 'indent' },
-        { 'icon' },
-        { 'current_filter' },
-        { 'git_status', hide_when_expanded = true },
-        { 'name' },
-        { 'diagnostics', errors_only = false, hide_when_expanded = true },
-        { 'clipboard' },
+      event_handlers = {
         {
-          'container',
-          content = {
-            { 'symlink_target', highlight = 'NeoTreeSymbolicLinkTarget', zindex = 40 },
-            { 'file_size', zindex = 30 },
-            { 'last_modified', zindex = 20 },
-            { 'created', zindex = 10 },
-          },
+          event = 'file_moved',
+          handler = on_file_moved,
         },
-      },
-    },
-    event_handlers = {
-      {
-        event = 'file_moved',
-        handler = on_file_moved,
-      },
-      {
-        event = 'file_renamed',
-        handler = on_file_moved,
-      },
-      {
-        event = 'neo_tree_window_after_open',
-        handler = function()
-          for _, win in ipairs(buffer.get_win_with_filetype('dap')) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            if not vim.tbl_contains({ 'dap-repl', 'dapui_console' }, vim.bo[buf].filetype) then
-              vim.api.nvim_win_close(win, true)
+        {
+          event = 'file_renamed',
+          handler = on_file_moved,
+        },
+        {
+          event = 'neo_tree_window_after_open',
+          handler = function()
+            for _, win in ipairs(buffer.get_win_with_filetype('dap')) do
+              local buf = vim.api.nvim_win_get_buf(win)
+              if not vim.tbl_contains({ 'dap-repl', 'dapui_console' }, vim.bo[buf].filetype) then
+                vim.api.nvim_win_close(win, true)
+              end
             end
-          end
-          vim.cmd('wincmd = ')
-        end,
+            vim.cmd('wincmd = ')
+          end,
+        },
       },
     },
+    cmd = { 'Neotree' },
+    keys = {},
   },
-  cmd = { 'Neotree' },
-  keys = {},
 }
 
 function M.clear()
@@ -366,14 +369,16 @@ function M.clear()
     vim.api.nvim_del_augroup_by_id(group)
     group = nil
   end
-  spec.keys = {}
+  assert(spec[2][1] == 'nvim-neo-tree/neo-tree.nvim')
+  spec[2].keys = {}
   c = nil
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.neo_tree', function()
   c = config.get()
   if not c.neo_tree.enabled then return nil end
-  spec.keys = util.key.get_lazy_keys(operation, c.neo_tree.keys)
+  assert(spec[2][1] == 'nvim-neo-tree/neo-tree.nvim')
+  spec[2].keys = util.key.get_lazy_keys(operation, c.neo_tree.keys)
   group = vim.api.nvim_create_augroup('LightBoatNeoTree', {})
   vim.api.nvim_create_autocmd('BufEnter', {
     callback = function(_)
