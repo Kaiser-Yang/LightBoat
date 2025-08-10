@@ -31,7 +31,7 @@ function M.spec() return spec end
 
 function M.clear()
   if group then
-    vim.api.nvim_del_augroup_by_name(group)
+    vim.api.nvim_del_augroup_by_id(group)
     group = nil
   end
 end
