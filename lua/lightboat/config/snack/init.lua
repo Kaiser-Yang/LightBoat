@@ -3,6 +3,13 @@ local function default_cwd()
   return vim.fs.root(vim.fn.getcwd(), root_markers) or vim.fs.root(0, root_markers)
 end
 
+local function save_as_last_when_not_empty(picker)
+  local filter = picker.input.filter
+  return (filter.pattern and not filter.pattern:match('^%s*$') or filter.search and not filter.search:match('^%s*$'))
+    and picker.list.items
+    and #picker.list.items > 0
+end
+
 local rg_ignore_patterns = {
   '*.git',
   '*.o',
@@ -43,7 +50,7 @@ return {
         pattern = function() return vim.bo.filetype == 'snacks_picker_input' and vim.api.nvim_get_current_line() or '' end,
         exclude = rg_ignore_patterns,
         layout = { hidden = { 'preview' } },
-        save_as_last = true,
+        save_as_last = save_as_last_when_not_empty,
       },
     },
     ['<c-f>'] = {
@@ -55,7 +62,7 @@ return {
         hidden = util.in_config_dir,
         search = function() return vim.bo.filetype == 'snacks_picker_input' and vim.api.nvim_get_current_line() or '' end,
         exclude = rg_ignore_patterns,
-        save_as_last = true,
+        save_as_last = save_as_last_when_not_empty,
       },
     },
     ['<leader><leader>'] = {
