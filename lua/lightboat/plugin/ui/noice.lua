@@ -36,6 +36,7 @@ local spec = {
             { event = 'msg_show', find = 'Starting Java Language Server' },
             { event = 'msg_show', find = 'Init...' },
             { find = 'Error running git%-blame: fatal: unable to access' },
+            { find = 'Error running git%-blame: ssh: connect to host' },
             { event = 'lsp', kind = 'progress', find = 'Building' },
             { event = 'lsp', kind = 'progress', find = 'Searching' },
             { event = 'lsp', kind = 'progress', find = 'Validate documents' },
