@@ -8,9 +8,6 @@
 --- @field consider_invisible boolean Whether or not to consider invisible counts
 
 local util = require('lightboat.util')
-local map = util.key.set
-local del = util.key.del
-local convert = util.key.convert
 local config = require('lightboat.config')
 local group
 local c
@@ -86,12 +83,13 @@ local function get_actual_count(go_up, consider_invisible)
   if line_mode ~= 'line_wise' and line_mode ~= 'abs_line_wise' then return v_count end
   if consider_invisible then return labels[tostring(vim.v.count)] or vim.v.count end
   local treesitter_context_visible_lines = {}
+  local cur_win = vim.api.nvim_get_current_win()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local cfg = vim.api.nvim_win_get_config(win)
     if
       cfg.relative == 'win'
       and cfg.row == 0
-      and cfg.win == vim.api.nvim_get_current_win()
+      and cfg.win == cur_win
       and vim.w[win].treesitter_context_line_number
     then
       local lines = vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(win), 0, -1, false)
