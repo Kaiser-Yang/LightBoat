@@ -42,7 +42,16 @@ local function toggle_check_box(start_line, end_line)
   end
 end
 local operation = {
-  ['<localleader>f'] = "<c-g>u<esc>/<++><cr>c4l<cmd>call histdel('/', -1)<cr>",
+  ['<localleader>f'] = function()
+    local pattern = '<++>'
+    local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+    local cur_buf = vim.api.nvim_get_current_buf()
+    local match = vim.fn.matchbufline(cur_buf, pattern, row, vim.api.nvim_buf_line_count(cur_buf))[1]
+    if match then
+      vim.api.nvim_win_set_cursor(0, { match.lnum, match.byteidx })
+      util.key.feedkeys('<c-g>u' .. string.rep('<del>', #pattern), 'n')
+    end
+  end,
   ['<localleader>1'] = '<c-g>u# ',
   ['<localleader>2'] = '<c-g>u## ',
   ['<localleader>3'] = '<c-g>u### ',
