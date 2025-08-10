@@ -202,6 +202,7 @@ local spec = {
       enabled = vim.fn.executable('rg') == 1,
       jump = { match = true },
       previewers = { file = {} },
+      sort = { fields = { 'score:desc', '#text', 'text', 'file', 'idx' } },
       win = {
         input = {
           keys = {
