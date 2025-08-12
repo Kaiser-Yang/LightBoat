@@ -25,10 +25,15 @@ local feedkeys = util.key.feedkeys
 local key_state = { hlsearch = false, diagnostic = false, mouse_scroll = false }
 
 local function set_key_state(key)
-  for k, _ in pairs(key_state) do
-    if k ~= key then key_state[k] = false end
+  if key and key:match('[ztb]') and key_state['z'] then
+    key_state['z'] = nil
+    return
   end
   if key then key_state[key] = true end
+  if key == 'z' then return end
+  for k, _ in pairs(key_state) do
+    if k ~= key then key_state[k] = nil end
+  end
 end
 
 local function on_finished()
@@ -469,8 +474,10 @@ M.setup = util.setup_check_wrap('lightboat.plugin.snack', function()
       or key == util.key.termcodes('Lspsaga diagnostic_jump_next<cr>')
     then
       set_key_state('diagnostic')
+    elseif key == 'z' then
+      set_key_state('z')
     elseif not key:match('^%s*$') then
-      set_key_state()
+      set_key_state(key)
     end
   end)
   return spec
