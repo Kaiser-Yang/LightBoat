@@ -94,9 +94,10 @@ local operation = {
   end,
   ['<c-a>'] = function()
     local res
-    if vim.fn.mode('1') == 'c' then
+    local mode = vim.fn.mode('1')
+    if mode == 'c' then
       res = '<home>'
-    elseif vim.fn.mode('1') ~= 'n' then
+    elseif mode == 'i' then
       res = '<c-o>^'
     else
       res = '^'
@@ -167,7 +168,7 @@ local operation = {
     local status = not vim.lsp.inlay_hint.is_enabled()
     local msg = status and 'Inlay hints enabled' or 'Inlay hints disabled'
     vim.notify(msg, nil, { title = 'LSP' })
-    vim.lsp.inlay_hint.enable()
+    vim.lsp.inlay_hint.enable(status)
   end,
   ['<leader>ts'] = function()
     local buf = vim.api.nvim_get_current_buf()
