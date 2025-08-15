@@ -15,10 +15,6 @@ local spec = {
   keys = {},
   opts = {
     open_fold_hl_timeout = 0, -- disable highlighting when opening folds
-    provider_selector = function(buf)
-      if require('lightboat.extra.big_file').is_big_file(buf) then return '' end
-      return { 'treesitter', 'indent' }
-    end,
     fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
       local newVirtText = {}
       local suffix = (' 󰁂 %d '):format(endLnum - lnum)
