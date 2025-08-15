@@ -13,6 +13,7 @@ local fold_sign_cache = {}
 --- @param b number Must greater than or equal to zero
 local function cantor_pair(a, b) return (a + b) * (a + b + 1) / 2 + b end
 
+local sign_group = 'LightBoatFoldSignSignGroup'
 local function update_range(buf, first, last)
   -- do not handle invisible buffers
   if not c.buffer.is_visible_buffer(buf) then
@@ -22,7 +23,6 @@ local function update_range(buf, first, last)
   fold_sign_cache[buf] = util.ensure_list(fold_sign_cache[buf])
   local cache = fold_sign_cache[buf]
   local last_fold_end
-  local sign_group = 'LightBoatFoldSignSignGroup'
   for lnum = first, last do
     local fold_lvl = vim.fn.foldlevel(lnum)
     local sign_name

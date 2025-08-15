@@ -1,6 +1,7 @@
 return {
   enabled = true,
   enable_spell_check = true,
+  max_search_lines = 10,
   keys = {
     ['<localleader>f'] = { key = '<localleader>f', mode = 'i', buffer = true },
     ['<localleader>1'] = { key = '<localleader>1', mode = 'i', buffer = true },
