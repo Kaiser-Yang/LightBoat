@@ -6,7 +6,7 @@ local c
 local operation = {
   ['<leader>f'] = function()
     require('conform').format({ async = true, lsp_format = 'fallback' }, function()
-      if vim.api.nvim_get_mode().mode ~= 'n' then vim.cmd('normal! <esc>') end
+      if vim.api.nvim_get_mode().mode ~= 'n' then util.key.feedkeys('<esc>', 'n') end
     end)
   end,
 }
