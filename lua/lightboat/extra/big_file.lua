@@ -36,10 +36,16 @@ M.setup = util.setup_check_wrap('lightboat.extra.big_file', function()
   c = config.get().extra.big_file
   if not c.enabled then return nil end
   group = vim.api.nvim_create_augroup('LightBoatBigFile', {})
+  local origin
   vim.api.nvim_create_autocmd('BufEnter', {
     group = group,
     callback = function(ev)
-      if M.is_big_file(ev.buf) then vim.o.incsearch = false end
+      if M.is_big_file(ev.buf) then
+        origin = vim.o.incsearch
+        vim.o.incsearch = false
+      elseif origin ~= nil then
+        vim.o.incsearch = origin
+      end
     end,
   })
 end, M.clear)
