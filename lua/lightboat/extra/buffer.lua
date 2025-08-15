@@ -62,28 +62,34 @@ local function quit(buf)
     local error = not res:match('^%s*$')
     return error and res or nil
   end
-  if #tabs > 1 and #cur_tab_visible_bufs <= 1 then
-    if safe_command('tabclose', {}) and not hold_by_other then vim.cmd('bdelete ' .. buf) end
-    return
-  elseif not c.is_visible_buffer(buf) or #visible_bufs <= 1 then
+  local function try_to_bd()
+    if hold_by_other then return end
+    vim.api.nvim_buf_delete(buf, { force = false, unload = false })
+  end
+  if not c.is_visible_buffer(buf) then
     local target_win
-    if not c.is_visible_buffer(buf) then
-      local target_buffer = get_target_buf(true)
-      if target_buffer then
-        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-          local win_buf = vim.api.nvim_win_get_buf(win)
-          if win_buf == target_buffer then
-            target_win = win
-            break
-          end
+    local target_buffer = get_target_buf(true)
+    if target_buffer then
+      for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        local win_buf = vim.api.nvim_win_get_buf(win)
+        if win_buf == target_buffer then
+          target_win = win
+          break
         end
       end
     end
     if target_win then vim.api.nvim_set_current_win(target_win) end
-    if #visible_bufs <= 1 then
-      vim.cmd('q')
+    vim.api.nvim_win_close(cur_win, false)
+    try_to_bd()
+    return
+  elseif #tabs > 1 and #cur_tab_visible_bufs <= 1 then
+    if safe_command('tabclose', {}) then try_to_bd() end
+    return
+  elseif #visible_bufs <= 1 then
+    if not hold_by_other then
+      vim.cmd('qa')
     else
-      vim.api.nvim_win_close(cur_win, false)
+      vim.cmd('q')
     end
     return
   end
@@ -94,7 +100,7 @@ local function quit(buf)
   else
     vim.api.nvim_win_close(cur_win, false)
   end
-  if not hold_by_other then vim.api.nvim_buf_delete(buf, { force = false, unload = false }) end
+  try_to_bd()
 end
 
 local operation = { Q = quit }
