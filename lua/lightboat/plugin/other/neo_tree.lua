@@ -165,6 +165,7 @@ local spec = {
 
   {
     's1n7ax/nvim-window-picker',
+    lazy = true,
     version = '2.*',
     opts = {
       hint = 'floating-big-letter',
