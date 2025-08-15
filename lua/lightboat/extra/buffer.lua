@@ -94,7 +94,7 @@ local function quit(buf)
   else
     vim.api.nvim_win_close(cur_win, false)
   end
-  if not hold_by_other then vim.api.nvim_buf_delete(buf, { force = false, unload = true }) end
+  if not hold_by_other then vim.api.nvim_buf_delete(buf, { force = false, unload = false }) end
 end
 
 local operation = { Q = quit }
