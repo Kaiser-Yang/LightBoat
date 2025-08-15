@@ -60,7 +60,7 @@ end
 function M.ensure_list(value)
   if type(value) == 'table' then
     return value
-  elseif type(value) == 'string' then
+  elseif type(value) == 'string' or type(value) == 'function' then
     return { value }
   elseif not value then
     return {}
