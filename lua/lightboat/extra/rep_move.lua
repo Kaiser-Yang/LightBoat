@@ -160,7 +160,7 @@ end
 
 function M.clear()
   last_motion = {}
-  if c.enabled then
+  if c and c.enabled then
     del({ 'n', 'v' }, ',')
     del({ 'n', 'v' }, ';')
   end

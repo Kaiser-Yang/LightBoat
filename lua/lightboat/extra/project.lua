@@ -15,15 +15,14 @@ local refresh_project_config = function(show_info)
       local ok, err = pcall(function() vim.cmd('source ' .. file) end)
       if not ok then
         vim.notify('Error sourcing file: ' .. file .. '\n' .. err, vim.log.levels.ERROR)
-        return false
+        return
       elseif show_info then
         vim.notify('Sourced file: ' .. file, vim.log.levels.INFO)
       end
     else
       vim.notify('File not readable: ' .. file, vim.log.levels.WARN)
-      return false
+      return
     end
-    return true
   end
 end
 
@@ -32,7 +31,7 @@ function M.clear()
     vim.api.nvim_del_augroup_by_id(group)
     group = nil
   end
-  if c.enabled then vim.api.nvim_del_user_command('RefreshProjectConfig') end
+  if c and c.enabled then vim.api.nvim_del_user_command('RefreshProjectConfig') end
   c = nil
 end
 
