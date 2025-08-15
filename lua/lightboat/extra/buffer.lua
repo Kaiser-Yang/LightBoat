@@ -13,7 +13,7 @@ local group
 local function get_visible_bufs()
   local res = {}
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if c.is_visible_buffer(buf) then table.insert(res, buf) end
+    if c and c.is_visible_buffer(buf) then table.insert(res, buf) end
   end
   return res
 end
@@ -94,7 +94,7 @@ local function quit(buf)
   else
     vim.api.nvim_win_close(cur_win, false)
   end
-  if not hold_by_other then vim.api.nvim_buf_delete(buf, { force = false, unload = false }) end
+  if not hold_by_other then vim.api.nvim_buf_delete(buf, { force = false, unload = true }) end
 end
 
 local operation = { Q = quit }
@@ -124,7 +124,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.buffer', function()
   vim.api.nvim_create_autocmd('BufEnter', {
     group = group,
     callback = function(ev)
-      if not c.is_visible_buffer(ev.buf) then return end
+      if not c or not c.is_visible_buffer(ev.buf) then return end
       local visible_bufs = get_visible_bufs()
       -- This happens when failing to delete one buffer
       if buffer_cache.capacity > c.visible_buffer_limit then
