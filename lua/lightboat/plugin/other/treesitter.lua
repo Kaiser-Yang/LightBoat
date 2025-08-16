@@ -163,6 +163,14 @@ M.setup = util.setup_check_wrap('lightboat.plugin.treesitter', function()
       pcall(vim.treesitter.start)
     end,
   })
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+    group = group,
+    callback = function(args)
+      if not big_file.is_big_file(args.buf) or vim.treesitter.highlighter.active[args.buf] == nil then return end
+      vim.treesitter.stop()
+      vim.schedule(function() vim.notify('Treesitter stopped for big file', vim.log.levels.WARN) end)
+    end,
+  })
   return spec
 end, M.clear)
 
