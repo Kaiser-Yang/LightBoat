@@ -1,6 +1,8 @@
 local util = require('lightboat.util')
 local config = require('lightboat.config')
 local c
+local group
+local big_file = require('lightboat.extra.big_file')
 
 local rep_move = require('lightboat.extra.rep_move')
 local prev_todo, next_todo = rep_move.make(
@@ -45,12 +47,26 @@ function M.spec() return spec end
 function M.clear()
   spec.keys = {}
   c = nil
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.todo', function()
   c = config.get().todo
   if not c.enabled then return nil end
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
+  group = vim.api.nvim_create_augroup('LightBoatTodo', {})
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+    group = group,
+    callback = function(ev)
+      if not big_file.is_big_file(ev.buf) then return end
+      local h = require('todo-comments.highlight')
+      h.stop()
+      h.start()
+    end,
+  })
   return spec
 end, M.clear)
 
