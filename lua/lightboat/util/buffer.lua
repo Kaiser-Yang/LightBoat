@@ -7,6 +7,14 @@ function M.normalize_buf(buf)
   return buf
 end
 
+function M.get_buf_size(buf)
+  buf = M.normalize_buf(buf)
+  local res = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf) - 1)
+  -- Add size of the last line
+  res = res + #vim.api.nvim_buf_get_lines(buf, -1, -1, false)
+  return res
+end
+
 --- Normalize the tab page number to its real tab page identity.
 --- @param tabpage number? The tab page number, defaults to the current tab page.
 --- @return number The normalized tab page number.

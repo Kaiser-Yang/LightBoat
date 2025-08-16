@@ -11,9 +11,7 @@ local group
 function M.is_big_file(buf)
   if not c or not c.enabled then return false end
   buf = buffer.normalize_buf(buf)
-  local buf_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf) - 1)
-  -- Add size of the last line
-  buf_size = buf_size + #vim.api.nvim_buf_get_lines(buf, -1, -1, false)
+  local buf_size = buffer.get_buf_size(buf)
   local line_count = vim.api.nvim_buf_line_count(buf)
   return c.big_file_total and buf_size > c.big_file_total
     or c.big_file_avg_line and buf_size > c.big_file_avg_line * line_count
