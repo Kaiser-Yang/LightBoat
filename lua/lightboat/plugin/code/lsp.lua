@@ -142,6 +142,27 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
       end, { buffer = true })
     end,
   })
+  vim.api.nvim_create_autocmd('TextYankPost', {
+    group = group,
+    callback = function(ev)
+      if not big_file.is_big_file(ev.buf) then return end
+      local clients = vim.lsp.get_clients({ bufnr = ev.buf })
+      local notice = false
+      for _, client in ipairs(clients) do
+        if client.attached_buffers[ev.buf] then
+          vim.lsp.buf_detach_client(ev.buf, client.id)
+          notice = true
+        end
+      end
+      if notice then
+        vim.notify(
+          'LSP client for this file has been detached due to its size.',
+          vim.log.levels.WARN,
+          { title = 'LSP' }
+        )
+      end
+    end,
+  })
   return spec
 end, M.clear)
 
