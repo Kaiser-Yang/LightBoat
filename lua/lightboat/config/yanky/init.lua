@@ -1,11 +1,9 @@
-local big_file_check_wrap = require('lightboat.action').big_file_check_wrap
 return {
   enabled = true,
   restore_anonymous_reg = true,
   keys = {
     ['y'] = {
       key = 'y',
-      prev = big_file_check_wrap('y'),
       mode = { 'n', 'x', 'o' },
       expr = true,
       opts = { consider_wrap = false, consider_invisible = true, increase_count = true },
@@ -26,20 +24,8 @@ return {
       desc = 'Line wise yank to + reg',
       opts = { consider_wrap = false, consider_invisible = true, increase_count = true },
     },
-    ['<leader>y'] = {
-      key = '<leader>y',
-      prev = big_file_check_wrap('"+y'),
-      expr = true,
-      desc = 'Yank to + reg',
-      mode = { 'n', 'x' },
-    },
-    ['<m-c>'] = {
-      key = '<m-c>',
-      prev = big_file_check_wrap('"+y'),
-      mode = { 'n', 'x' },
-      expr = true,
-      desc = 'Copy to + reg',
-    },
+    ['<leader>y'] = { key = '<leader>y', expr = true, desc = 'Yank to + reg', mode = { 'n', 'x' } },
+    ['<m-c>'] = { key = '<m-c>', mode = { 'n', 'x' }, expr = true, desc = 'Copy to + reg' },
     ['<c-rightmouse>'] = {
       key = '<c-rightmouse>',
       prev = 'try_to_paste_image_p_with_curl',
