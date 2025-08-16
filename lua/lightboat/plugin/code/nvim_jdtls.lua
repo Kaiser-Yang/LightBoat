@@ -80,7 +80,12 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.nvim_jdtls', function()
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
     pattern = 'java',
-    callback = function() require('jdtls').start_or_attach(M.get_jdtls_config()) end,
+    callback = function()
+      if require('lightboat.extra.big_file').is_big_file() then
+        vim.notify('Skipping jdtls for big file', vim.log.levels.WARN)
+      end
+      require('jdtls').start_or_attach(M.get_jdtls_config())
+    end,
   })
   return spec
 end, M.clear)
