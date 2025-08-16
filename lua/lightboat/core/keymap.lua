@@ -34,7 +34,7 @@ local function separator_wrap(keys)
       end
       res = res .. (yanky_loaded and '<plug>(YankyYank)' or 'y')
     else
-      res = res .. keys[1]
+      res = res .. keys:sub(1, 1)
     end
     vim.schedule(function() feedkeys(keys:sub(2, 2), 'n') end)
     return res
