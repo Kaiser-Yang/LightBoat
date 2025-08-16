@@ -5,7 +5,7 @@ local spec = {
   opts = {
     execution_message = { message = '' },
     -- Save a large file may take seconds
-    conditon = function(buf) return not require('lightboat.extra.big_file').is_big_file(buf) end,
+    condition = function(buf) return not require('lightboat.extra.big_file').is_big_file(buf) end,
   },
 }
 local M = {}
