@@ -339,6 +339,9 @@ M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
     if not v or not operation[k] then goto continue end
     spec[#spec].opts.keymap[v.key] = operation[k]
     if vim.tbl_contains({ '<cr>', '<c-j>', '<c-k>' }, k) then spec[#spec].opts.cmdline.keymap[v.key] = operation[k] end
+    if k == '<tab>' then
+      spec[#spec].opts.cmdline.keymap[v.key] = { function(cmp) return cmp.accept({ index = 1 }) end }
+    end
     ::continue::
   end
   local extra_c = config.get().extra
