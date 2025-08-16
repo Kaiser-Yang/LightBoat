@@ -239,6 +239,7 @@ local spec = {
       sources = {
         default = M.default_sources,
         providers = {
+          buffer = { enabled = function() return not require('lightboat.extra.big_file').is_big_file() end },
           avante = { name = 'Avante', module = 'blink-cmp-avante' },
           git = { name = 'Git', module = 'blink-cmp-git', opts = blink_cmp_git_opts },
           dictionary = {
