@@ -21,14 +21,23 @@ if c.delete_default_diagnostic_under_cursor then
   del('n', '<c-w>d')
   del('n', '<c-w><c-d>')
 end
+local yanky_loaded
 if c.separate_operator.ya then
   map('n', 'ya', function()
+    if not yanky_loaded then
+      pcall(require, 'yanky')
+      yanky_loaded = true
+    end
     vim.schedule(function() feedkeys('a', 'n') end)
     return '<esc>y'
   end, { expr = true })
 end
 if c.separate_operator.yi then
   map('n', 'yi', function()
+    if not yanky_loaded then
+      pcall(require, 'yanky')
+      yanky_loaded = true
+    end
     vim.schedule(function() feedkeys('i', 'n') end)
     return '<esc>y'
   end, { expr = true })
