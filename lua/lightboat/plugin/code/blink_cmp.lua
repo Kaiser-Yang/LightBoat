@@ -218,24 +218,13 @@ local spec = {
           draw = {
             align_to = 'label',
             padding = 0,
-            columns = {
-              { 'kind_icon' },
-              { 'label', 'label_description', gap = 1 },
-              { 'source_name' },
-            },
-            components = {
-              source_name = {
-                text = function(ctx) return '[' .. ctx.source_name .. ']' end,
-              },
-            },
+            columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 }, { 'source_name' } },
+            components = { source_name = { text = function(ctx) return '[' .. ctx.source_name .. ']' end } },
           },
         },
         documentation = { auto_show = true, window = { border = 'rounded' } },
       },
-      signature = {
-        enabled = true,
-        window = { border = 'rounded', show_documentation = false },
-      },
+      signature = { enabled = true, window = { border = 'rounded', show_documentation = false } },
       --- @type table<string, string|table>
       keymap = { preset = 'none' },
       cmdline = {
@@ -250,24 +239,13 @@ local spec = {
       sources = {
         default = M.default_sources,
         providers = {
-          avante = {
-            name = 'Avante',
-            module = 'blink-cmp-avante',
-          },
-          git = {
-            name = 'Git',
-            module = 'blink-cmp-git',
-            opts = blink_cmp_git_opts,
-          },
+          avante = { name = 'Avante', module = 'blink-cmp-avante' },
+          git = { name = 'Git', module = 'blink-cmp-git', opts = blink_cmp_git_opts },
           dictionary = {
             name = 'Dict',
             module = 'blink-cmp-dictionary',
             min_keyword_length = 3,
-            opts = {
-              dictionary_files = {
-                util.get_light_boat_root() .. '/dict/en_dict.txt',
-              },
-            },
+            opts = { dictionary_files = { util.get_light_boat_root() .. '/dict/en_dict.txt' } },
           },
           lsp = {
             fallbacks = {},
