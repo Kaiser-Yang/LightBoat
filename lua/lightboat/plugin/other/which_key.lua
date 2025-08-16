@@ -11,7 +11,10 @@ local spec = {
   opts = {
     delay = vim.o.timeoutlen,
     sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
-    plugins = { spelling = { enabled = false } },
+    -- PERF:
+    -- When enabling the registers plugin,
+    -- it will cause a performance problem when the content is large.
+    plugins = { spelling = { enabled = false }, registers = true, },
   },
   keys = {},
 }
