@@ -146,7 +146,7 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
       end, { buffer = true })
     end,
   })
-  vim.api.nvim_create_autocmd('TextYankPost', {
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
     group = group,
     callback = function(ev)
       if not big_file.is_big_file(ev.buf) then return end
