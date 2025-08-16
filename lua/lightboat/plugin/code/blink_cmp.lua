@@ -33,6 +33,7 @@ end
 --- Returns true if the cursor is inside a block of the specified types,
 --- false if not, or nil if unable to determine.
 function M.inside_block(types)
+  if require('lightboat.extra.big_file').is_big_file() then return nil end
   local node_under_cursor = vim.treesitter.get_node()
   local parser = vim.treesitter.get_parser(nil, nil, { error = false })
   if not parser or not node_under_cursor then return nil end
