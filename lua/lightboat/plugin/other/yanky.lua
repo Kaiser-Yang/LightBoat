@@ -89,6 +89,8 @@ M.setup = util.setup_check_wrap('lightboat.plugin.other.yanky', function()
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   if c.restore_anonymous_reg then
     group = vim.api.nvim_create_augroup('LightBoatYanky', {})
+    -- PERF:
+    -- When the reg has a large content, this will use a lot of memory
     local before_anonymous_reg_content
     vim.api.nvim_create_autocmd('TextYankPost', {
       group = group,
