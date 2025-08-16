@@ -5,7 +5,10 @@ local spec = {
   opts = {
     execution_message = { message = '' },
     -- Save a large file may take seconds
-    condition = function(buf) return not require('lightboat.extra.big_file').is_big_file(buf) end,
+    condition = function(buf)
+      if not vim.api.nvim_buf_is_valid(buf) then return false end
+      return not require('lightboat.extra.big_file').is_big_file(buf)
+    end,
   },
 }
 local M = {}
