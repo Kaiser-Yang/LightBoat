@@ -65,6 +65,8 @@ local operation = {
 local spec = {
   'gbprod/yanky.nvim',
   opts = {
+    -- PERF:
+    -- Paste or copy large text will be slow
     picker = { highlight = { on_yank = true, on_put = true, timer = 50 } },
     system_clipboard = { sync_with_ring = true, clipboard_register = '+' },
   },
