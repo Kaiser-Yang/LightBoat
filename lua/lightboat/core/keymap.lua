@@ -22,49 +22,27 @@ if c.delete_default_diagnostic_under_cursor then
   del('n', '<c-w><c-d>')
 end
 local yanky_loaded
-if c.separate_operator.ya then
-  map('n', 'ya', function()
-    if not yanky_loaded then
-      pcall(require, 'yanky')
-      yanky_loaded = true
+local function separator_wrap(keys)
+  assert(type(keys) == 'string', 'keys must be a string')
+  assert(#keys == 2, 'keys must be 2 characters long')
+  return function()
+    local res = '<esc>'
+    if keys:sub(1, 1) == 'y' then
+      if yanky_loaded == nil then
+        local ok, _ = pcall(require, 'yanky')
+        yanky_loaded = ok
+      end
+      res = res .. (yanky_loaded and '<plug>(YankyYank)' or 'y')
+    else
+      res = res .. keys[1]
     end
-    vim.schedule(function() feedkeys('a', 'n') end)
-    return '<esc>y'
-  end, { expr = true })
+    vim.schedule(function() feedkeys(keys:sub(2, 2), 'n') end)
+    return res
+  end
 end
-if c.separate_operator.yi then
-  map('n', 'yi', function()
-    if not yanky_loaded then
-      pcall(require, 'yanky')
-      yanky_loaded = true
-    end
-    vim.schedule(function() feedkeys('i', 'n') end)
-    return '<esc>y'
-  end, { expr = true })
-end
-if c.separate_operator.ca then
-  map('n', 'ca', function()
-    vim.schedule(function() feedkeys('a', 'n') end)
-    return '<esc>c'
-  end, { expr = true })
-end
-if c.separate_operator.ci then
-  map('n', 'ci', function()
-    vim.schedule(function() feedkeys('i', 'n') end)
-    return '<esc>c'
-  end, { expr = true })
-end
-if c.separate_operator.da then
-  map('n', 'da', function()
-    vim.schedule(function() feedkeys('a', 'n') end)
-    return '<esc>d'
-  end, { expr = true })
-end
-if c.separate_operator.di then
-  map('n', 'di', function()
-    vim.schedule(function() feedkeys('i', 'n') end)
-    return '<esc>d'
-  end, { expr = true })
+
+for keys, value in pairs(c.separate_operator) do
+  if value then map('n', keys, separator_wrap(keys), { expr = true }) end
 end
 
 if c.disable_default_find_match_in_inserat then
