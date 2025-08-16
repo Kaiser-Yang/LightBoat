@@ -13,14 +13,13 @@ function M.extra_accept(cmp)
   if completion_list.get_selected_item() then return cmp.accept() end
   local snippet_kind = require('blink.cmp.types').CompletionItemKind.Snippet
   local first = completion_list.items[1]
-  local input_str = completion_list.context.line:sub(
-    completion_list.context.bounds.start_col,
-    completion_list.context.bounds.start_col + completion_list.context.bounds.length
-  )
+  local start = completion_list.context.bounds.start_col
+  local len = completion_list.context.bounds.length
+  local input_str = completion_list.context.line:sub(start, start + len - 1)
   if
     first
     and first.label:sub(1, #input_str) == input_str
-    and (first.kind == snippet_kind or first.source_name == 'Path')
+    and (first.kind == snippet_kind or first.source_name == 'Cmdline' and vim.fn.getcmdcompltype() == 'file')
   then
     return cmp.accept({ index = 1 })
   end
@@ -90,8 +89,6 @@ local operation = {
   -- We should remove this mapping when blink can handle this case
   ['<c-x>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
   ['<c-s>'] = { 'show_signature', 'hide_signature', 'fallback' },
-  -- FIX:
-  -- This cr not work for cmdline
   ['<cr>'] = { M.extra_accept, 'fallback' },
   ['<tab>'] = { 'snippet_forward', 'fallback' },
   ['<s-tab>'] = { 'snippet_backward', 'fallback' },
