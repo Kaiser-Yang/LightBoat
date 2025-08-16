@@ -2,7 +2,11 @@ local util = require('lightboat.util')
 local spec = {
   'Pocco81/auto-save.nvim',
   event = 'VeryLazy',
-  opts = { execution_message = { message = '' } },
+  opts = {
+    execution_message = { message = '' },
+    -- Save a large file may take seconds
+    conditon = function(buf) return not require('lightboat.extra.big_file').is_big_file(buf) end,
+  },
 }
 local M = {}
 
