@@ -19,7 +19,7 @@ local operation = {
   ['[t'] = prev_todo,
 }
 local spec = {
-  'folke/todo-comments.nvim',
+  'Kaiser-Yang/todo-comments.nvim',
   dependencies = { 'nvim-lua/plenary.nvim' },
   event = 'VeryLazy',
   opts = {
