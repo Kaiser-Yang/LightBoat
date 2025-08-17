@@ -12,7 +12,7 @@ local operation = {
 }
 
 local spec = {
-  { 'rcarriga/nvim-notify' },
+  { 'rcarriga/nvim-notify', lazy = true },
   {
     'folke/noice.nvim',
     -- HACK:
