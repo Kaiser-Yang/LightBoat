@@ -166,9 +166,17 @@ M.setup = util.setup_check_wrap('lightboat.plugin.treesitter', function()
   vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
     group = group,
     callback = function(args)
-      if not big_file.is_big_file(args.buf) or vim.treesitter.highlighter.active[args.buf] == nil then return end
-      vim.treesitter.stop()
-      vim.schedule(function() vim.notify('Treesitter stopped for big file', vim.log.levels.WARN) end)
+      if not big_file.is_big_file(args.buf) then return end
+      if vim.treesitter.highlighter.active[args.buf] then
+        vim.treesitter.stop()
+        vim.schedule(function() vim.notify('Treesitter stopped for big file', vim.log.levels.WARN) end)
+      end
+      local ok, ts_context = pcall(require, 'nvim-treesitter-context')
+      if not ok or not ts_context.enabled() then return end
+      -- HACK:
+      -- There is no information about attached buffer, so we can not notify
+      -- that the plugin was disabled for this buffeer
+      ts_context.enable() -- Restart to avoid large memery use for large files
     end,
   })
   return spec
