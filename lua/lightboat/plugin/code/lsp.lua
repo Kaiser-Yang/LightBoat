@@ -146,6 +146,9 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
       end, { buffer = true })
     end,
   })
+  -- PERF:
+  -- https://github.com/neovim/neovim/issues/35361
+  -- Memory did not goes down for large files???
   vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
     group = group,
     callback = function(ev)

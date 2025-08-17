@@ -30,6 +30,8 @@ local operation = {
 
 local spec = {
   {
+    -- PERF:
+    -- https://github.com/altermo/ultimate-autopair.nvim/issues/112
     'altermo/ultimate-autopair.nvim',
     event = { 'InsertEnter' },
     branch = 'v0.6',
@@ -53,6 +55,8 @@ local spec = {
     },
   },
   {
+    -- PERF:
+    -- https://github.com/kylechui/nvim-surround/issues/398
     'kylechui/nvim-surround',
     version = '*',
     opts = {

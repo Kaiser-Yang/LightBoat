@@ -8,6 +8,10 @@ local operation = {
     vim.lsp.buf.hover()
   end,
 }
+-- PERF:
+-- Large memory usage when using ufo with large files
+-- And disabling ufo can not release the memory
+-- https://github.com/kevinhwang91/nvim-ufo/issues/311
 local spec = {
   'kevinhwang91/nvim-ufo',
   dependencies = { 'kevinhwang91/promise-async' },
