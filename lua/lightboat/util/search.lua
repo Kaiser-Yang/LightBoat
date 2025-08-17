@@ -3,7 +3,6 @@ local M = {}
 --- Check if the cursor is within a match of the last search pattern.
 --- @return boolean true if the cursor is in a match, false otherwise
 function M.cursor_in_match()
-    if require('lightboat.extra.big_file').is_big_file() then return false end
     local pattern = vim.fn.getreg('/') -- Get last search pattern
     if pattern == '' then return false end -- Skip if no pattern
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
