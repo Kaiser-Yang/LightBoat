@@ -5,6 +5,7 @@ local rep_move = require('lightboat.extra.rep_move')
 local prev_matchup, next_matchup = rep_move.make('<plug>(matchup-g%)', '<plug>(matchup-%)')
 local prev_multi_matchup, next_multi_matchup = rep_move.make('<plug>(matchup-[%)', '<plug>(matchup-][%)')
 local prev_inner_matchup, next_inner_matchup = rep_move.make('<plug>(matchup-z%)', '<plug>(matchup-Z%)')
+local del = util.key.del
 local M = {}
 local config = require('lightboat.config')
 local c
@@ -204,9 +205,13 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   })
   local function disable_autotag_for_large_files(args)
     if not big_file.is_big_file(args.buf) then return end
-    local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
-    if not ok then return end
-    internal.detach(args.buf)
+    local ok1, _ = pcall(del, 'i', '/', { buffer = args.buf })
+    local ok2, _ = pcall(del, 'i', '>', { buffer = args.buf })
+    if ok1 or ok2 then
+      vim.schedule(
+        function() vim.notify('Disabled nvim-ts-autotag for current file due to its size.', vim.log.levels.WARN) end
+      )
+    end
   end
   group = vim.api.nvim_create_augroup('LightBoatPair', {})
   vim.api.nvim_create_autocmd({ 'Filetype', 'TextChanged', 'TextChangedI' }, {
