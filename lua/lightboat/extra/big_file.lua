@@ -11,7 +11,13 @@ local group
 function M.is_big_file(buf)
   if not c or not c.enabled then return false end
   buf = buffer.normalize_buf(buf)
-  local buf_size = buffer.get_buf_size(buf)
+  local buf_size
+  local file_name = vim.api.nvim_buf_get_name(buf)
+  if not vim.bo[buf].modified and buffer.is_file(file_name) then
+    buf_size = vim.fn.getfsize(file_name)
+  else
+    buf_size = buffer.get_buf_size(buf)
+  end
   local line_count = vim.api.nvim_buf_line_count(buf)
   return c.big_file_total and buf_size > c.big_file_total
     or c.big_file_avg_line and buf_size > c.big_file_avg_line * line_count
@@ -30,15 +36,17 @@ M.setup = util.setup_check_wrap('lightboat.extra.big_file', function()
   if not c.enabled then return nil end
   group = vim.api.nvim_create_augroup('LightBoatBigFile', {})
   local origin
-  vim.api.nvim_create_autocmd('BufEnter', {
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufEnter', 'FileType' }, {
     group = group,
     callback = function(ev)
-      if M.is_big_file(ev.buf) then
+      local is_big = M.is_big_file(ev.buf)
+      if is_big then
         origin = vim.o.incsearch
         vim.o.incsearch = false
       elseif origin ~= nil then
         vim.o.incsearch = origin
       end
+      vim.api.nvim_exec_autocmds('User', { pattern = 'BigFileDetector', group = group, data = is_big })
     end,
   })
 end, M.clear)

@@ -186,8 +186,8 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     -- PERF:
     -- This plugin may cause performance issues with large files.
     condition = function(buf)
-      return not big_file.is_big_file(buf)
-        and (not c.pair.rainbow_limit_lines or vim.api.nvim_buf_line_count(buf) <= c.pair.rainbow_limit_lines)
+      return (not c.pair.rainbow_limit_lines or vim.api.nvim_buf_line_count(buf) <= c.pair.rainbow_limit_lines)
+        and not big_file.is_big_file(buf)
     end,
   }, vim.g.rainbow_delimiters or {})
   util.set_hls({
@@ -202,20 +202,17 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     { 0, 'RainbowDelimiterBlue', { fg = '#617FFF' } },
     { 0, 'RainbowDelimiterGreen', { fg = '#98C349' } },
   })
-  local function disable_autotag_for_large_files(args)
-    if not big_file.is_big_file(args.buf) then return end
-    local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
-    if not ok then return end
-    if args.event == 'Filetype' then
-      internal.detach(args.buf)
-    else
-      internal.detach(args.buf)
-    end
-  end
+
   group = vim.api.nvim_create_augroup('LightBoatPair', {})
-  vim.api.nvim_create_autocmd({ 'Filetype', 'TextChanged', 'TextChangedI' }, {
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'BigFileDetector',
     group = group,
-    callback = disable_autotag_for_large_files,
+    callback = function(ev)
+      if not ev.data then return end
+      local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
+      if not ok then return end
+      internal.detach(ev.buf)
+    end,
   })
   return spec
 end, M.clear)
