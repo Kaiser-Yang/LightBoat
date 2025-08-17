@@ -194,7 +194,7 @@ local blink_cmp_git_opts = {
 local spec = {
   { 'Kaiser-Yang/blink-cmp-git', lazy = true },
   { 'Kaiser-Yang/blink-cmp-avante', lazy = true },
-  { 'Kaiser-Yang/blink-cmp-dictionary', lazy = true },
+  { 'Kaiser-Yang/blink-cmp-dictionary', dependencies = 'nvim-lua/plenary.nvim', lazy = true },
   { 'rafamadriz/friendly-snippets', lazy = true },
   { 'mikavilpas/blink-ripgrep.nvim', lazy = true },
   {
