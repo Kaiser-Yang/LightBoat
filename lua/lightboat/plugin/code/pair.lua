@@ -28,11 +28,6 @@ local operation = {
   },
 }
 
-local function filter()
-  return vim.fn.mode('1') ~= 'c'
-    and not vim.tbl_contains(disabled_filetype, vim.bo.filetype)
-    and not big_file.is_big_file()
-end
 local spec = {
   {
     -- PERF:
@@ -50,17 +45,12 @@ local spec = {
       space = {},
       close = { enable = false },
       config_internal_pairs = {
-        { '[', ']', filter = filter },
-        { '(', ')', filter = filter },
-        { '{', '}', filter = filter },
-        { '"', '"', filter = filter },
-        { "'", "'", filter = filter },
-        { '`', '`', filter = filter },
-        { '``', "''", filter = filter },
-        { '```', '```', filter = filter },
-        { '<!--', '-->', filter = filter },
-        { '"""', '"""', filter = filter },
-        { "'''", "'''", filter = filter },
+        { '[', ']', cmap = false, nft = disabled_filetype },
+        { '(', ')', cmap = false, nft = disabled_filetype },
+        { '{', '}', cmap = false, nft = disabled_filetype },
+        { '"', '"', cmap = false, nft = disabled_filetype },
+        { "'", "'", cmap = false, nft = disabled_filetype },
+        { '`', '`', cmap = false, nft = disabled_filetype },
       },
     },
   },
