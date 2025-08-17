@@ -1,6 +1,7 @@
 local util = require('lightboat.util')
 local config = require('lightboat.config')
 local c
+local group
 local M = {}
 local operation = {
   K = function()
@@ -55,6 +56,10 @@ local spec = {
 
 function M.clear()
   spec.keys = {}
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
   c = nil
 end
 
@@ -64,6 +69,17 @@ M.setup = util.setup_check_wrap('lightboat.plugin.ui.ufo', function()
   c = config.get().ufo
   if not c.enabled then return nil end
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
+  group = vim.api.nvim_create_augroup('LightBoatUfo', {})
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'BigFileDetector',
+    group = group,
+    callback = function(ev)
+      if not ev.data then return end
+      local ok, ufo = pcall(require, 'ufo')
+      if not ok then return end
+      ufo.detach(ev.buf)
+    end,
+  })
   return spec
 end, M.clear)
 
