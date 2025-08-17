@@ -46,6 +46,10 @@ local spec = {
       table.insert(newVirtText, { suffix, 'MoreMsg' })
       return newVirtText
     end,
+    provider_selector = function(buf)
+      if require('lightboat.extra.big_file').is_big_file(buf) then return '' end
+      return { 'lsp', 'indent' }
+    end,
   },
 }
 
