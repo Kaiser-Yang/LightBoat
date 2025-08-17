@@ -52,10 +52,7 @@ local spec = {
         { "'", "'", cmap = false },
         { '`', '`', cmap = false },
       },
-      extensions = {
-        filetype = { nft = disabled_filetype },
-        cond = { filter = function() return not big_file.is_big_file() end },
-      },
+      extensions = { filetype = { nft = disabled_filetype } },
     },
   },
   {
