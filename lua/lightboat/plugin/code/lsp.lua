@@ -162,6 +162,8 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
           notice = true
         end
       end
+      -- HACK:
+      -- https://github.com/zbirenbaum/copilot.lua/issues/536
       if notice then
         vim.schedule(
           function()
