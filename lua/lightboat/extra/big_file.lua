@@ -44,8 +44,8 @@ M.setup = util.setup_check_wrap('lightboat.extra.big_file', function()
     callback = function(ev)
       local is_big = M.is_big_file(ev.buf)
       if is_big then
-        origin.incsearch = vim.o.incsearch
-        origin.signcolumn = vim.o.signcolumn
+        if origin.incsearch == nil then origin.incsearch = vim.o.incsearch end
+        if origin.signcolumn == nil then origin.signcolumn = vim.o.signcolumn end
         vim.o.incsearch = false
         vim.o.signcolumn = 'no'
       else
