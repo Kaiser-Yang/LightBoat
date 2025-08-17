@@ -171,7 +171,7 @@ M.setup = util.setup_check_wrap('lightboat.plugin.treesitter', function()
         vim.treesitter.stop()
         vim.schedule(function() vim.notify('Treesitter stopped for big file', vim.log.levels.WARN) end)
       end
-      local ok, ts_context = pcall(require, 'nvim-treesitter-context')
+      local ok, ts_context = pcall(require, 'treesitter-context')
       if not ok or not ts_context.enabled() then return end
       -- HACK:
       -- There is no information about attached buffer, so we can not notify
