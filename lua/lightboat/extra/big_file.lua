@@ -52,7 +52,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.big_file', function()
         if origin.incsearch then vim.o.incsearch = origin.incsearch end
         if origin.signcolumn then vim.o.signcolumn = origin.signcolumn end
       end
-      vim.api.nvim_exec_autocmds('User', { pattern = 'BigFileDetector', group = group, data = is_big })
+      vim.api.nvim_exec_autocmds('User', { pattern = 'BigFileDetector', data = is_big })
     end,
   })
 end, M.clear)
