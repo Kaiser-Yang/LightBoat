@@ -88,7 +88,7 @@ local spec = {
     keys = {},
   },
   {
-    'windwp/nvim-ts-autotag',
+    'Kaiser-Yang/nvim-ts-autotag',
     ft = {
       'astro',
       'glimmer',
@@ -204,12 +204,12 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   })
   local function disable_autotag_for_large_files(args)
     if not big_file.is_big_file(args.buf) then return end
-    local ok1, _ = pcall(vim.keymap.del, 'i', '/', { buffer = args.buf })
-    local ok2, _ = pcall(vim.keymap.del, 'i', '>', { buffer = args.buf })
-    if ok1 or ok2 then
-      vim.schedule(
-        function() vim.notify('Disabled nvim-ts-autotag for current file due to its size.', vim.log.levels.WARN) end
-      )
+    local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
+    if not ok then return end
+    if args.event == 'Filetype' then
+      internal.detach(args.buf)
+    else
+      internal.detach(args.buf)
     end
   end
   group = vim.api.nvim_create_augroup('LightBoatPair', {})
