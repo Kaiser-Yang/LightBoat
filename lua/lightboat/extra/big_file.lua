@@ -35,16 +35,22 @@ M.setup = util.setup_check_wrap('lightboat.extra.big_file', function()
   c = config.get().extra.big_file
   if not c.enabled then return nil end
   group = vim.api.nvim_create_augroup('LightBoatBigFile', {})
-  local origin
+  local origin = {
+    incsearch = nil,
+    signcolumn = nil,
+  }
   vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufEnter', 'FileType' }, {
     group = group,
     callback = function(ev)
       local is_big = M.is_big_file(ev.buf)
       if is_big then
-        origin = vim.o.incsearch
+        origin.incsearch = vim.o.incsearch
+        origin.signcolumn = vim.o.signcolumn
         vim.o.incsearch = false
-      elseif origin ~= nil then
-        vim.o.incsearch = origin
+        vim.o.signcolumn = 'no'
+      else
+        if origin.incsearch then vim.o.incsearch = origin.incsearch end
+        if origin.signcolumn then vim.o.signcolumn = origin.signcolumn end
       end
       vim.api.nvim_exec_autocmds('User', { pattern = 'BigFileDetector', group = group, data = is_big })
     end,
