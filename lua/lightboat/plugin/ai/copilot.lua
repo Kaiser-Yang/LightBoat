@@ -3,11 +3,10 @@ local M = {}
 local spec = {
   'zbirenbaum/copilot.lua',
   event = { { event = 'User', pattern = 'NetworkChecked' } },
-  enabled = vim.fn.executable('node') == 1,
+  enabled = vim.fn.executable('node') == 1 and vim.fn.executable('curl') == 1,
   opts = {
     panel = { enabled = false },
     suggestion = {
-      auto_trigger = true,
       hide_during_completion = false,
       keymap = {
         accept = '<m-cr>',
@@ -21,6 +20,7 @@ local spec = {
     filetypes = { ['*'] = true },
     copilot_node_command = 'node',
     server_opts_overrides = {},
+    should_attach = function(bufnr) return not require('lightboat.extra.big_file').is_big_file(bufnr) end,
   },
 }
 function M.spec() return spec end
