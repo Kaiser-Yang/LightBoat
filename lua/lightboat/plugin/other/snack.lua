@@ -181,6 +181,8 @@ local operation = {
 }
 
 local spec = {
+  -- PERF:
+  -- https://github.com/folke/snacks.nvim/issues/2134
   'Kaiser-Yang/snacks.nvim',
   branch = 'develop',
   priority = 1000,
