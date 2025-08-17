@@ -8,6 +8,7 @@ local prev_inner_matchup, next_inner_matchup = rep_move.make('<plug>(matchup-z%)
 local M = {}
 local config = require('lightboat.config')
 local c
+local group
 local big_file = require('lightboat.extra.big_file')
 
 local operation = {
@@ -123,6 +124,10 @@ function M.clear()
   spec[2].keys = {}
   assert(spec[3][1] == 'andymass/vim-matchup')
   spec[3].keys = {}
+  if group then
+    vim.api.nvim_del_augroup_by_id(group)
+    group = nil
+  end
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
@@ -196,6 +201,17 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     { 0, 'RainbowDelimiterViolet', { fg = '#B253DF' } },
     { 0, 'RainbowDelimiterBlue', { fg = '#617FFF' } },
     { 0, 'RainbowDelimiterGreen', { fg = '#98C349' } },
+  })
+  local function disable_autotag_for_large_files(args)
+    if not big_file.is_big_file(args.buf) then return end
+    local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
+    if not ok then return end
+    internal.detach(args.buf)
+  end
+  group = vim.api.nvim_create_augroup('LightBoatPair', {})
+  vim.api.nvim_create_autocmd({ 'Filetype', 'TextChanged', 'TextChangedI' }, {
+    group = group,
+    callback = disable_autotag_for_large_files,
   })
   return spec
 end, M.clear)
