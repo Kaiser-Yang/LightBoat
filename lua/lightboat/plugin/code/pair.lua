@@ -31,8 +31,6 @@ local operation = {
 
 local spec = {
   {
-    -- PERF:
-    -- https://github.com/altermo/ultimate-autopair.nvim/issues/112
     'altermo/ultimate-autopair.nvim',
     event = { 'InsertEnter' },
     branch = 'v0.6',
@@ -53,12 +51,19 @@ local spec = {
         { "'", "'", cmap = false },
         { '`', '`', cmap = false },
       },
-      extensions = { filetype = { nft = disabled_filetype } },
+      -- PERF:
+      -- https://github.com/altermo/ultimate-autopair.nvim/issues/112
+      extensions = {
+        filetype = { nft = disabled_filetype },
+        -- This is a workaround
+        cond = {
+          p = 9999,
+          cond = function() return vim.fn.mode('1') ~= 'i' or not require('lightboat.extra.big_file').is_big_file() end,
+        },
+      },
     },
   },
   {
-    -- PERF:
-    -- https://github.com/kylechui/nvim-surround/issues/398
     'kylechui/nvim-surround',
     version = '*',
     opts = {
