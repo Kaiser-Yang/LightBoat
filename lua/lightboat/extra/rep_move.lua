@@ -54,14 +54,14 @@ local function flash_func(key)
   return function()
     -- fallback to normal find and till
     if macro() or big_file.is_big_file() then return vim.g.flash_keys[key] end
-    feedkeys(key, 'm')
     local origin = vim.o.ignorecase
     vim.o.ignorecase = false
-    vim.schedule(function() vim.o.ignorecase = origin end)
+    feedkeys(key, 'm')
     vim.schedule(function()
       local res = update_find_or_till_char()
       if not res then return end
       feedkeys(res, 'nt')
+      vim.defer_fn(function() vim.o.ignorecase = origin end, 20)
     end)
     -- case_sensitive_once()
   end
