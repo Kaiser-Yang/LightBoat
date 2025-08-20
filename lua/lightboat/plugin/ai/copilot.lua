@@ -25,12 +25,6 @@ local spec = {
         and not require('lightboat.extra.big_file').is_big_file(bufnr)
     end,
   },
-  config = function(_, opts)
-    require('copilot').setup(opts)
-    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      require('copilot.command').attach({ bufnr = buf })
-    end
-  end,
 }
 function M.spec() return spec end
 
