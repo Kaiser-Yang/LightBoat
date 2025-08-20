@@ -5,6 +5,8 @@ local M = {}
 
 local spec = {
   'hakonharnes/img-clip.nvim',
+  enabled = (vim.fn.has('mac') and vim.fn.executable('pngpaste') == 1)
+    or (vim.fn.has('linux') and (vim.fn.executable('xclip') == 1 or vim.fn.executable('wl-paste') == 1)),
   branch = 'main',
   opts = {
     default = {
