@@ -99,11 +99,7 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
       -- Large files can cause performance issues with LSP.
       -- Therefore we disable LSP for large files.
       if big_file.is_big_file(bufnr) then
-        vim.schedule(
-          function()
-            vim.notify('LSP is disabled for this file due to its size.', vim.log.levels.WARN, { title = 'LSP' })
-          end
-        )
+        vim.notify('LSP is disabled for this file due to its size.', vim.log.levels.WARN, { title = 'LSP' })
         return
       end
       if vim.bo[bufnr].buftype ~= '' then return end
