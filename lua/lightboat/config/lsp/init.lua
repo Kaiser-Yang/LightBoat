@@ -1,4 +1,4 @@
---- @class LightBoat.Opts.Extra.Lsp
+--- @class LightBoat.Opts.Lsp
 local M = {
   enabled = true,
   config = {
