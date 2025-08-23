@@ -23,9 +23,18 @@ function M.neo_tree_toggle_wrap(source)
     if neo_tree_win and neo_tree_win ~= cur_win then vim.api.nvim_set_current_win(neo_tree_win) end
     local reveal = neo_tree_win == cur_win and source ~= 'document_symbols'
     local root_markers = c.extra.root_markers or {}
+    local dir
+    if reveal then
+      dir = vim.fs.root(vim.fn.getcwd(), root_markers)
+      if not dir then
+        dir = vim.fs.root(current_file, root_markers)
+      elseif current_file and not vim.startswith(current_file, dir) then
+        dir = vim.fs.root(current_file, root_markers)
+      end
+    end
     require('neo-tree.command').execute({
       source = source,
-      dir = reveal and (vim.fs.root(vim.fn.getcwd(), root_markers) or vim.fs.root(current_file, root_markers)) or nil,
+      dir = dir,
       reveal = reveal,
       reveal_file = reveal and (current_file or vim.fn.getcwd()) or nil,
     })
