@@ -1,7 +1,7 @@
 local util = require('lightboat.util')
 local M = {}
 local spec = {
-  'zbirenbaum/copilot.lua',
+  'Kaiser-Yang/copilot.lua',
   event = { { event = 'User', pattern = 'NetworkChecked' } },
   enabled = vim.fn.executable('node') == 1 and vim.fn.executable('curl') == 1,
   opts = {
