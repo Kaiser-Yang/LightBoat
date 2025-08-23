@@ -118,7 +118,7 @@ These are telling you that the `<c-s>` in `n`, `x`, and `s` modes are occupied.
 
 #### Customize Type 2-1 Mappings
 
-Let's take a look at the default key mappings or `comment`:
+Let's take a look at the default key mappings of `comment`:
 
 ```lua
 return {
