@@ -178,15 +178,15 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   vim.g.rainbow_delimiters = vim.tbl_extend('force', {
     highlight = {
       'RainbowDelimiterRed',
-      'RainbowDelimiterOrange',
-      'RainbowDelimiterYellow',
       'RainbowDelimiterMagenta',
       'RainbowDelimiterTeal',
-      'RainbowDelimiterGrey',
       'RainbowDelimiterCyan',
+      'RainbowDelimiterOrange',
+      'RainbowDelimiterYellow',
       'RainbowDelimiterViolet',
       'RainbowDelimiterBlue',
       'RainbowDelimiterGreen',
+      'RainbowDelimiterGrey',
     },
     -- PERF:
     -- This plugin may cause performance issues with large files.
@@ -197,15 +197,15 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   }, vim.g.rainbow_delimiters or {})
   util.set_hls({
     { 0, 'RainbowDelimiterRed', { fg = '#f38ba8' } },
-    { 0, 'RainbowDelimiterOrange', { fg = '#fab387' } },
-    { 0, 'RainbowDelimiterYellow', { fg = '#f9e2af' } },
     { 0, 'RainbowDelimiterMagenta', { fg = '#FF79C6' } },
     { 0, 'RainbowDelimiterTeal', { fg = '#20B2CE' } },
-    { 0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' } },
     { 0, 'RainbowDelimiterCyan', { fg = '#5AF7EE' } },
+    { 0, 'RainbowDelimiterOrange', { fg = '#e09a5a' } },
+    { 0, 'RainbowDelimiterYellow', { fg = '#d7e07b' } },
     { 0, 'RainbowDelimiterViolet', { fg = '#B253DF' } },
     { 0, 'RainbowDelimiterBlue', { fg = '#617FFF' } },
     { 0, 'RainbowDelimiterGreen', { fg = '#98C349' } },
+    { 0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' } },
   })
 
   group = vim.api.nvim_create_augroup('LightBoatPair', {})
