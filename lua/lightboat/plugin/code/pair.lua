@@ -166,7 +166,7 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     'S',
     function()
       local res
-      if vim.v.operator == 'y' and c.pair.keys['yS'].key == 'yS' then res = '<plug>(nvim-surround-normal-cur)' end
+      if vim.v.operator == 'y' and c.pair.keys['yS'].key == 'yS' then res = '<plug>(nvim-surround-normal)$' end
       if res then vim.schedule(function() feedkeys(res, 'n') end) end
       return '<esc>'
     end,
