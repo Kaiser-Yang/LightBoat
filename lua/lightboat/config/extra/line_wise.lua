@@ -1,5 +1,7 @@
 local function default_line_wise()
-  if vim.bo.filetype:match('^snack') then return 'abs' end
+  local mode = vim.fn.mode('1')
+  if vim.bo.filetype:match('^snack') or mode == 'i' then return 'abs' end
+  if mode == 'c' then return 'abs_rel' end
   return 'abs_line_wise'
 end
 --- @class LightBoat.Opts.Extra.LineWise
