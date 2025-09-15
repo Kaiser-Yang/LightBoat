@@ -50,7 +50,7 @@ local spec = {
   },
   config = function(_, opts)
     local ok, bl = pcall(require, 'catppuccin.groups.integrations.bufferline')
-    if ok then opts.highlights = bl.get() end
+    if ok then opts.highlights = bl.get_theme() end
     require('bufferline').setup(opts)
   end,
   keys = {},
