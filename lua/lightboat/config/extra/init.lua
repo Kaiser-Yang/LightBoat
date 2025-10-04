@@ -1,6 +1,6 @@
 --- @class LightBoat.Opts.Extra
 local M = {
-  root_markers = { '.vscode', '.nvim', '.git' },
+  root_markers = { '.git', '.nvim', '.vscode' },
   markdown_fts = { 'markdown', 'gitcommit', 'text', 'Avante', 'AvanteInput' },
   big_file = require('lightboat.config.extra.big_file'),
   buffer = require('lightboat.config.extra.buffer'),
