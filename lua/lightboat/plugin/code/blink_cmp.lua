@@ -202,7 +202,7 @@ local spec = {
     version = '*',
     event = { 'InsertEnter', 'CmdlineEnter' },
     opts = {
-      fuzzy = { use_frecency = false },
+      fuzzy = { frecency = { enabled = false } },
       completion = {
         accept = { auto_brackets = { enabled = true } },
         keyword = { range = 'prefix' },
