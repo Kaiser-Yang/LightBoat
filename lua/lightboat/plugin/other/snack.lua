@@ -69,7 +69,7 @@ local function get_compile_command(filetype, filename)
     end,
     cpp = function()
       return string.format(
-        'g++ -g -Wall -std=c++17 -I include "%s" -o "%s.out" && echo RUNNING && time "./%s.out"',
+        'g++ -g -Wall -std=c++23 -I include "%s" -o "%s.out" && echo RUNNING && time "./%s.out"',
         filename,
         filename_noext,
         filename_noext
