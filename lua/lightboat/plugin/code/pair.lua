@@ -3,8 +3,8 @@ local feedkeys = util.key.feedkeys
 local disabled_filetype = { 'snacks_picker_input' }
 local rep_move = require('lightboat.extra.rep_move')
 local prev_matchup, next_matchup = rep_move.make('<plug>(matchup-g%)', '<plug>(matchup-%)')
-local prev_multi_matchup, next_multi_matchup = rep_move.make('<plug>(matchup-[%)', '<plug>(matchup-][%)')
-local prev_inner_matchup, next_inner_matchup = rep_move.make('<plug>(matchup-z%)', '<plug>(matchup-Z%)')
+local prev_multi_matchup, next_multi_matchup = rep_move.make('<plug>(matchup-[%)', '<plug>(matchup-]%)')
+local prev_inner_matchup, next_inner_matchup = rep_move.make('<plug>(matchup-Z%)', '<plug>(matchup-z%)')
 local M = {}
 local config = require('lightboat.config')
 local c
@@ -24,8 +24,8 @@ local operation = {
     ['%'] = next_matchup,
     ['[%'] = prev_multi_matchup,
     [']%'] = next_multi_matchup,
-    ['z%'] = prev_inner_matchup,
-    ['Z%'] = next_inner_matchup,
+    ['Z%'] = prev_inner_matchup,
+    ['z%'] = next_inner_matchup,
   },
 }
 

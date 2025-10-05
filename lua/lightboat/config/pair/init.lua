@@ -11,7 +11,7 @@ return {
     ['%'] = { key = '%', expr = true, mode = { 'n', 'x' }, desc = 'Next matchup' },
     ['[%'] = { key = '[%', expr = true, mode = { 'n', 'x' }, desc = 'Previous multi matchup' },
     [']%'] = { key = ']%', mode = { 'n', 'x' }, expr = true, desc = 'Next multi matchup' },
-    ['z%'] = { key = 'z%', expr = true, mode = { 'n', 'x' }, desc = 'Previous inner matchup' },
-    ['Z%'] = { key = 'Z%', expr = true, mode = { 'n', 'x' }, desc = 'Next inner matchup' },
+    ['Z%'] = { key = 'Z%', expr = true, mode = { 'n', 'x' }, desc = 'Previous start of inner matchup' },
+    ['z%'] = { key = 'z%', expr = true, mode = { 'n', 'x' }, desc = 'Next start of inner matchup' },
   },
 }
