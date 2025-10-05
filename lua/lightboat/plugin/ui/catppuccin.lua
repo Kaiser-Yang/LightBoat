@@ -3,6 +3,7 @@ local util = require('lightboat.util')
 local spec = {
   'catppuccin/nvim',
   name = 'catppuccin',
+  cond = not vim.g.vscode,
   opts = {
     flavour = 'mocha',
     integrations = {

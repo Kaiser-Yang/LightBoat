@@ -20,6 +20,7 @@ local operation = {
 }
 local spec = {
   'akinsho/bufferline.nvim',
+  cond = not vim.g.vscode,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   version = '*',
   event = 'VeryLazy',
