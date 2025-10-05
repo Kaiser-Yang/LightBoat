@@ -10,6 +10,102 @@ For better experience, you can use
 Check [LightBoat.starter](https://github.com/Kaiser-Yang/LightBoat.starter) to learn how to
 install this distro with the starter.
 
+## Useful Shortcuts
+
+### Pairs Related
+
+- [N] `ys{motion}{pair}`: Surround with `{pair}`.
+- [N] `yss{pair}`: Surround the whole line with `{pair}`.
+- [N] `yS{pair}`: Surround till end of line with `{pair}`.
+- [N] `ds{pair}`: Delete surrounding `{pair}`.
+- [N] `cs{old_pair}{new_pair}`: Change surrounding from `{old_pair}` to `{new_pair}`.
+- [V] `S{pair}`: Surround the selected text with `{pair}`.
+
+**NOTE**: There is a special pair called `f` (function call) provided by `nvim-surround`.
+With this pair, you can add, delete, and change function call. For example, `ysiwf` will
+let you input a function name, and then it will surround the current word with
+`function_name(current_word)`. You can use `dsf` to delete the function call,
+and `csf{new_function_name}` to change the function name.
+
+**NOTE**: There is a special pair called `q` (quotation mark) provided by `nvim-surround`.
+'', "", and \`\` are all valid pairs. With this pair, you can use `dsq`,
+and `csq{pair}` to delete, and change surrounding quotation marks.
+
+**NOTE**: For pair surround, all the opening brackets will add a space around the content,
+while all the closing brackets will not add a space around the content. For example,
+`ysiw(` will result in `( content )`, while `ysiw)` will result in `(content)`.
+
+### Git Related
+
+- [N] `gcu`: Git current undo. Reset current hunk.
+- [N] `gcd`: Git current diff. Show the diff of current hunk.
+- [N] `gcl`: Git current blame line. Show the git blame of current line.
+- [N] `g]`: Go to next unstaged hunk.
+- [N] `g[`: Go to previous unstaged hunk.
+- [N] `gca`: Git conflict accept ancestor.
+- [N] `gcb`: Git conflict accept both.
+- [N] `gcc`: Git conflict accept current.
+- [N] `gci`: Git conflict accept incoming.
+- [N] `gcn`: Git conflict accept none.
+- [N] `]x`: Go to next conflict.
+- [N] `[x`: Go to previous conflict.
+
+### Buffers and Windows
+
+- [N] `<leader>{num}`: Go to the `{num}`-th buffer. `0` for the 10-th buffer.
+- [N] `<leader>h`: Split vertically and leave the cursor in the left window.
+- [N] `<leader>j`: Split horizontally and leave the cursor in the bottom window.
+- [N] `<leader>k`: Split horizontally and leave the cursor in the top window
+- [N] `<leader>l`: Split vertically and leave the cursor in the right window.
+- [N] `<leader>T`: Move current window to a new tab.
+- [N] `<c-h>`: Move to the left window.
+- [N] `<c-j>`: Move to the bottom window.
+- [N] `<c-k>`: Move to the top window.
+- [N] `<c-l>`: Move to the right window.
+- [N] `=`: Equalize the size of all windows.
+- [N] `<left>`: Resize current window to the left.
+- [N] `<down>`: Resize current window to the bottom.
+- [N] `<up>`: Resize current window to the top.
+- [N] `<right>`: Resize current window to the right.
+- [N] `H`: Go to the left buffer of current one in buffer line.
+- [N] `L`: Go to the right buffer of current one in buffer line.
+- [N] `gb`: Buffer picker. Pick a buffer in buffer line to go to.
+
+### Markdown Related
+
+- [I] `<localleader>1`: Insert heading level 1.
+- [I] `<localleader>2`: Insert heading level 2.
+- [I] `<localleader>3`: Insert heading level 3.
+- [I] `<localleader>4`: Insert heading level 4.
+- [I] `<localleader>a`: Insert image block.
+- [I] `<localleader>b`: Insert bold line block.
+- [I] `<localleader>c`: Insert code block.
+- [I] `<localleader>d`: Insert delete line block.
+- [I] `<localleader>f`: Move to and remove next placeholder.
+- [I] `<localleader>i`: Insert italic line block.
+- [I] `<localleader>m`: Insert math line block.
+- [I] `<localleader>t`: Insert command line block.
+- [I] `<localleader>M`: Insert math block.
+- [NV] `gx`: Toggle task list item.
+
+### Motion Related
+
+- [N] `%`: When `{count}` is less than 7, it will move to the `{count}`-th
+  matching word. Otherwise, it will move to the `{count}` percentage of the file.
+- [N] `g%`: Go to previous matching word.
+- [N] `]%`: Go to next outer closing word.
+- [N] `[%`: Go to previous outer opening word.
+- [N] `z%`: Go to next inner of a block.
+- [N] `Z%`: Go to previous inner of a block.
+
+### Others
+
+- [N] `<leader>r`: Run current file with the appropriate program.
+- [N] `<leader>tt`: Toggle `expandtab`.
+- [N] `<leader>t2`: Set tab with 2 spaces.
+- [N] `<leader>t4`: Set tab with 4 spaces.
+- [N] `<leader>t8`: Set tab with 8 spaces.
+
 ## Customization
 
 ### Key Mappings
@@ -32,54 +128,13 @@ Those below are the default configuration for some key mappings of type 1:
 
 ```lua
 return {
-  enabled = true,
-  delete_default_commant = true,
-  delete_default_diagnostic_under_cursor = true,
-  disable_default_find_match_in_inserat = true,
   keys = {
-    ['<m-x>'] = { key = '<m-x>', mode = { 'n', 'x' }, desc = 'Cut to + reg' },
-    ['<m-a>'] = { key = '<m-a>', mode = { 'n', 'x', 'i' }, expr = true, desc = 'Select all' },
-    ['<c-u>'] = { key = '<c-u>', mode = 'i', desc = 'Delete to start of line' },
-    ['<c-w>'] = { key = '<c-w>', mode = 'i', expr = true, remap = true, desc = 'Delete one word backwards' },
-    ['<c-a>'] = { key = '<c-a>', mode = { 'x', 'i', 'c' }, expr = true, desc = 'Move cursor to start of line' },
-    ['<c-e>'] = { key = '<c-e>', mode = { 'x', 'i', 'c' }, desc = 'Move cursor to end of line' },
+    -- ...
     ['<leader>l'] = { key = '<leader>l', desc = 'Split right' },
     ['<leader>j'] = { key = '<leader>j', desc = 'Split below' },
     ['<leader>h'] = { key = '<leader>h', desc = 'Split right' },
     ['<leader>k'] = { key = '<leader>k', desc = 'Split above' },
-    ['='] = { key = '=', desc = 'Equalize windows' },
-    ['<c-h>'] = { key = '<c-h>', desc = 'Cursor left' },
-    ['<c-j>'] = { key = '<c-j>', desc = 'Cursor down' },
-    ['<c-k>'] = { key = '<c-k>', desc = 'Cursor up' },
-    ['<c-l>'] = { key = '<c-l>', desc = 'Cursor right' },
-    ['<leader>T'] = { key = '<leader>T', desc = 'Move current window to a new tabpage' },
-    ['<leader>t2'] = { key = '<leader>t2', desc = 'Set tab with 2 spaces' },
-    ['<leader>t4'] = { key = '<leader>t4', desc = 'Set tab with 4 spaces' },
-    ['<leader>t8'] = { key = '<leader>t8', desc = 'Set tab with 8 spaces' },
-    ['<leader>tt'] = { key = '<leader>tt', desc = 'Toggle expandtab' },
-    ['F'] = { key = 'F', mode = { 'n', 'x' }, expr = true, desc = 'Previous find character' },
-    ['T'] = { key = 'T', mode = { 'n', 'x' }, expr = true, desc = 'Previous till character' },
-    ['f'] = { key = 'f', mode = { 'n', 'x' }, expr = true, desc = 'Next find character' },
-    ['t'] = { key = 't', mode = { 'n', 'x' }, expr = true, desc = 'Next till character' },
-    ['b'] = { key = 'b', mode = { 'n', 'x' }, expr = true, desc = 'Previous word' },
-    ['w'] = { key = 'w', mode = { 'n', 'x' }, expr = true, desc = 'Next word' },
-    ['B'] = { key = 'B', mode = { 'n', 'x' }, expr = true, desc = 'Previous big word' },
-    ['W'] = { key = 'W', mode = { 'n', 'x' }, expr = true, desc = 'Next big word' },
-    ['ge'] = { key = 'ge', mode = { 'n', 'x' }, expr = true, desc = 'Previous end word' },
-    ['e'] = { key = 'e', mode = { 'n', 'x' }, expr = true, desc = 'Next end word' },
-    ['gE'] = { key = 'gE', mode = { 'n', 'x' }, expr = true, desc = 'Previous big end word' },
-    ['E'] = { key = 'E', mode = { 'n', 'x' }, expr = true, desc = 'Next big end word' },
-    ['N'] = { key = 'N', mode = { 'n', 'x' }, expr = true, desc = 'Previous search pattern' },
-    ['n'] = { key = 'n', mode = { 'n', 'x' }, expr = true, desc = 'Next search pattern' },
-    ['[s'] = { key = '[s', mode = { 'n', 'x' }, expr = true, desc = 'Previous misspelled word' },
-    [']s'] = { key = ']s', mode = { 'n', 'x' }, expr = true, desc = 'Next misspelled word' },
-    ['[z'] = { key = '[z', mode = { 'n', 'x' }, expr = true, desc = 'Move to start of current fold' },
-    [']z'] = { key = ']z', mode = { 'n', 'x' }, expr = true, desc = 'Move to end of current fold' },
-    ['zk'] = { key = 'zk', mode = { 'n', 'x' }, expr = true, desc = 'To the end of the previous fold' },
-    ['zj'] = { key = 'zj', mode = { 'n', 'x' }, expr = true, desc = 'To the start of the next fold' },
-    ['<leader>sc'] = { key = '<leader>sc', desc = 'Toggle spell check' },
-    ['<leader>ts'] = { key = '<leader>ts', desc = 'Toggle treesitter highlight' },
-    ['<leader>i'] = { key = '<leader>i', desc = 'Toggle inlay hints' },
+    -- ...
   },
 }
 ```
@@ -122,13 +177,8 @@ Let's take a look at the default key mappings of `comment`:
 
 ```lua
 return {
-  enabled = true,
   keys = {
-    ['<leader>A'] = { key = '<leader>A', desc = 'Comment insert end of line' },
-    ['<leader>O'] = { key = '<leader>O', desc = 'Comment insert above' },
-    ['<leader>o'] = { key = '<leader>o', desc = 'Comment insert below' },
-    ['<leader>c'] = { key = '<leader>c', desc = 'Comment toggle linewise' },
-    ['<leader>C'] = { key = '<leader>C', desc = 'Comment toggle blockwise' },
+    -- ...
     ['<m-/>'] = {
       key = '<m-/>',
       mode = { 'n', 'x', 'i' },
@@ -147,8 +197,8 @@ return {
 }
 ```
 
-To customize these above, you just need to update the `key` fields. For example, if you want to update
-`<m-/>` into `<c-/>`, you can do this below:
+To customize these above, you just need to update the `key` fields.
+For example, if you want to update `<m-/>` into `<c-/>`, you can do this below:
 
 ```lua
 vim.g.lightboat_opts = {}
