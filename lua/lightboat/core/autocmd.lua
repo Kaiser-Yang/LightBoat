@@ -35,3 +35,9 @@ if c.formatoptions then
     callback = function() vim.bo.formatoptions = c.formatoptions end,
   })
 end
+
+vim.api.nvim_create_autocmd('BufEnter', {
+  callback = function()
+    if vim.bo.filetype:match('^dap%-repl') then vim.cmd('stopinsert') end
+  end,
+})
