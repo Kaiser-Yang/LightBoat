@@ -18,6 +18,7 @@ local operation = {
 local spec = {
   'lewis6991/gitsigns.nvim',
   event = { { event = 'User', pattern = 'GitRepoDetected' } },
+  cond = not vim.g.vscode,
   opts = {
     current_line_blame = true,
     current_line_blame_opts = { delay = 300 },
@@ -35,7 +36,7 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.git.sign', function()
   c = config.get().sign
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)

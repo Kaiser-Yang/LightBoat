@@ -17,6 +17,7 @@ local operation = {
 }
 local spec = {
   'akinsho/git-conflict.nvim',
+  cond = not vim.g.vscode,
   version = '*',
   lazy = false,
   opts = {
@@ -34,7 +35,7 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.git.conflict', function()
   c = config.get().conflict
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)
