@@ -131,6 +131,7 @@ local spec = {
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
+    cond = not vim.g.vscode,
     lazy = false,
     opts = {
       max_lines = 3,
@@ -156,13 +157,6 @@ M.setup = util.setup_check_wrap('lightboat.plugin.treesitter', function()
   assert(spec[2][1] == 'nvim-treesitter/nvim-treesitter-textobjects')
   spec[2].keys = util.key.get_lazy_keys(operation, c.keys)
   group = vim.api.nvim_create_augroup('LightBoatTreesitter', {})
-  vim.api.nvim_create_autocmd('FileType', {
-    group = group,
-    callback = function(args)
-      if big_file.is_big_file(args.buf) then return end
-      pcall(vim.treesitter.start)
-    end,
-  })
   vim.api.nvim_create_autocmd('User', {
     group = group,
     pattern = 'BigFileDetector',
@@ -178,6 +172,14 @@ M.setup = util.setup_check_wrap('lightboat.plugin.treesitter', function()
       -- There is no information about attached buffer, so we can not notify
       -- that the plugin was disabled for this buffeer
       ts_context.enable() -- Restart to avoid large memery use for large files
+    end,
+  })
+  if vim.g.vscode then return spec end
+  vim.api.nvim_create_autocmd('FileType', {
+    group = group,
+    callback = function(args)
+      if big_file.is_big_file(args.buf) then return end
+      pcall(vim.treesitter.start)
     end,
   })
   return spec

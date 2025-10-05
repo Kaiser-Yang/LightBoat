@@ -86,7 +86,7 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.other.yanky', function()
   c = config.get().yanky
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   if c.restore_anonymous_reg then
     group = vim.api.nvim_create_augroup('LightBoatYanky', {})

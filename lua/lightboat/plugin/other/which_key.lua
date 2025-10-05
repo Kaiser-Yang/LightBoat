@@ -7,6 +7,7 @@ local operation = {
 }
 local spec = {
   'folke/which-key.nvim',
+  cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
     delay = vim.o.timeoutlen,
