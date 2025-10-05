@@ -5,6 +5,7 @@ local M = {}
 local spec = {
   'brenoprata10/nvim-highlight-colors',
   cmd = 'HighlightColors',
+  cond = not vim.g.vscode,
   event = { { event = 'User', pattern = 'ColorDetected' } },
   opts = {
     -- PERF: disabled in large files

@@ -21,29 +21,6 @@ if c.delete_default_diagnostic_under_cursor then
   del('n', '<c-w>d')
   del('n', '<c-w><c-d>')
 end
-local yanky_loaded
-local function separator_wrap(keys)
-  assert(type(keys) == 'string', 'keys must be a string')
-  assert(#keys == 2, 'keys must be 2 characters long')
-  return function()
-    local res = '<esc>'
-    if keys:sub(1, 1) == 'y' then
-      if yanky_loaded == nil then
-        local ok, _ = pcall(require, 'yanky')
-        yanky_loaded = ok
-      end
-      res = res .. (yanky_loaded and '<plug>(YankyYank)' or 'y')
-    else
-      res = res .. keys:sub(1, 1)
-    end
-    vim.schedule(function() feedkeys(keys:sub(2, 2), 'n') end)
-    return res
-  end
-end
-
-for keys, value in pairs(c.separate_operator) do
-  if value then map('n', keys, separator_wrap(keys), { expr = true }) end
-end
 
 if c.disable_default_find_match_in_inserat then
   map('i', '<c-p>', '<nop>')
@@ -57,6 +34,7 @@ local operation = {
     if vim.fn.mode('1') ~= 'n' then res = '<esc>' .. res end
     return res
   end,
+  ['<m-d>'] = '<c-g>u<cmd>normal de<cr>',
   ['<c-u>'] = function()
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
     local line = vim.api.nvim_get_current_line()
@@ -91,7 +69,18 @@ local operation = {
     end
     return res
   end,
-  ['<c-e>'] = '<end>',
+  ['<c-e>'] = function()
+    local res
+    local mode = vim.fn.mode('1')
+    if mode == 'c' then
+      res = '<end>'
+    elseif mode == 'i' then
+      res = '<c-o>$'
+    else
+      res = '$'
+    end
+    return res
+  end,
   ['<leader>l'] = '<cmd>set splitright<cr><cmd>vsplit<cr><cmd>set nosplitright<cr>',
   ['<leader>j'] = '<cmd>set splitbelow<cr><cmd>split<cr><cmd>set nosplitbelow<cr>',
   ['<leader>h'] = '<cmd>vsplit<cr>',
@@ -175,7 +164,30 @@ local operation = {
     end
     vim.notify(msg, level, { title = 'Treesitter' })
   end,
-  ['<m-d>'] = '<c-g>u<cmd>normal de<cr>',
 }
-
 util.key.set_keys(operation, c.keys)
+
+if vim.g.vscode then return end
+
+local yanky_loaded
+local function separator_wrap(keys)
+  assert(type(keys) == 'string', 'keys must be a string')
+  assert(#keys == 2, 'keys must be 2 characters long')
+  return function()
+    local res = '<esc>'
+    if keys:sub(1, 1) == 'y' then
+      if yanky_loaded == nil then
+        local ok, _ = pcall(require, 'yanky')
+        yanky_loaded = ok
+      end
+      res = res .. (yanky_loaded and '<plug>(YankyYank)' or 'y')
+    else
+      res = res .. keys:sub(1, 1)
+    end
+    vim.schedule(function() feedkeys(keys:sub(2, 2), 'n') end)
+    return res
+  end
+end
+for keys, value in pairs(c.separate_operator) do
+  if value then map('n', keys, separator_wrap(keys), { expr = true }) end
+end

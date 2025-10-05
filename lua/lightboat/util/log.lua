@@ -22,13 +22,18 @@ local function _write(level, msg)
   if level < M.current_level then return end
   local f, err = io.open(M.filepath, 'a')
   if not f then
-    vim.notify(
-      string.format('Failed to open log file %s: %s', M.filepath, err),
-      vim.log.levels.ERROR
-    )
+    vim.notify(string.format('Failed to open log file %s: %s', M.filepath, err), vim.log.levels.ERROR)
     return
   end
-  f:write(string.format('[%s][%s] %s\n', os.date('%Y-%m-%d %H:%M:%S'), M.level_name[level], msg))
+  f:write(
+    string.format(
+      '[%s][%s][%s] %s\n',
+      vim.g.vscode and 'VSCODE' or 'NEOVIM',
+      os.date('%Y-%m-%d %H:%M:%S'),
+      M.level_name[level],
+      msg
+    )
+  )
   f:close()
 end
 

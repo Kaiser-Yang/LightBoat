@@ -192,13 +192,14 @@ local blink_cmp_git_opts = {
 }
 
 local spec = {
-  { 'Kaiser-Yang/blink-cmp-git', lazy = true },
-  { 'Kaiser-Yang/blink-cmp-avante', lazy = true },
-  { 'Kaiser-Yang/blink-cmp-dictionary', dependencies = 'nvim-lua/plenary.nvim', lazy = true },
-  { 'rafamadriz/friendly-snippets', lazy = true },
-  { 'mikavilpas/blink-ripgrep.nvim', lazy = true },
+  { 'Kaiser-Yang/blink-cmp-git', cond = not vim.g.vscode, lazy = true },
+  { 'Kaiser-Yang/blink-cmp-avante', cond = not vim.g.vscode, lazy = true },
+  { 'Kaiser-Yang/blink-cmp-dictionary', cond = not vim.g.vscode, dependencies = 'nvim-lua/plenary.nvim', lazy = true },
+  { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode, lazy = true },
+  { 'mikavilpas/blink-ripgrep.nvim', cond = not vim.g.vscode, lazy = true },
   {
     'saghen/blink.cmp',
+    cond = not vim.g.vscode,
     version = '*',
     event = { 'InsertEnter', 'CmdlineEnter' },
     opts = {
@@ -299,8 +300,11 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
+  if vim.g.vscode then return spec end
   c = config.get().blink_cmp
-  if not c.enabled then return nil end
+  for _, s in ipairs(spec) do
+    s.enabled = c.enabled
+  end
   util.set_hls({
     { 0, 'BlinkCmpGitKindIconCommit', { fg = '#a6e3a1' } },
     { 0, 'BlinkCmpGitKindIconopenPR', { fg = '#a6e3a1' } },

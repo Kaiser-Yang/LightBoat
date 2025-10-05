@@ -15,6 +15,7 @@ local operation = {
 -- https://github.com/kevinhwang91/nvim-ufo/issues/311
 local spec = {
   'kevinhwang91/nvim-ufo',
+  cond = not vim.g.vscode,
   dependencies = { 'kevinhwang91/promise-async' },
   lazy = false,
   keys = {},
@@ -66,8 +67,9 @@ end
 function M.spec() return spec end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.ui.ufo', function()
+  if vim.g.vscode then return spec end
   c = config.get().ufo
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   group = vim.api.nvim_create_augroup('LightBoatUfo', {})
   vim.api.nvim_create_autocmd('User', {

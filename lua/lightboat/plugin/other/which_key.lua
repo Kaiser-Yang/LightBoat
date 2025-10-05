@@ -14,7 +14,7 @@ local spec = {
     -- PERF:
     -- When enabling the registers plugin,
     -- it will cause a performance problem when the content is large.
-    plugins = { spelling = { enabled = false }, registers = true, },
+    plugins = { spelling = { enabled = false }, registers = true },
   },
   keys = {},
 }
@@ -27,7 +27,7 @@ function M.clear() spec.keys = {} end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.which_key', function()
   c = config.get().which_key
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)

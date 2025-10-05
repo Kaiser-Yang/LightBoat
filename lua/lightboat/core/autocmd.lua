@@ -21,6 +21,7 @@ if c.auto_disable_hlsearch then
     end,
   })
 end
+if vim.g.vscode then return end
 if c.gitcommit_colorcolumn then
   -- Update the colorcolumn when entering a gitcommit buffer
   vim.api.nvim_create_autocmd('FileType', {

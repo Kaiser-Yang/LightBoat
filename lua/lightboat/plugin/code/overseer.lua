@@ -25,6 +25,7 @@ local spec = {
     'OverseerTaskAction',
     'OverseerClearCache',
   },
+  cond = not vim.g.vscode,
   config = function(_, opts)
     local overseer = require('overseer')
     overseer.setup(opts)
@@ -75,8 +76,9 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.overseer', function()
+  if vim.g.vscode then return spec end
   c = config.get().overseer
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   group = vim.api.nvim_create_augroup('LightBoatOverseer', {})
   vim.api.nvim_create_autocmd('FileType', {

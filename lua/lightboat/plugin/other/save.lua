@@ -1,6 +1,7 @@
 local util = require('lightboat.util')
 local spec = {
   'Pocco81/auto-save.nvim',
+  cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
     execution_message = { message = '' },

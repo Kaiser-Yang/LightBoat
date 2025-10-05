@@ -33,7 +33,7 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.extra.big_file', function()
   c = config.get().extra.big_file
-  if not c.enabled then return nil end
+  if not c.enabled then return end
   group = vim.api.nvim_create_augroup('LightBoatBigFile', {})
   local origin = {
     incsearch = nil,

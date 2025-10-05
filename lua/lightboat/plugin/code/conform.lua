@@ -13,6 +13,7 @@ local operation = {
 
 local spec = {
   'stevearc/conform.nvim',
+  cond = not vim.g.vscode,
   opts = {
     formatters_by_ft = {
       c = { 'clang-format' },
@@ -42,7 +43,7 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.conform', function()
   c = config.get().conform
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)

@@ -3,6 +3,7 @@ local M = {}
 local spec = {
   'Kaiser-Yang/copilot.lua',
   event = { { event = 'User', pattern = 'NetworkChecked' } },
+  cond = not vim.g.vscode,
   enabled = vim.fn.executable('node') == 1 and vim.fn.executable('curl') == 1,
   opts = {
     panel = { enabled = false },

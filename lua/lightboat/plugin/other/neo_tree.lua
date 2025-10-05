@@ -171,11 +171,11 @@ function M.copy_node_info(state)
 end
 
 local spec = {
-
   {
     's1n7ax/nvim-window-picker',
     lazy = true,
     version = '2.*',
+    cond = not vim.g.vscode,
     opts = {
       hint = 'floating-big-letter',
       filter_rules = {
@@ -199,6 +199,7 @@ local spec = {
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
+    cond = not vim.g.vscode,
     branch = 'v3.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -385,8 +386,11 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.neo_tree', function()
+  if vim.g.vscode then return spec end
   c = config.get()
-  if not c.neo_tree.enabled then return nil end
+  for _, s in ipairs(spec) do
+    s.enabled = c.neo_tree.enabled
+  end
   assert(spec[2][1] == 'nvim-neo-tree/neo-tree.nvim')
   spec[2].keys = util.key.get_lazy_keys(operation, c.neo_tree.keys)
   group = vim.api.nvim_create_augroup('LightBoatNeoTree', {})

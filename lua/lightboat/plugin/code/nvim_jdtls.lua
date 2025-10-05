@@ -10,10 +10,11 @@ local jdtls_config
 local spec = {
   'mfussenegger/nvim-jdtls',
   ft = { 'java' },
+  cond = not vim.g.vscode,
   -- NOTE:
   -- java 21 required
   -- python 3.9 required
-  enabled = vim.fn.executable('java') == 1,
+  enabled = vim.fn.executable('java') == 1 and vim.fn.executable('python3') == 1,
 }
 
 function M.clear()
@@ -74,8 +75,8 @@ end
 function M.spec() return spec end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.nvim_jdtls', function()
+  if vim.g.vscode then return spec end
   c = config.get()
-  if not vim.fn.executable('java') then return spec end
   group = vim.api.nvim_create_augroup('LightBoatJdtls', {})
   vim.api.nvim_create_autocmd('FileType', {
     group = group,

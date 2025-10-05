@@ -41,10 +41,15 @@ local sections = {
 }
 
 local spec = {
-  { 'AndreM222/copilot-lualine', enabled = vim.fn.executable('node') == 1 and vim.fn.executable('curl') == 1 },
+  {
+    'AndreM222/copilot-lualine',
+    cond = not vim.g.vscode,
+    enabled = vim.fn.executable('node') == 1 and vim.fn.executable('curl') == 1,
+  },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
+    cond = not vim.g.vscode,
     opts = {
       options = {
         icons_enabled = true,

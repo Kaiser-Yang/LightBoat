@@ -4,6 +4,7 @@ local M = {}
 local spec = {
   'yetone/avante.nvim',
   enabled = vim.fn.executable('node') == 1,
+  cond = not vim.g.vscode,
   build = 'make',
   version = false,
   dependencies = {
@@ -37,8 +38,10 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.ai.avante', function()
+  if vim.g.vscode then return spec end
   group = vim.api.nvim_create_augroup('LightboatAvante', { clear = true })
   vim.api.nvim_create_autocmd('FileType', {
+    group = group,
     pattern = 'Avante*',
     callback = function()
       if vim.bo.filetype == 'AvanteInput' then return end

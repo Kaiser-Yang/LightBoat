@@ -12,13 +12,14 @@ local operation = {
 }
 
 local spec = {
-  { 'rcarriga/nvim-notify', lazy = true },
+  { 'rcarriga/nvim-notify', cond = not vim.g.vscode, lazy = true },
   {
     'folke/noice.nvim',
     -- HACK:
     -- The experience of notify is not good enough
     dependencies = { 'MunifTanjim/nui.nvim' },
     event = 'VeryLazy',
+    cond = not vim.g.vscode,
     opts = {
       lsp = {
         override = {
@@ -66,8 +67,11 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.ui.noice', function()
+  if vim.g.vscode then return spec end
   c = config.get().noice
-  if not c.enabled then return nil end
+  for _, s in ipairs(spec) do
+    s.enabled = c.enabled
+  end
   assert(spec[2][1] == 'folke/noice.nvim')
   spec[2].keys = util.key.get_lazy_keys(operation, c.keys)
   group = vim.api.nvim_create_augroup('LightBoatNoice', {})

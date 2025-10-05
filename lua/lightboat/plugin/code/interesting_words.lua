@@ -19,6 +19,7 @@ local operation = {
 }
 local spec = {
   'lfv89/vim-interestingwords',
+  cond = not vim.g.vscode,
   keys = {},
 }
 local M = {}
@@ -28,9 +29,10 @@ function M.clear()
   c = nil
 end
 
-M.setup = util.setup_check_wrap('lightboat.plugin.code.insteresting_words', function()
-  c = config.get().insteresting_words
-  if not c.enabled then return nil end
+M.setup = util.setup_check_wrap('lightboat.plugin.code.interesting_words', function()
+  if vim.g.vscode then return spec end
+  c = config.get().interesting_words
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)

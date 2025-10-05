@@ -187,6 +187,7 @@ local spec = {
   branch = 'develop',
   priority = 1000,
   lazy = false,
+  cond = not vim.g.vscode,
   opts = {
     bigfile = { enabled = false },
     dashboard = { enabled = false },
@@ -394,8 +395,9 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.snack', function()
+  if vim.g.vscode then return spec end
   c = config.get()
-  if not c.snack.enabled then return nil end
+  spec.enabled = c.snack.enabled
   if c.extra.big_file.enabled then
     spec.opts.picker.previewers.file = {
       max_size = c.extra.big_file.big_file_total,

@@ -32,6 +32,7 @@ local operation = {
 local spec = {
   {
     'altermo/ultimate-autopair.nvim',
+    cond = not vim.g.vscode,
     event = { 'InsertEnter' },
     branch = 'v0.6',
     opts = {
@@ -116,6 +117,7 @@ local spec = {
   },
   {
     'HiPhish/rainbow-delimiters.nvim',
+    cond = not vim.g.vscode,
     lazy = false,
   },
 }
@@ -137,7 +139,9 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   c = config.get()
-  if not c.pair.enabled then return nil end
+  for _, s in ipairs(spec) do
+    s.enabled = c.pair.enabled
+  end
   assert(spec[1][1] == 'altermo/ultimate-autopair.nvim')
   spec[1].opts.space.check_box_ft = c.extra.markdown_fts
   assert(spec[2][1] == 'kylechui/nvim-surround')
@@ -175,6 +179,18 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   })
   assert(spec[3][1] == 'andymass/vim-matchup')
   spec[3].keys = util.key.get_lazy_keys(operation.matchup, c.pair.keys)
+  group = vim.api.nvim_create_augroup('LightBoatPair', {})
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'BigFileDetector',
+    group = group,
+    callback = function(ev)
+      if not ev.data then return end
+      local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
+      if not ok then return end
+      internal.detach(ev.buf)
+    end,
+  })
+  if vim.g.vscode then return spec end
   vim.g.rainbow_delimiters = vim.tbl_extend('force', {
     highlight = {
       'RainbowDelimiterRed',
@@ -206,18 +222,6 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
     { 0, 'RainbowDelimiterBlue', { fg = '#617FFF' } },
     { 0, 'RainbowDelimiterGreen', { fg = '#98C349' } },
     { 0, 'RainbowDelimiterGrey', { fg = '#9CA0A4' } },
-  })
-
-  group = vim.api.nvim_create_augroup('LightBoatPair', {})
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'BigFileDetector',
-    group = group,
-    callback = function(ev)
-      if not ev.data then return end
-      local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
-      if not ok then return end
-      internal.detach(ev.buf)
-    end,
   })
   return spec
 end, M.clear)

@@ -8,6 +8,7 @@ end
 local spec = {
   'rmagatti/auto-session',
   lazy = false,
+  cond = not vim.g.vscode,
   opts = {
     auto_save = has_root_directory,
     auto_create = has_root_directory,

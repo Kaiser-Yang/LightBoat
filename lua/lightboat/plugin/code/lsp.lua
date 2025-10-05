@@ -36,9 +36,10 @@ local operation = {
   ['[d'] = prev_diagnostic,
 }
 local spec = {
-  { 'neovim/nvim-lspconfig' },
+  { 'neovim/nvim-lspconfig', cond = not vim.g.vscode },
   {
     'nvimdev/lspsaga.nvim',
+    cond = not vim.g.vscode,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     event = 'LspAttach',
     opts = {
@@ -80,8 +81,11 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
+  if vim.g.vscode then return spec end
   c = config.get()
-  if not c.lsp.enabled then return nil end
+  for _, s in ipairs(spec) do
+    s.enabled = c.lsp.enabled
+  end
   assert(spec[2][1] == 'nvimdev/lspsaga.nvim')
   spec[2].keys = util.key.get_lazy_keys(operation, c.lsp.keys)
   group = vim.api.nvim_create_augroup('LightBoatLsp', {})

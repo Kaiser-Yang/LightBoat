@@ -20,6 +20,7 @@ local operation = {
 }
 local spec = {
   'Kaiser-Yang/todo-comments.nvim',
+  cond = not vim.g.vscode,
   dependencies = { 'nvim-lua/plenary.nvim' },
   event = 'VeryLazy',
   opts = {
@@ -49,7 +50,7 @@ end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.todo', function()
   c = config.get().todo
-  if not c.enabled then return nil end
+  spec.enabled = c.enabled
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   return spec
 end, M.clear)

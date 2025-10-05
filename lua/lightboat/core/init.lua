@@ -3,7 +3,7 @@ local log = util.log
 
 --- @param name 'option' | 'keymap' | 'autocmd'
 local function load(name)
-  log.debug('Loading core module: ' .. name)
+  log.info('Loading core module: ' .. name)
   require('lightboat.core.' .. name)
   require('core.' .. name)
 end

@@ -1,4 +1,5 @@
 local function default_line_wise()
+  if vim.g.vscode then return 'abs_rel' end
   local mode = vim.fn.mode('1')
   if vim.bo.filetype:match('^snack') or mode == 'i' then return 'abs' end
   if mode == 'c' then return 'abs_rel' end

@@ -89,11 +89,12 @@ local operation = {
   ['<f12>'] = function() require('dap').step_out() end,
 }
 local spec = {
-  { 'mfussenegger/nvim-dap', dependencies = { 'nvim-lua/plenary.nvim' }, lazy = true },
-  { 'theHamsta/nvim-dap-virtual-text', lazy = true, opts = {} },
+  { 'mfussenegger/nvim-dap', cond = not vim.g.vscode, dependencies = { 'nvim-lua/plenary.nvim' }, lazy = true },
+  { 'theHamsta/nvim-dap-virtual-text', cond = not vim.g.vscode, lazy = true, opts = {} },
   {
     'rcarriga/nvim-dap-ui',
     dependencies = { 'nvim-neotest/nvim-nio', 'nvim-lua/plenary.nvim' },
+    cond = not vim.g.vscode,
     opts = {
       -- TODO: better key mappings
       mappings = {
@@ -162,8 +163,11 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.dap', function()
+  if vim.g.vscode then return spec end
   c = config.get().dap
-  if not c.enabled then return nil end
+  for _, s in ipairs(spec) do
+    s.enabled = c.enabled
+  end
   assert(spec[3][1] == 'rcarriga/nvim-dap-ui')
   spec[3].keys = key.get_lazy_keys(operation, c.keys)
   util.set_hls({
