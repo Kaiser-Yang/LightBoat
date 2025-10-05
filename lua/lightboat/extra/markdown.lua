@@ -60,10 +60,10 @@ local operation = {
   ['<localleader>a'] = '<c-g>u[](<++>)<++><esc>F[a',
   ['<localleader>b'] = '<c-g>u****<++><esc>F*hi',
   ['<localleader>c'] = '<c-g>u```<cr>```<cr><++><esc>2kA',
-  ['<localleader>t'] = '<c-g>u``<++><esc>F`i',
-  ['<localleader>m'] = '<c-g>u$$  $$<++><esc>F i',
   ['<localleader>d'] = '<c-g>u~~~~<++><esc>F~hi',
   ['<localleader>i'] = '<c-g>u**<++><esc>F*i',
+  ['<localleader>t'] = '<c-g>u``<++><esc>F`i',
+  ['<localleader>m'] = '<c-g>u$$  $$<++><esc>F i',
   ['<localleader>M'] = '<c-g>u$$<cr><cr>$$<cr><++><esc>2kA',
   ['gx'] = function()
     toggle_check_box(vim.fn.line('v'), vim.fn.line('.'))
