@@ -15,16 +15,18 @@ function M.resize_wrap(border, reverse, abs_delta, first_left_or_right, first_to
   local second = first == first_left_or_right and second_left_or_right or second_top_or_bottom
   return function()
     local resize = require('win.resizer').resize
-    if reverse then
-      local _ = resize(0, second, -delta, true)
-        or resize(0, first, delta, true)
-        or resize(0, second, -delta, false)
-        or resize(0, first, delta, false)
-    else
-      local _ = resize(0, first, delta, true)
-        or resize(0, second, -delta, true)
-        or resize(0, first, delta, false)
-        or resize(0, second, -delta, false)
+    for _ = 1, vim.v.count1 do
+      if reverse then
+        local _ = resize(0, second, -delta, true)
+          or resize(0, first, delta, true)
+          or resize(0, second, -delta, false)
+          or resize(0, first, delta, false)
+      else
+        local _ = resize(0, first, delta, true)
+          or resize(0, second, -delta, true)
+          or resize(0, first, delta, false)
+          or resize(0, second, -delta, false)
+      end
     end
   end
 end
