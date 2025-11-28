@@ -6,7 +6,7 @@ local log = util.log
 
 function M.ensure_packages(packages)
   packages = util.ensure_list(packages)
-  for package_name, should_install in ipairs(packages) do
+  for package_name, should_install in pairs(packages) do
     if not should_install then goto continue end
     for source in require('mason-registry.sources').iter({ include_uninstalled = true }) do
       local pkg = source:get_package(package_name)
