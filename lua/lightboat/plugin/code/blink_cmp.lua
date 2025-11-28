@@ -195,7 +195,7 @@ local spec = {
   { 'Kaiser-Yang/blink-cmp-git', cond = not vim.g.vscode, lazy = true },
   { 'Kaiser-Yang/blink-cmp-avante', cond = not vim.g.vscode, lazy = true },
   { 'Kaiser-Yang/blink-cmp-dictionary', cond = not vim.g.vscode, dependencies = 'nvim-lua/plenary.nvim', lazy = true },
-  { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode, lazy = true },
+  { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode },
   { 'mikavilpas/blink-ripgrep.nvim', cond = not vim.g.vscode, lazy = true },
   {
     'saghen/blink.cmp',
