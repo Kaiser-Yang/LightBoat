@@ -6,6 +6,7 @@ return {
     ['bash-language-server'] = true,
     ['clangd'] = true,
     ['shellcheck'] = true,
+    ['gopls'] = true,
     ['jdtls'] = true,
     ['lua-language-server'] = true,
     ['markdown-oxide'] = true,

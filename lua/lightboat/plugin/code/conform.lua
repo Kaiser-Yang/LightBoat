@@ -18,6 +18,7 @@ local spec = {
     formatters_by_ft = {
       c = { 'clang-format' },
       cpp = { 'clang-format' },
+      go = { 'gofmt' },
       python = { 'autopep8' },
       java = { 'google-java-format' },
       markdown = { 'prettier' },

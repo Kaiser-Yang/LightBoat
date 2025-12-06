@@ -3,6 +3,7 @@ local M = {
   enabled = true,
   config = {
     bashls = {},
+    gopls = {},
     clangd = {},
     eslint = {},
     jsonls = {},
