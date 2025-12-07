@@ -61,13 +61,22 @@ function M.continue_or_run_last()
   end
 end
 
+local function persistent_breakpoints_wrap(callback)
+  return function(...)
+    local persistent_breakpoints = require('persistent-breakpoints.api')
+    callback(...)
+    persistent_breakpoints.breakpoints_changed_in_current_buffer()
+  end
+end
+
 local operation = {
   ['<leader>du'] = M.dap_ui_toggle,
-  ['<leader>b'] = function() require('dap').toggle_breakpoint() end,
-  ['<leader>B'] = M.set_condition_breakpoint,
+  ['<leader>b'] = persistent_breakpoints_wrap(function() require('dap').toggle_breakpoint() end),
+  ['<leader>B'] = persistent_breakpoints_wrap(M.set_condition_breakpoint),
+  ['<leader>dc'] = function() require('persistent-breakpoints.api').clear_all_breakpoints() end,
   ['<leader>df'] = function() require('dapui').float_element() end,
   ['<leader>de'] = M.eval_expression,
-  ['<leader>dl'] = M.set_log_point,
+  ['<leader>dl'] = persistent_breakpoints_wrap(M.set_log_point),
   ['<leader>dt'] = function()
     if vim.bo.filetype == 'java' then
       local ok, jdtls = pcall(require, 'jdtls')
@@ -89,7 +98,19 @@ local operation = {
   ['<f12>'] = function() require('dap').step_out() end,
 }
 local spec = {
-  { 'mfussenegger/nvim-dap', cond = not vim.g.vscode, dependencies = { 'nvim-lua/plenary.nvim' }, lazy = true },
+  {
+    'mfussenegger/nvim-dap',
+    cond = not vim.g.vscode,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      {
+        'Weissle/persistent-breakpoints.nvim',
+        lazy = false,
+        opts = { load_breakpoints_event = { 'BufReadPost' } },
+      },
+    },
+    lazy = true,
+  },
   { 'theHamsta/nvim-dap-virtual-text', cond = not vim.g.vscode, lazy = true, opts = {} },
   {
     'rcarriga/nvim-dap-ui',

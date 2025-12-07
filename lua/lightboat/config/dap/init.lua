@@ -7,6 +7,7 @@ local M = {
     ['<leader>du'] = { key = '<leader>du', desc = 'Toggle debug ui' },
     ['<leader>b'] = { key = '<leader>b', desc = 'Toggle breakpoint' },
     ['<leader>B'] = { key = '<leader>B', desc = 'Set condition breakpoint' },
+    ['<leader>dc'] = { key = '<leader>dc', desc = 'Clear all breakpoints' },
     ['<leader>df'] = { key = '<leader>df', desc = 'Debug float element' },
     ['<leader>de'] = { key = '<leader>de', desc = 'Debug eval expression' },
     ['<leader>dl'] = { key = '<leader>dl', desc = 'Set log point for current line' },
