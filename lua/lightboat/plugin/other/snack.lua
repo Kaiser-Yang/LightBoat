@@ -79,6 +79,7 @@ local function get_compile_command(filetype, filename)
     sh = function() return string.format('time "./%s"', filename) end,
     python = function() return string.format('time python "%s"', filename) end,
     lua = function() return string.format('time lua "%s"', filename) end,
+    go = function() return string.format('go run "%s"', filename) end,
   }
   local cmd_fn = commands[filetype]
   return cmd_fn and cmd_fn() or ''
