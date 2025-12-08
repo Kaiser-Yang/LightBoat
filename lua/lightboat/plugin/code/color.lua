@@ -7,6 +7,7 @@ local spec = {
   cmd = 'HighlightColors',
   cond = not vim.g.vscode,
   event = { { event = 'User', pattern = 'ColorDetected' } },
+  lazy = vim.fn.executable('rg') == 1,
   opts = {
     -- PERF: disabled in large files
     exclude_buffer = big_file.is_big_file,

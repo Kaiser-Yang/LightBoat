@@ -76,9 +76,9 @@ function M.default_sources()
   then
     vim.list_extend(res, {
       'buffer',
-      'ripgrep',
       'dictionary',
     })
+    if vim.fn.executable('rg') == 1 then vim.list_extend(res, { 'ripgrep' }) end
   end
   return res
 end
@@ -193,10 +193,10 @@ local blink_cmp_git_opts = {
 
 local spec = {
   { 'Kaiser-Yang/blink-cmp-git', cond = not vim.g.vscode, lazy = true },
-  { 'Kaiser-Yang/blink-cmp-avante', cond = not vim.g.vscode, lazy = true },
+  { 'Kaiser-Yang/blink-cmp-avante', cond = not vim.g.vscode, lazy = true, enabled = vim.fn.executable('node') == 1 },
   { 'Kaiser-Yang/blink-cmp-dictionary', cond = not vim.g.vscode, dependencies = 'nvim-lua/plenary.nvim', lazy = true },
   { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode },
-  { 'mikavilpas/blink-ripgrep.nvim', cond = not vim.g.vscode, lazy = true },
+  { 'mikavilpas/blink-ripgrep.nvim', cond = not vim.g.vscode, lazy = true, enabled = vim.fn.executable('rg') == 1 },
   {
     'saghen/blink.cmp',
     cond = not vim.g.vscode,
@@ -238,7 +238,6 @@ local spec = {
         default = M.default_sources,
         providers = {
           buffer = { enabled = function() return not require('lightboat.extra.big_file').is_big_file() end },
-          avante = { name = 'Avante', module = 'blink-cmp-avante' },
           git = { name = 'Git', module = 'blink-cmp-git', opts = blink_cmp_git_opts },
           dictionary = {
             name = 'Dict',
@@ -266,22 +265,6 @@ local spec = {
           },
           snippets = { name = 'Snip' },
           path = { opts = { trailing_slash = false, show_hidden_files_by_default = util.in_config_dir() } },
-          ripgrep = {
-            name = 'RG',
-            module = 'blink-ripgrep',
-            opts = {
-              prefix_min_len = 3,
-              fallback_to_regex_highlighting = true,
-              backend = {
-                context_size = 5,
-                project_root_fallback = false,
-                ripgrep = {
-                  search_casing = '--smart-case',
-                  additional_rg_options = { '--max-count', '5' },
-                },
-              },
-            },
-          },
         },
       },
     },
@@ -293,9 +276,8 @@ function M.spec() return spec end
 
 function M.clear()
   assert(spec[#spec][1] == 'saghen/blink.cmp')
-  local ripgrep_c = spec[#spec].opts.sources.providers.ripgrep.opts
-  ripgrep_c.project_root_marker = nil
-  ripgrep_c.backend.ripgrep.max_filesize = nil
+  spec[#spec].opts.sources.providers.avante = nil
+  spec[#spec].opts.sources.providers.ripgrep = nil
   c = nil
 end
 
@@ -339,6 +321,30 @@ M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
     { 0, 'BlinkCmpKindDict', { fg = '#a6e3a1' } },
   })
   assert(spec[#spec][1] == 'saghen/blink.cmp')
+  if vim.fn.executable('node') == 1 then
+    spec[#spec].opts.sources.providers.avante = { name = 'Avante', module = 'blink-cmp-avante' }
+  end
+  if vim.fn.executable('rg') == 1 then
+    local extra_c = config.get().extra
+    spec[#spec].opts.sources.providers.ripgrep = {
+      name = 'RG',
+      module = 'blink-ripgrep',
+      opts = {
+        prefix_min_len = 3,
+        project_root_marker = extra_c.root_markers or nil,
+        fallback_to_regex_highlighting = true,
+        backend = {
+          context_size = 5,
+          project_root_fallback = false,
+          ripgrep = {
+            max_filesize = extra_c.big_file.enabled and extra_c.big_file.big_file_total or nil,
+            search_casing = '--smart-case',
+            additional_rg_options = { '--max-count', '5' },
+          },
+        },
+      },
+    }
+  end
   for k, v in pairs(c.keys) do
     if not v or not operation[k] then goto continue end
     spec[#spec].opts.keymap[v.key] = operation[k]
@@ -348,10 +354,6 @@ M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
     end
     ::continue::
   end
-  local extra_c = config.get().extra
-  local ripgrep_c = spec[#spec].opts.sources.providers.ripgrep.opts
-  if extra_c.big_file.enabled then ripgrep_c.backend.ripgrep.max_filesize = extra_c.big_file.big_file_total or nil end
-  ripgrep_c.project_root_marker = extra_c.root_markers or nil
   return spec
 end, M.clear)
 
