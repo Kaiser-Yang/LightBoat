@@ -62,6 +62,7 @@ local operation = {
   ['<localleader>c'] = '<c-g>u```<cr>```<cr><++><esc>2kA',
   ['<localleader>d'] = '<c-g>u~~~~<++><esc>F~hi',
   ['<localleader>i'] = '<c-g>u**<++><esc>F*i',
+  ['<localleader>s'] = '<c-g>u---',
   ['<localleader>t'] = '<c-g>u``<++><esc>F`i',
   ['<localleader>m'] = '<c-g>u$$  $$<++><esc>F i',
   ['<localleader>M'] = '<c-g>u$$<cr><cr>$$<cr><++><esc>2kA',
