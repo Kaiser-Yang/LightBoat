@@ -63,6 +63,24 @@ local spec = {
         },
       },
     },
+    config = function(_, opts)
+      require('ultimate-autopair').setup(opts)
+      vim.g.auto_pairs_cr = '<plug>(ultimate-auto-pairs-cr)'
+      vim.g.auto_pairs_bs = '<plug>(ultimate-auto-pairs-bs)'
+      local pair_core = require('ultimate-autopair.core')
+      util.key.set(
+        { 'i' },
+        vim.g.auto_pairs_cr,
+        pair_core.get_run(vim.api.nvim_replace_termcodes('<cr>', true, true, true)),
+        { expr = true, replace_keycodes = false }
+      )
+      util.key.set(
+        { 'i' },
+        vim.g.auto_pairs_bs,
+        pair_core.get_run(vim.api.nvim_replace_termcodes('<bs>', true, true, true)),
+        { expr = true, replace_keycodes = false }
+      )
+    end,
   },
   {
     'kylechui/nvim-surround',
