@@ -28,6 +28,7 @@ return {
     ['prettier'] = vim.fn.executable('npm') == 1,
     ['buildifier'] = vim.fn.executable('bazel') == 1,
     ['autopep8'] = vim.fn.executable('python3') == 1,
+    ['goimports'] = vim.fn.executable('go') == 1,
 
     -- Tools for debugging and testing
     ['java-debug-adapter'] = vim.fn.executable('java') == 1 and vim.fn.executable('python3') == 1,
