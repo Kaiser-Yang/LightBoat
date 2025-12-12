@@ -2,6 +2,7 @@ return {
   enabled = true,
   ignored_keyword = {
     lua = { 'if', 'elseif', 'while', 'for', 'function', 'local' },
+    go = { 'if', 'else', 'switch', 'case', 'func', 'var', 'const' },
   },
   keys = {
     ['<cr>'] = { key = '<cr>' },
