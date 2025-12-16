@@ -9,7 +9,20 @@ local spec = {
       'sindrets/diffview.nvim', -- optional - Diff integration
       lazy = true,
       cmd = { 'DiffviewOpen' },
-      keys = { { '<m-d>', '<cmd>DiffviewOpen<cr>', desc = 'Open Diffview' } },
+      keys = {
+        {
+          '<m-d>',
+          function()
+            for _, win in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+              local win_buf = vim.api.nvim_win_get_buf(win)
+              if vim.bo[win_buf].filetype == 'DiffviewFiles' then return '<cmd>DiffviewClose<cr>' end
+            end
+            return '<cmd>DiffviewOpen<cr>'
+          end,
+          desc = 'Open Diffview',
+          expr = true,
+        },
+      },
     },
   },
   cmd = 'Neogit',
@@ -17,6 +30,7 @@ local spec = {
     mappings = {
       status = {
         ['Q'] = 'Close',
+        ['<m-g>'] = 'Close',
       },
     },
   },
