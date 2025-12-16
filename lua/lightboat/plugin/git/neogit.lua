@@ -28,6 +28,9 @@ local spec = {
   cmd = 'Neogit',
   opts = {
     mappings = {
+      commit_editor = {
+        ['Q'] = 'Close',
+      },
       status = {
         ['Q'] = 'Close',
         ['<m-g>'] = 'Close',
