@@ -29,6 +29,13 @@ local function quit(buf)
   for _, tab in pairs(tabs) do
     for _, win in pairs(vim.api.nvim_tabpage_list_wins(tab)) do
       local win_buf = vim.api.nvim_win_get_buf(win)
+      if vim.bo[win_buf].filetype == 'DiffviewFiles' then
+        vim.cmd('DiffviewClose')
+        return
+      elseif vim.bo[win_buf].filetype == 'gitcommit' then
+        vim.cmd('tabclose')
+        return
+      end
       if win_buf == buf and win ~= cur_win then hold_by_other = true end
       if c.is_visible_buffer(win_buf) and tab == cur_tab then table.insert(cur_tab_visible_bufs, win_buf) end
     end

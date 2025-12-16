@@ -5,7 +5,12 @@ local spec = {
   lazy = true,
   dependencies = {
     'nvim-lua/plenary.nvim', -- required
-    'sindrets/diffview.nvim', -- optional - Diff integration
+    {
+      'sindrets/diffview.nvim', -- optional - Diff integration
+      lazy = true,
+      cmd = { 'DiffviewOpen' },
+      keys = { { '<m-d>', '<cmd>DiffviewOpen<cr>', desc = 'Open Diffview' } },
+    },
   },
   cmd = 'Neogit',
   opts = {
