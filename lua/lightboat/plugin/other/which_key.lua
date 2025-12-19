@@ -3,7 +3,6 @@ local config = require('lightboat.config')
 local c
 local operation = {
   ['<leader>?'] = function() require('which-key').show() end,
-  ['s'] = '<cmd>WhichKey n s<cr>',
 }
 local spec = {
   'folke/which-key.nvim',

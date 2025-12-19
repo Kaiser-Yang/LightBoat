@@ -72,6 +72,7 @@ local operation = {
   ['ir'] = M.to_select_wrap('@return.inner'),
   ['ap'] = M.to_select_wrap('@parameter.outer'),
   ['ip'] = M.to_select_wrap('@parameter.inner'),
+  ['s'] = '<cmd>WhichKey n s<cr>',
   ['snf'] = M.to_swap_wrap('next', '@function.outer'),
   ['snc'] = M.to_swap_wrap('next', '@class.outer'),
   ['snl'] = M.to_swap_wrap('next', '@loop.outer'),

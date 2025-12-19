@@ -15,6 +15,7 @@ return {
     ['ir'] = { key = 'ir', prev = 'big_file_check', mode = { 'x', 'o' }, desc = 'Select inside return' },
     ['ap'] = { key = 'ap', prev = 'big_file_check', mode = { 'x', 'o' }, desc = 'Select around parameter' },
     ['ip'] = { key = 'ip', prev = 'big_file_check', mode = { 'x', 'o' }, desc = 'Select inside parameter' },
+    ['s'] = { key = 's', desc = 'Show swap operations' },
     ['snf'] = { key = 'snf', prev = 'big_file_check', desc = 'Swap with next function' },
     ['snc'] = { key = 'snc', prev = 'big_file_check', desc = 'Swap with next class' },
     ['snl'] = { key = 'snl', prev = 'big_file_check', desc = 'Swap with next loop' },
