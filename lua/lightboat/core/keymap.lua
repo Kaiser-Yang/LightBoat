@@ -49,14 +49,15 @@ local operation = {
     local cur_line = vim.api.nvim_get_current_line()
     local line_len = #cur_line
     local res = '<c-o><cmd>normal '
+    local key = (c.keys['b'] and c.keys['b'].key or 'b')
     if cursor_col == line_len then
       if cursor_col == 0 then
-        res = res .. 'v' .. c.keys['b'].key .. 'l' .. 'c<cr>'
+        res = res .. 'v' .. key .. 'l' .. 'c<cr>'
       else
-        res = res .. 'vl' .. c.keys['b'].key .. 'c<cr>'
+        res = res .. 'vl' .. key .. 'c<cr>'
       end
     else
-      res = res .. 'hv' .. c.keys['b'].key .. 'x<cr>'
+      res = res .. 'hv' .. key .. 'x<cr>'
     end
     return res
   end,
