@@ -16,6 +16,8 @@ function M.extra_accept(cmp)
   local start = completion_list.context.bounds.start_col
   local len = completion_list.context.bounds.length
   local input_str = completion_list.context.line:sub(start, start + len - 1)
+  -- INFO:
+  -- Use <cr> to accept snippets or file paths when matching the input
   if
     first
     and first.label:sub(1, #input_str) == input_str
