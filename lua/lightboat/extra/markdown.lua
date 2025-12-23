@@ -152,6 +152,7 @@ local operation = {
   ['<localleader>t'] = '<c-g>u``<++>' .. string.rep('<left>', 5),
   ['<localleader>m'] = '<c-g>u$$  $$<++>' .. string.rep('<left>', 7),
   ['<localleader>M'] = '<c-g>u$$<cr><cr>$$<cr><++>' .. string.rep('<up>', 2) .. string.rep('<right>', 2),
+  ['o'] = 'A<cr>',
   ['<cr>'] = function()
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
     local cursor_row, cursor_column = cursor_pos[1], cursor_pos[2]

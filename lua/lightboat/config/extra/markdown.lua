@@ -17,6 +17,7 @@ return {
     ['<localleader>d'] = { key = '<localleader>d', mode = 'i', buffer = true },
     ['<localleader>i'] = { key = '<localleader>i', mode = 'i', buffer = true },
     ['<localleader>M'] = { key = '<localleader>M', mode = 'i', buffer = true },
+    ['o'] = { key = 'o', mode = 'n', buffer = true, remap = true },
     ['<cr>'] = { key = '<cr>', mode = 'i', buffer = true },
     ['<bs>'] = { key = '<bs>', mode = 'i', buffer = true },
     ['<tab>'] = { key = '<tab>', mode = 'i', buffer = true },
