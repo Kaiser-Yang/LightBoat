@@ -29,6 +29,9 @@ end
 
 local operation = {
   ['<m-x>'] = '"+d',
+  -- TODO:
+  -- do not use this to select all text in the buffer
+  -- We should add an operator instead
   ['<m-a>'] = function()
     local res = 'gg0vG$'
     if vim.fn.mode('1') ~= 'n' then res = '<esc>' .. res end
