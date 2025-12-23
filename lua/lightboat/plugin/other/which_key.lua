@@ -15,6 +15,9 @@ local spec = {
     -- When enabling the registers plugin,
     -- it will cause a performance problem when the content is large.
     plugins = { spelling = { enabled = false }, registers = true },
+    -- BUG:
+    -- See https://github.com/folke/which-key.nvim/issues/1033
+    filter = function(mapping) return not mapping.lhs:match('^z.*') end,
   },
   keys = {},
 }
