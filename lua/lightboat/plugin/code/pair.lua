@@ -80,6 +80,7 @@ local spec = {
         pair_core.get_run(vim.api.nvim_replace_termcodes('<bs>', true, true, true)),
         { expr = true, replace_keycodes = false }
       )
+      util.key.set('i', '<cr>', '<c-g>u' .. vim.g.auto_pairs_cr)
     end,
   },
   {

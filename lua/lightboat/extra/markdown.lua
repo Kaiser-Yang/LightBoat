@@ -101,7 +101,7 @@ local function finish_a_list()
   for _ = 1, vim.api.nvim_win_get_cursor(0)[2] do
     util.key.feedkeys('<bs>', 'n')
   end
-  util.key.feedkeys('<cr>', 'n')
+  util.key.feedkeys('<c-g>u<cr>', 'n')
 end
 
 local function delete_a_list_item(item)
@@ -120,7 +120,7 @@ local function promote_a_list_item(item)
   util.key.feedkeys('<bs>' .. item, 'n')
 end
 
-local function continue_a_list_item_next_line() util.key.feedkeys('<cr>', 'n') end
+local function continue_a_list_item_next_line() util.key.feedkeys('<c-g>u<cr>', 'n') end
 
 local function add_a_list_item_next_line(item)
   continue_a_list_item_next_line()
@@ -184,7 +184,7 @@ local operation = {
       elseif content_before_cursor:match('^ *$') and feed_list_item_by_context() then
         -- pass
       else
-        util.key.feedkeys(vim.g.auto_pairs_cr, 'n')
+        util.key.feedkeys('<c-g>u' .. vim.g.auto_pairs_cr, 'n')
       end
     end
   end,

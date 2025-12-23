@@ -197,11 +197,11 @@ local spec = {
   { 'Kaiser-Yang/blink-cmp-git', cond = not vim.g.vscode, lazy = true },
   { 'Kaiser-Yang/blink-cmp-avante', cond = not vim.g.vscode, lazy = true, enabled = vim.fn.executable('node') == 1 },
   { 'Kaiser-Yang/blink-cmp-dictionary', cond = not vim.g.vscode, dependencies = 'nvim-lua/plenary.nvim', lazy = true },
-  { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode },
   { 'mikavilpas/blink-ripgrep.nvim', cond = not vim.g.vscode, lazy = true, enabled = vim.fn.executable('rg') == 1 },
   {
     'saghen/blink.cmp',
     cond = not vim.g.vscode,
+    dependencies = { { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode }, },
     version = '*',
     event = { 'InsertEnter', 'CmdlineEnter' },
     opts = {
