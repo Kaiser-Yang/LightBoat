@@ -29,7 +29,20 @@ local spec = {
         signature = { enabled = false },
         documentation = { enabled = false },
       },
-      presets = { long_message_to_split = true, lsp_doc_border = true },
+      presets = {
+        long_message_to_split = true,
+        lsp_doc_border = true,
+        command_palette = {
+          views = {
+            cmdline_popup = {
+              position = {
+                row = 2,
+                col = '50%',
+              },
+            },
+          },
+        },
+      },
       messages = { view_search = false },
       routes = {
         {
