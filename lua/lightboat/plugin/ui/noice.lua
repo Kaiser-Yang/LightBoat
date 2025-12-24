@@ -45,9 +45,22 @@ local spec = {
       },
       messages = { view_search = false },
       routes = {
+        -- BUG:
+        -- See https://github.com/folke/noice.nvim/issues/1097
+        -- This below is a workaround to show shell output messages properly
+        {
+          filter = { event = 'msg_show', kind = { 'shell_out', 'shell_err' } },
+          view = 'notify',
+          opts = {
+            level = 'info',
+            skip = false,
+            replace = false,
+          },
+        },
         {
           filter = {
             any = {
+              { event = 'msg_show', find = ':!' },
               { event = 'msg_show', find = 'ServiceReady' },
               { event = 'msg_show', find = 'Starting Java Language Server' },
               { event = 'msg_show', find = 'Init%.%.%.' },
