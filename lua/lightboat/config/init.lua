@@ -35,7 +35,7 @@ local default_opts = {
 local function lower_brackets(s)
   return s:gsub('%b<>', function(m)
     local inner = m:sub(2, -2)
-    if inner:match('^[mM]-%a$') then
+    if inner:match('^[mM]%-%a$') then
       inner = 'm' .. inner:sub(2)
     else
       inner = inner:lower()
