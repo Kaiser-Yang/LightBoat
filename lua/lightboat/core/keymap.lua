@@ -41,6 +41,7 @@ local operation = {
   ['<m-p>'] = '<cmd>pu<cr>',
   ['<m-P>'] = '<cmd>pu!<cr>',
   ['<c-u>'] = function()
+    util.key.feedkeys('<c-g>u', 'nt')
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
     local line = vim.api.nvim_get_current_line()
     vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], #line:match('^%s*') })
@@ -50,7 +51,7 @@ local operation = {
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
     local cur_line = vim.api.nvim_get_current_line()
     local line_len = #cur_line
-    local res = '<c-o><cmd>normal '
+    local res = '<c-g>u<c-o><cmd>normal '
     local key = (c.keys['b'] and c.keys['b'].key or 'b')
     if cursor_col == line_len then
       if cursor_col == 0 then
@@ -98,6 +99,7 @@ local operation = {
     if vim.fn.mode('1') == 'n' then
       return '<c-w>k'
     else
+      util.key.feedkeys('<c-g>u', 'nt')
       local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
       vim.schedule(function() vim.api.nvim_set_current_line(vim.api.nvim_get_current_line():sub(1, cursor_col)) end)
     end
