@@ -28,7 +28,11 @@ function M.search_count(limit, timeout)
 end
 
 local sections = {
-  lualine_a = { { 'progress', fmt = M.disable_in_ft_wrap('dap') }, { 'location', fmt = M.disable_in_ft_wrap('dap') } },
+  lualine_a = {
+    { 'progress', fmt = M.disable_in_ft_wrap('dap') },
+    { 'location', fmt = M.disable_in_ft_wrap('dap') },
+    { 'mode', fmt = M.disable_in_ft_wrap('dap') },
+  },
   lualine_b = {
     { 'branch', fmt = M.disable_in_ft_wrap('dap') },
     { 'diff', fmt = M.disable_in_ft_wrap('dap') },
