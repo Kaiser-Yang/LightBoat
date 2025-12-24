@@ -62,5 +62,7 @@ return {
     ['<leader>ts'] = { key = '<leader>ts', desc = 'Toggle treesitter highlight' },
     ['<leader>i'] = { key = '<leader>i', desc = 'Toggle inlay hints' },
     ['<m-d>'] = { key = '<m-d>', mode = 'i', desc = 'Delete word forwards' },
+    ['<m-p>'] = { key = '<m-p>', mode = 'n', desc = 'Same with :put' },
+    ['<m-P>'] = { key = '<m-P>', mode = 'n', desc = 'Same with :put!' },
   },
 }
