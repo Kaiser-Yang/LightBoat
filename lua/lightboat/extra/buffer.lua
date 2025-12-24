@@ -20,6 +20,10 @@ end
 
 local function quit(buf)
   buf = util.buffer.normalize_buf(buf)
+  if vim.bo[buf].buftype ~= '' then
+    vim.cmd('q')
+    return
+  end
   if not vim.api.nvim_buf_is_valid(buf) then return end
   local tabs = vim.api.nvim_list_tabpages()
   local cur_win = vim.api.nvim_get_current_win()
