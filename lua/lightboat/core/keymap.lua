@@ -92,7 +92,6 @@ local operation = {
   ['<leader>j'] = '<cmd>set splitbelow<cr><cmd>split<cr><cmd>set nosplitbelow<cr>',
   ['<leader>h'] = '<cmd>vsplit<cr>',
   ['<leader>k'] = '<cmd>split<cr>',
-  ['='] = '<cmd>wincmd =<cr>',
   ['<c-h>'] = '<c-w>h',
   ['<c-j>'] = '<c-w>j',
   ['<c-k>'] = function()

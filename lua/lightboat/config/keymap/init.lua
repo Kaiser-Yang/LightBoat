@@ -28,7 +28,6 @@ return {
     ['<leader>j'] = { key = '<leader>j', desc = 'Split below' },
     ['<leader>h'] = { key = '<leader>h', desc = 'Split right' },
     ['<leader>k'] = { key = '<leader>k', desc = 'Split above' },
-    ['='] = { key = '=', desc = 'Equalize windows' },
     ['<c-h>'] = { key = '<c-h>', desc = 'Cursor left' },
     ['<c-j>'] = { key = '<c-j>', desc = 'Cursor down' },
     ['<c-k>'] = { key = '<c-k>', expr = true, mode = { 'n', 'i' }, desc = 'Cursor up or delete to end of line' },
