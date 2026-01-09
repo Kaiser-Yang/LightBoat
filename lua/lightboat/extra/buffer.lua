@@ -127,6 +127,7 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.extra.buffer', function()
+  if vim.g.vscode then return end
   c = config.get().extra.buffer
   if not c.enabled then return end
 

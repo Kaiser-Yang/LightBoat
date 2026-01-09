@@ -148,6 +148,7 @@ local operation = {
     vim.notify(msg, nil, { title = 'Settings' })
   end,
   ['<leader>i'] = function()
+    if vim.g.vscode then return end
     local status = not vim.lsp.inlay_hint.is_enabled()
     local msg = status and 'Inlay hints enabled' or 'Inlay hints disabled'
     vim.notify(msg, nil, { title = 'LSP' })

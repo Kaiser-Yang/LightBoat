@@ -69,7 +69,7 @@ local function update_range(buf, first, last)
 end
 
 function M.update_fold_signs(buf)
-  if not c or not c.fold_sign.enabled then return end
+  if not c or not c.fold_sign.enabled or vim.g.vscode then return end
   buf = buf or 0
   if buf == 0 then buf = vim.api.nvim_get_current_buf() end
   for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -250,6 +250,8 @@ local operation = {
 M.setup = util.setup_check_wrap('lightboat.extra.fold_sign', function()
   c = config.get().extra
   if not c.fold_sign.enabled then return end
+  util.key.set_keys(operation, c.fold_sign.keys)
+  if vim.g.vscode then return end
   group = vim.api.nvim_create_augroup('LightBoatFoldSign', {})
   util.set_hls({
     { 0, 'FoldOpen', { fg = '#89b4fa' } },
@@ -259,7 +261,6 @@ M.setup = util.setup_check_wrap('lightboat.extra.fold_sign', function()
     { 'FoldOpen', { text = '', texthl = 'FoldOpen' } },
     { 'FoldClosed', { text = '', texthl = 'FoldClosed' } },
   })
-  util.key.set_keys(operation, c.fold_sign.keys)
   vim.api.nvim_create_autocmd({
     'BufEnter',
     'CursorHold',
