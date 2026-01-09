@@ -265,7 +265,6 @@ local spec = {
             ['<c-t>'] = false,
             ['/'] = false,
             ['<s-cr>'] = false,
-            ['<c-w>'] = false,
             ['<c-r>#'] = false,
           },
         },
