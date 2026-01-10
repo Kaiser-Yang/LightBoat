@@ -18,10 +18,10 @@ local M = {
     markdown_oxide = {},
   },
   keys = {
-    ['ga'] = { key = 'ga', desc = 'Code action', mode = { 'v', 'n' } },
     ['gd'] = { key = 'gd', desc = 'Go to definition' },
     ['gt'] = { key = 'gt', desc = 'Go to type definition' },
     ['gi'] = { key = 'gi', desc = 'Go to implementations' },
+    ['gra'] = { key = 'gra', desc = 'Code action', mode = { 'v', 'n' } },
     ['grr'] = { key = 'grr', desc = 'Go references' },
     ['gro'] = { key = 'gro', desc = 'Outgoing calls' },
     ['gri'] = { key = 'gri', desc = 'Incoming calls' },

@@ -24,10 +24,10 @@ end
 local M = {}
 
 local operation = {
-  ['ga'] = '<cmd>Lspsaga code_action<cr>',
   ['gd'] = '<cmd>Lspsaga goto_definition<cr>',
   ['gt'] = '<cmd>Lspsaga goto_type_definition<cr>',
   ['gi'] = '<cmd>Lspsaga finder imp<cr>',
+  ['gra'] = '<cmd>Lspsaga code_action<cr>',
   ['grr'] = '<cmd>Lspsaga finder ref<cr>',
   ['gro'] = '<cmd>Lspsaga outgoing_calls<cr>',
   ['gri'] = '<cmd>Lspsaga incoming_calls<cr>',
