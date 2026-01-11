@@ -76,9 +76,9 @@ local function get_compile_command(filetype, filename)
       )
     end,
     java = function() return string.format('javac "%s" && echo RUNNING && time java "%s"', filename, filename_noext) end,
-    sh = function() return string.format('time "sh %s"', filename) end,
-    bash = function() return string.format('time "bash %s"', filename) end,
-    zsh = function() return string.format('time "zsh %s"', filename) end,
+    sh = function() return string.format('time sh "%s"', filename) end,
+    bash = function() return string.format('time bash "%s"', filename) end,
+    zsh = function() return string.format('time zsh "%s"', filename) end,
     python = function() return string.format('time python "%s"', filename) end,
     lua = function() return string.format('time lua "%s"', filename) end,
     go = function() return string.format('go run "%s"', filename) end,
