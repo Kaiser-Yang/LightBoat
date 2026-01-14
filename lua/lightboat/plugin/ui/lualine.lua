@@ -15,12 +15,10 @@ function M.disable_in_ft_wrap(ft_list)
 end
 
 function M.search_count()
-  if vim.v.hlsearch == 0 then return '' end
-  -- PERF: performance issue for large files
-  if big_file.is_big_file() then return '' end
   local last_search = vim.fn.getreg('/')
-  if not last_search or last_search == '' then return '' end
-  local limit , timeout = 99, 50
+  -- PERF: performance issue for large files
+  if big_file.is_big_file() or vim.v.hlsearch == 0 then return last_search end
+  local limit, timeout = 99, 50
   local ok, result = pcall(vim.fn.searchcount, { maxcount = limit + 1, timeout = timeout })
   if not ok or next(result) == nil then return '' end
   if result.current > limit then result.current = '??' end
