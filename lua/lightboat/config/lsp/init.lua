@@ -19,8 +19,8 @@ local M = {
   },
   keys = {
     ['gd'] = { key = 'gd', desc = 'Go to definition' },
-    ['gt'] = { key = 'gt', desc = 'Go to type definition' },
-    ['gi'] = { key = 'gi', desc = 'Go to implementations' },
+    ['grI'] = { key = 'grI', desc = 'Go to implementations' },
+    ['grt'] = { key = 'grt', desc = 'Go to type definition' },
     ['gra'] = { key = 'gra', desc = 'Code action', mode = { 'v', 'n' } },
     ['grr'] = { key = 'grr', desc = 'Go references' },
     ['gro'] = { key = 'gro', desc = 'Outgoing calls' },
