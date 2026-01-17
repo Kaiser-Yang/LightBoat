@@ -216,7 +216,7 @@ local spec = {
           max_height = 15,
           scrolloff = 0,
           draw = {
-            align_to = 'label',
+            align_to = 'cursor',
             padding = 0,
             columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 }, { 'source_name' } },
             components = { source_name = { text = function(ctx) return '[' .. ctx.source_name .. ']' end } },
