@@ -91,7 +91,7 @@ local operation = {
   -- We should remove this mapping when blink can handle this case
   ['<c-x>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
   ['<c-s>'] = { 'show_signature', 'hide_signature', 'fallback' },
-  ['<cr>'] = { M.extra_accept, 'fallback' },
+  ['<cr>'] = { 'accept', 'fallback' },
   ['<tab>'] = { 'snippet_forward', 'fallback' },
   ['<s-tab>'] = { 'snippet_backward', 'fallback' },
   ['<c-u>'] = { 'scroll_documentation_up', 'fallback' },
