@@ -201,7 +201,7 @@ local spec = {
   {
     'saghen/blink.cmp',
     cond = not vim.g.vscode,
-    dependencies = { { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode }, },
+    dependencies = { { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode } },
     version = '*',
     event = { 'InsertEnter', 'CmdlineEnter' },
     opts = {
@@ -237,9 +237,36 @@ local spec = {
         },
       },
       sources = {
+        -- HACK:
+        -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
+        priority = { 'lsp', 'dictionary', 'buffer', 'ripgrep' },
         default = M.default_sources,
         providers = {
-          buffer = { enabled = function() return not require('lightboat.extra.big_file').is_big_file() end },
+          buffer = {
+            enabled = function() return not require('lightboat.extra.big_file').is_big_file() end,
+            -- keep case of first char
+            -- or make all upper case
+            transform_items = function(context, items)
+              local keyword = context.get_keyword()
+              local case
+              if keyword:match('^%l') then
+                case = string.lower
+              elseif keyword:match('^%u%u') then
+                case = string.upper
+              elseif not keyword:match('^%u') then
+                return items
+              end
+              local out = {}
+              for _, item in ipairs(items) do
+                local raw = item.insertText
+                local text = (case ~= nil and case(raw) or string.upper(raw))
+                item.insertText = text
+                item.label = text
+                table.insert(out, item)
+              end
+              return out
+            end,
+          },
           git = { name = 'Git', module = 'blink-cmp-git', opts = blink_cmp_git_opts },
           dictionary = {
             name = 'Dict',
@@ -270,11 +297,29 @@ local spec = {
         },
       },
     },
+    config = function(_, opts)
+      require('blink.cmp').setup(opts)
+      local original = require('blink.cmp.completion.list').show
+      require('blink.cmp.completion.list').show = function(ctx, items_by_source)
+        local seen = {}
+        local function filter(item)
+          if seen[item.label] then return false end
+          seen[item.label] = true
+          return true
+        end
+        for id in vim.iter(opts.sources.priority) do
+          items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
+        end
+        return original(ctx, items_by_source)
+      end
+    end,
     opts_extend = { 'sources.default' },
   },
 }
 
-function M.spec() return spec end
+-- HACK:
+-- This is not a good way to expose spec, need to find a better way
+function M.spec() return vim.deepcopy(spec) end
 
 function M.clear()
   assert(spec[#spec][1] == 'saghen/blink.cmp')
@@ -284,7 +329,7 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
-  if vim.g.vscode then return spec end
+  if vim.g.vscode then return vim.deepcopy(spec) end
   c = config.get().blink_cmp
   for _, s in ipairs(spec) do
     s.enabled = c.enabled
@@ -356,7 +401,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
     end
     ::continue::
   end
-  return spec
+  return vim.deepcopy(spec)
 end, M.clear)
 
 return M
