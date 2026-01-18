@@ -63,10 +63,7 @@ function M.inside_block(types)
 end
 
 function M.default_sources()
-  -- HACK:
-  -- path source works not good enough
-  local res = { 'lsp', 'path' }
-  if not vim.bo.filetype:match('dap') and not vim.bo.filetype:match('sagarename') then table.insert(res, 'snippets') end
+  local res = { 'lsp', 'path', 'snippets', 'buffer' }
   if vim.bo.filetype == 'AvanteInput' then
     table.insert(res, 'avante')
   elseif vim.tbl_contains({ 'gitcommit', 'octo' }, vim.bo.filetype) and network.status() then
@@ -74,12 +71,9 @@ function M.default_sources()
   end
   if
     vim.tbl_contains({ 'markdown', 'gitcommit', 'text', 'Avante', 'AvanteInput', 'octo' }, vim.bo.filetype)
-    or M.inside_block({ 'comment' }) ~= false
+    or M.inside_block({ 'comment', 'string' }) ~= false
   then
-    vim.list_extend(res, {
-      'buffer',
-      'dictionary',
-    })
+    vim.list_extend(res, { 'dictionary' })
     if vim.fn.executable('rg') == 1 then vim.list_extend(res, { 'ripgrep' }) end
   end
   return res
