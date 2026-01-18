@@ -247,6 +247,9 @@ local spec = {
             -- keep case of first char
             -- or make all upper case
             transform_items = function(context, items)
+              -- Do not convert case when searching
+              if context.mode == 'cmdline' then return items end
+              --- @type string
               local keyword = context.get_keyword()
               local case
               if keyword:match('^%l') then
@@ -259,7 +262,7 @@ local spec = {
               local out = {}
               for _, item in ipairs(items) do
                 local raw = item.insertText
-                local text = (case ~= nil and case(raw) or string.upper(raw))
+                local text = (case ~= nil and case(raw) or (string.upper(raw:sub(1, 1)) .. string.lower(raw:sub(2))))
                 item.insertText = text
                 item.label = text
                 table.insert(out, item)
