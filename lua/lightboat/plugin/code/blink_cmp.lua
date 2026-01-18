@@ -254,6 +254,8 @@ local spec = {
               local case
               if keyword:match('^%l') then
                 case = string.lower
+              -- TODO:
+              -- this does not work, because the length of keyword will always be 1 for buffer source
               elseif keyword:match('^%u%u') then
                 case = string.upper
               elseif not keyword:match('^%u') then
