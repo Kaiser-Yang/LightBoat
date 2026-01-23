@@ -86,12 +86,7 @@ local function get_actual_count(go_up, consider_invisible)
   local cur_win = vim.api.nvim_get_current_win()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local cfg = vim.api.nvim_win_get_config(win)
-    if
-      cfg.relative == 'win'
-      and cfg.row == 0
-      and cfg.win == cur_win
-      and vim.w[win].treesitter_context_line_number
-    then
+    if cfg.relative == 'win' and cfg.row == 0 and cfg.win == cur_win and vim.w[win].treesitter_context_line_number then
       local lines = vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(win), 0, -1, false)
       vim.iter(lines):each(function(line)
         -- extract the number from the line
@@ -141,6 +136,8 @@ local operation = {
   J = function() return M.line_wise_key_wrap('J', c.keys.J.opts)() end,
   j = function() return M.line_wise_key_wrap('j', c.keys.j.opts)() end,
   k = function() return M.line_wise_key_wrap('k', c.keys.k.opts)() end,
+  ['<<'] = function() return M.line_wise_key_wrap('<<', c.keys['<<'].opts)() end,
+  ['>>'] = function() return M.line_wise_key_wrap('>>', c.keys['>>'].opts)() end,
 }
 
 function M.clear()

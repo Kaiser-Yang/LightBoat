@@ -26,6 +26,8 @@ return {
     D = { key = 'D', expr = true, desc = 'Line wise D', opts = { increase_count = true, consider_invisble = true } },
     dd = { key = 'dd', expr = true, desc = 'Line wise dd', opts = { increase_count = true, consider_invisble = true } },
     cc = { key = 'cc', expr = true, desc = 'Line wise cc', opts = { increase_count = true, consider_invisble = true } },
+    ['<<'] = { key = '<<', expr = true, desc = 'Line wise cc', opts = { increase_count = true, consider_invisble = true }  },
+    ['>>'] = { key = '>>', expr = true, desc = 'Line wise cc', opts = { increase_count = true, consider_invisble = true }  },
     J = {
       key = 'J',
       mode = { 'n', 'x' },
