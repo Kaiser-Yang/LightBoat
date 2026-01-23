@@ -234,7 +234,6 @@ local spec = {
             ['<c-r><c-f>'] = { 'insert_file', mode = 'i', desc = 'Insert filename under cursor' },
             ['<c-r>W'] = { 'insert_cWORD', mode = 'i', desc = 'Insert the WORD under cursor' },
             ['<c-r>%'] = { 'insert_filename', mode = 'i', desc = "Insert current buffer's filename" },
-            ['<c-r>w'] = { 'insert_cword', mode = 'i', desc = 'Insert the word under cursor' },
             ['<c-r>l'] = { 'insert_line', mode = 'i', desc = 'Insert current line' },
             ['<c-r>p'] = { 'insert_file_full', mode = 'i', desc = 'Insert file full path' },
             ['<c-r>f'] = { 'insert_file', mode = 'i', desc = 'Insert filename under cursor' },
