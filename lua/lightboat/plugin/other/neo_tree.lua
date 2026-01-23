@@ -260,6 +260,7 @@ local spec = {
           mappings = {
             ['r'] = 'rename',
             ['<bs>'] = 'navigate_up',
+            ['<c-h>'] = 'navigate_up',
             ['d'] = 'delete',
             ['y'] = 'copy_to_clipboard',
             ['Y'] = { M.copy_node_info, desc = 'Copy node information to clipboard' },
