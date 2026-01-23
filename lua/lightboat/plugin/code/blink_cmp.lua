@@ -259,6 +259,8 @@ local spec = {
               for _, item in ipairs(items) do
                 local raw = item.insertText
                 local text = (case ~= nil and case(raw) or (string.upper(raw:sub(1, 1)) .. string.lower(raw:sub(2))))
+                -- We only adjust the case of the first char when there is no capital letters.
+                if raw:match('[A-Z]') then text = raw end
                 item.insertText = text
                 item.label = text
                 table.insert(out, item)
