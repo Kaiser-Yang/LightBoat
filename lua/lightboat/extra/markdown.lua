@@ -127,6 +127,7 @@ local function add_a_list_item_next_line(item)
   util.key.feedkeys(item, 'n')
 end
 
+-- TODO: Those below not working in vscode-nvim
 local operation = {
   ['<localleader>f'] = function()
     local pattern = '<++>'
@@ -150,6 +151,7 @@ local operation = {
   ['<localleader>i'] = '<c-g>u**<++>' .. string.rep('<left>', 5),
   ['<localleader>s'] = '<c-g>u---<cr><cr>',
   ['<localleader>t'] = '<c-g>u``<++>' .. string.rep('<left>', 5),
+  ['<localleader>T'] = '<c-g>u- [ ] ',
   ['<localleader>m'] = '<c-g>u$$  $$ <++>' .. string.rep('<left>', 8),
   ['<localleader>M'] = '<c-g>u$$<cr><cr>$$<cr><cr><++>' .. string.rep('<up>', 3) .. string.rep('<right>', 2),
   ['o'] = 'A<cr>',
