@@ -34,5 +34,6 @@ return {
     ['java-debug-adapter'] = vim.fn.executable('java') == 1 and vim.fn.executable('python3') == 1,
     ['java-test'] = vim.fn.executable('java') == 1 and vim.fn.executable('python3') == 1,
     ['codelldb'] = true,
+    ['delve'] = vim.fn.executable('go') == 1,
   },
 }
