@@ -4,7 +4,6 @@ local name = 'lightboat.plugin.git'
 local M = {
   conflict = require('lightboat.plugin.git.conflict'),
   diffview = require('lightboat.plugin.git.diffview'),
-  neogit = require('lightboat.plugin.git.neogit'),
   octo = require('lightboat.plugin.git.octo'),
   sign = require('lightboat.plugin.git.sign'),
 }
