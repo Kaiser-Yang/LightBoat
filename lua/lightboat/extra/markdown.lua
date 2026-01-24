@@ -133,7 +133,7 @@ local operation = {
     local pattern = '<++>'
     local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
     local cur_buf = vim.api.nvim_get_current_buf()
-    local row_end = math.max(row + c.markdown.max_search_lines - 1, vim.api.nvim_buf_line_count(cur_buf))
+    local row_end = math.min(row + c.markdown.max_search_lines - 1, vim.api.nvim_buf_line_count(cur_buf))
     local match = vim.fn.matchbufline(cur_buf, pattern, row, row_end)[1]
     if match then
       vim.api.nvim_win_set_cursor(0, { match.lnum, match.byteidx })
