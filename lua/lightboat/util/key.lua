@@ -77,19 +77,25 @@ function M.get_lazy_keys(operation, keys)
 end
 
 function M.set_keys(operation, keys)
+  local util = require('lightboat.util')
   if not keys or not operation then return end
   for k, v in pairs(keys) do
     if not v or not operation[k] then goto continue end
-    M.set(v.mode, v.key, M.prev_operation_wrap(v.prev, operation[k]), M.convert(v))
+    for _, key in pairs(util.ensure_list(v.key)) do
+      M.set(v.mode, key, M.prev_operation_wrap(v.prev, operation[k]), M.convert(v))
+    end
     ::continue::
   end
 end
 
 function M.clear_keys(operation, keys)
+  local util = require('lightboat.util')
   if not keys or not operation then return end
   for k, v in pairs(keys) do
     if not v or not operation[k] then goto continue end
-    M.del(v.mode or 'n', v.key, { buffer = v.buffer })
+    for _, key in pairs(util.ensure_list(v.key)) do
+      M.del(v.mode or 'n', key, { buffer = v.buffer })
+    end
     ::continue::
   end
 end
