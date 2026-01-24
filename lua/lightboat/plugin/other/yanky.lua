@@ -16,8 +16,6 @@ end
 
 local M = {}
 
-local function sys_yank() return require('yanky').yank({ register = '+' }) end
-
 local function sys_paste()
   local res
   if vim.fn.mode('1') == 'i' then
@@ -46,13 +44,37 @@ local operation = {
   ['gP'] = '<plug>(YankyGPutBefore)',
   ['P'] = '<plug>(YankyPutBefore)',
   ['Y'] = function() return line_wise_key_wrap('y$', c.keys['Y'].opts)() end,
-  ['<leader>Y'] = function() return line_wise_key_wrap('"+y$', c.keys['<leader>Y'].opts)() end,
-  ['<leader>y'] = sys_yank,
-  ['<m-c>'] = sys_yank,
+  ['<m-c>'] = function()
+    if vim.fn.mode('1') == 'no' then
+      if vim.v.operator == 'y' and vim.v.register == '+' then
+        return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"+yy', c.keys['<m-c>'].opts)()
+      end
+    else
+      return '"+y'
+    end
+  end,
+  ['<m-C>'] = function() return line_wise_key_wrap('"+y$', c.keys['<m-C>'].opts)() end,
   ['<c-rightmouse>'] = sys_paste,
-  ['<m-v>'] = function() return vim.fn.mode('1') == 'c' and '<c-r>+' or sys_paste() end,
-  ['<leader>p'] = sys_paste,
-  ['<leader>P'] = function()
+  ['<m-v>'] = function()
+    local mode = vim.fn.mode('1')
+    if mode == 'no' then
+      if vim.v.operator ~= 'y' then return end
+      if vim.v.register == '+' then
+        vim.fn.setreg('+', vim.fn.getreg('"'), vim.fn.getregtype('"'))
+        vim.schedule(function() vim.notify('Restored + register from anonymous register', vim.log.levels.INFO) end)
+        return '<esc>'
+      elseif vim.v.register == '' or vim.v.register == '"' then
+        vim.fn.setreg('"', vim.fn.getreg('+'), vim.fn.getregtype('+'))
+        vim.schedule(function() vim.notify('Restored anonymous register from + register', vim.log.levels.INFO) end)
+        return '<esc>'
+      end
+    elseif mode == 'c' then
+      return '<c-r>+'
+    else
+      return sys_paste()
+    end
+  end,
+  ['<m-V>'] = function()
     prepare_system_clipboard()
     return '<plug>(YankyPutBefore)'
   end,
