@@ -282,7 +282,7 @@ local spec = {
             ['[g'] = { prev_git, desc = 'Prev Git Modified' },
             [']g'] = { next_git, desc = 'Next Git Modified' },
             ['<m-i>'] = 'toggle_hidden',
-            ['<m-h>'] = 'toggle_hidden',
+            ['<m-H>'] = 'toggle_hidden',
           },
         },
       },
