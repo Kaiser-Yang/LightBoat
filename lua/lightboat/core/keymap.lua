@@ -28,7 +28,15 @@ if c.disable_default_find_match_in_inserat then
 end
 
 local operation = {
-  ['<m-x>'] = '"+d',
+  ['<m-x>'] = function()
+    if vim.fn.mode('1') == 'no' then
+      if vim.v.operator == 'd' and vim.v.register == '+' then
+        return '<esc>' .. tostring(vim.v.count) .. util.extra.line_wise_key_wrap('"+dd', c.keys['<m-x>'].opts)()
+      end
+    else
+      return '"+d'
+    end
+  end,
   -- TODO:
   -- do not use this to select all text in the buffer
   -- We should add an operator instead

@@ -12,7 +12,13 @@ return {
     di = true,
   },
   keys = {
-    ['<m-x>'] = { key = '<m-x>', mode = { 'n', 'x' }, desc = 'Cut to + reg' },
+    ['<m-x>'] = {
+      key = '<m-x>',
+      mode = { 'n', 'x', 'o' },
+      expr = true,
+      desc = 'Cut to + reg',
+      opts = { consider_wrap = false, consider_invisible = true, increase_count = true },
+    },
     ['<m-a>'] = {
       key = '<m-a>',
       prev = 'disable_snacks_animate_scroll_once',
