@@ -97,7 +97,7 @@ local spec = {
         multi_line = false,
         char_actions = function() return { [';'] = 'next', [','] = 'prev' } end,
         jump = { do_first_jump = true, autojump = true },
-        label = { exclude = 'hHjJklLiIaArRdDcCgGyY' },
+        label = { exclude = 'hHjJkKlLiImMaArRdDcCgGyYsSxX' },
         keys = flash_indirect,
       },
       search = { highlight = { backdrop = true } },
