@@ -138,6 +138,8 @@ local operation = {
   k = function() return M.line_wise_key_wrap('k', c.keys.k.opts)() end,
   ['<<'] = function() return M.line_wise_key_wrap('<<', c.keys['<<'].opts)() end,
   ['>>'] = function() return M.line_wise_key_wrap('>>', c.keys['>>'].opts)() end,
+  ['-'] = function() return M.line_wise_key_wrap('-', c.keys['-'].opts)() end,
+  ['+'] = function() return M.line_wise_key_wrap('+', c.keys['+'].opts)() end,
 }
 
 function M.clear()

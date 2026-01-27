@@ -57,5 +57,19 @@ return {
         consider_invisble = true,
       },
     },
+    ['-'] = {
+      key = '-',
+      mode = { 'n', 'x', 'o' },
+      expr = true,
+      desc = 'Line wise -',
+      opts = { increase_count = false, consider_invisble = true },
+    },
+    ['+'] = {
+      key = '+',
+      mode = { 'n', 'x', 'o' },
+      expr = true,
+      desc = 'Line wise +',
+      opts = { increase_count = false, consider_invisble = true },
+    },
   },
 }
