@@ -65,7 +65,7 @@ return {
       opts = { increase_count = false, consider_invisble = true },
     },
     ['+'] = {
-      key = '+',
+      key = {'+', '<cr>'},
       mode = { 'n', 'x', 'o' },
       expr = true,
       desc = 'Line wise +',
