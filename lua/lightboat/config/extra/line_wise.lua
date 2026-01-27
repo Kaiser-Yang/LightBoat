@@ -30,7 +30,7 @@ return {
     ['>>'] = { key = '>>', expr = true, desc = 'Line wise cc', opts = { increase_count = true, consider_invisble = true }  },
     J = {
       key = 'J',
-      mode = { 'n', 'x' },
+      mode = { 'n' },
       expr = true,
       desc = 'Line wise J',
       opts = { increase_count = true, consider_invisble = true },
