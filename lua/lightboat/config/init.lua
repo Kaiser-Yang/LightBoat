@@ -32,23 +32,35 @@ local default_opts = {
   yanky = require('lightboat.config.yanky'),
 }
 
+--- @param s string|table<string>
 local function lower_brackets(s)
-  return s:gsub('%b<>', function(m)
-    local inner = m:sub(2, -2)
-    if inner:match('^[mM]%-%a$') then
-      inner = 'm' .. inner:sub(2)
-    else
-      inner = inner:lower()
+  --- @param str string
+  local function lower_one(str)
+    return str:gsub('%b<>', function(m)
+      local inner = m:sub(2, -2)
+      if inner:match('^[mM]%-%a$') then
+        inner = 'm' .. inner:sub(2)
+      else
+        inner = inner:lower()
+      end
+      return '<' .. inner .. '>'
+    end)
+  end
+  if type(s) == 'string' then
+    return lower_one(s)
+  elseif type(s) == 'table' then
+    local res = {}
+    for _, v in pairs(s) do
+      res[#res + 1] = lower_one(v)
     end
-    return '<' .. inner .. '>'
-  end)
+    return res
+  end
 end
 
 local function normalize_keys(t)
   for k, v in pairs(t) do
     if k == 'keys' and type(v) == 'table' then
       for key, entry in pairs(v) do
-        assert(not entry or entry.key and type(entry.key) == 'string')
         local new_key = lower_brackets(key)
         if entry and entry.key then entry.key = lower_brackets(entry.key) end
         if new_key ~= key then
