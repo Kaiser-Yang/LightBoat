@@ -16,6 +16,8 @@ end
 
 local M = {}
 
+local function sys_yank(register) return require('yanky').yank({ register = register }) end
+
 local function sys_paste()
   local res
   if vim.fn.mode('1') == 'i' then
@@ -33,7 +35,9 @@ local operation = {
   ['y'] = function()
     if vim.fn.mode('1') == 'no' then
       if vim.v.operator == 'y' then
-        return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"' .. vim.v.register .. 'yy', c.keys['y'].opts)()
+        return '<esc>'
+          .. tostring(vim.v.count)
+          .. line_wise_key_wrap(sys_yank(vim.v.register) .. 'y', c.keys['y'].opts)()
       end
     else
       return '<plug>(YankyYank)'
@@ -47,10 +51,10 @@ local operation = {
   ['<m-c>'] = function()
     if vim.fn.mode('1') == 'no' then
       if vim.v.operator == 'y' and vim.v.register == '+' then
-        return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"+yy', c.keys['<m-c>'].opts)()
+        return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap(sys_yank('+') .. 'y', c.keys['<m-c>'].opts)()
       end
     else
-      return '"+y'
+      return sys_yank('+')
     end
   end,
   ['<m-C>'] = function() return line_wise_key_wrap('"+y$', c.keys['<m-C>'].opts)() end,
