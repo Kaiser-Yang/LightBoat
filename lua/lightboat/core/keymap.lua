@@ -48,13 +48,6 @@ local operation = {
   ['<m-d>'] = '<c-g>u<cmd>normal de<cr>',
   ['<m-p>'] = '<cmd>pu<cr>',
   ['<m-P>'] = '<cmd>pu!<cr>',
-  ['<c-u>'] = function()
-    util.key.feedkeys('<c-g>u', 'nt')
-    local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
-    local line = vim.api.nvim_get_current_line()
-    vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], #line:match('^%s*') })
-    vim.api.nvim_set_current_line(line:match('^%s*') .. line:sub(cursor_col + 1))
-  end,
   ['<c-w>'] = function()
     local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
     local cur_line = vim.api.nvim_get_current_line()

@@ -26,7 +26,6 @@ return {
       expr = true,
       desc = 'Select all',
     },
-    ['<c-u>'] = { key = '<c-u>', mode = 'i', desc = 'Delete to start of line' },
     ['<c-w>'] = { key = '<c-w>', mode = 'i', expr = true, remap = true, desc = 'Delete one word backwards' },
     ['<c-a>'] = { key = '<c-a>', mode = { 'i', 'c' }, expr = true, desc = 'Move cursor to start of line' },
     ['<c-e>'] = { key = '<c-e>', mode = { 'i', 'c' }, expr = true, desc = 'Move cursor to end of line' },
