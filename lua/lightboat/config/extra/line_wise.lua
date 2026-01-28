@@ -41,7 +41,7 @@ return {
       desc = 'Line wise j',
       expr = true,
       opts = {
-        consider_wrap = function() return vim.fn.mode('1'):find('o') == nil and vim.bo.filetype ~= 'qf' end,
+        consider_wrap = false,
         increase_count = false,
         consider_invisble = true,
       },
@@ -52,7 +52,7 @@ return {
       expr = true,
       desc = 'Line wise k',
       opts = {
-        consider_wrap = function() return vim.fn.mode('1'):find('o') == nil and vim.bo.filetype ~= 'qf' end,
+        consider_wrap = false,
         increase_count = false,
         consider_invisble = true,
       },
