@@ -54,14 +54,17 @@ vim.g.auto_pairs_bs = vim.g.auto_pairs_bs or '<bs>'
 
 --- @param line string
 local function match_item(line, must_end)
+  local longest_match = nil
   for _, regex_or_list in pairs(item_regex) do
     local regex_list = util.ensure_list(regex_or_list)
     for _, regex in pairs(regex_list) do
       local item = line:match(regex .. (must_end and '$' or ''))
-      if item then return item end
+      if not longest_match or (item and #item > #longest_match) then
+        longest_match = item
+      end
     end
   end
-  return nil
+  return longest_match
 end
 
 --- Feed a list item by context
