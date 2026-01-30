@@ -133,15 +133,11 @@ local last_key_in_insert = nil
 
 --- @return boolean
 local function last_key_match_local_leader()
+  if last_key_in_insert == nil then return false end
   local content_before_cursor = vim.api.nvim_get_current_line():sub(1, vim.api.nvim_win_get_cursor(0)[2])
-  return last_key_in_insert ~= nil
-    and vim.api.nvim_replace_termcodes(last_key_in_insert, true, true, true) == vim.api.nvim_replace_termcodes(
-      vim.g.maplocalleader,
-      true,
-      true,
-      true
-    )
-    and content_before_cursor:match(last_key_in_insert .. '$')
+  local local_leader = vim.api.nvim_replace_termcodes(vim.g.maplocalleader, true, true, true)
+  local last_key = vim.api.nvim_replace_termcodes(last_key_in_insert, true, true, true)
+  return last_key:match(local_leader .. '$') and content_before_cursor:match(last_key .. '$')
 end
 
 --- @param origin string
