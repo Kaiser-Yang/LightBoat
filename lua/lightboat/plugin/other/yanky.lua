@@ -23,7 +23,7 @@ local function sys_paste()
   if vim.fn.mode('1') == 'i' then
     vim.cmd('set paste')
     vim.schedule(function() vim.cmd('set nopaste') end)
-    res = '<c-g>u<c-r>+'
+    res = '<c-g>u<c-r><c-r>+'
   else
     prepare_system_clipboard()
     res = '<plug>(YankyPutAfter)'
