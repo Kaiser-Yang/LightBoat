@@ -8,7 +8,6 @@ return {
     ['<cr>'] = { key = '<cr>' },
     ['<c-j>'] = { key = '<c-j>' },
     ['<c-k>'] = { key = '<c-k>' },
-    ['<c-x>'] = { key = '<c-x>' },
     ['<c-s>'] = { key = '<c-s>' },
     ['<tab>'] = { key = '<tab>' },
     ['<s-tab>'] = { key = '<s-tab>' },

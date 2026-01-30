@@ -45,10 +45,6 @@ function M.default_sources()
 end
 
 local operation = {
-  -- HACK:
-  -- We add this mapping, because blink may disappear when input some non-alphenumeric
-  -- We should remove this mapping when blink can handle this case
-  ['<c-x>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
   ['<c-s>'] = { 'show_signature', 'hide_signature', 'fallback' },
   ['<cr>'] = { 'accept', 'fallback' },
   ['<tab>'] = { 'snippet_forward', 'fallback' },
