@@ -59,9 +59,7 @@ local function match_item(line, must_end)
     local regex_list = util.ensure_list(regex_or_list)
     for _, regex in pairs(regex_list) do
       local item = line:match(regex .. (must_end and '$' or ''))
-      if not longest_match or (item and #item > #longest_match) then
-        longest_match = item
-      end
+      if not longest_match or (item and #item > #longest_match) then longest_match = item end
     end
   end
   return longest_match
