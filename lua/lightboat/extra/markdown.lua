@@ -133,9 +133,15 @@ local last_key_in_insert = nil
 
 --- @return boolean
 local function last_key_match_local_leader()
+  local content_before_cursor = vim.api.nvim_get_current_line():sub(1, vim.api.nvim_win_get_cursor(0)[2])
   return last_key_in_insert ~= nil
-    and vim.api.nvim_replace_termcodes(last_key_in_insert, true, true, true)
-      == vim.api.nvim_replace_termcodes(vim.g.maplocalleader, true, true, true)
+    and vim.api.nvim_replace_termcodes(last_key_in_insert, true, true, true) == vim.api.nvim_replace_termcodes(
+      vim.g.maplocalleader,
+      true,
+      true,
+      true
+    )
+    and content_before_cursor:match(last_key_in_insert .. '$')
 end
 
 --- @param origin string
@@ -219,7 +225,6 @@ local operation = {
           and (match_item(next_line) or next_line:match('^ *$'))
         then
           item = string.gsub(item, 'x', ' ')
-          -- vim.notify('111')
           add_a_list_item_next_line(item)
         else
           continue_a_list_item_next_line()
@@ -264,7 +269,12 @@ local operation = {
   end,
 }
 
+local on_key_ns_id
 function M.clear()
+  if on_key_ns_id then
+    vim.on_key(nil, on_key_ns_id)
+    on_key_ns_id = nil
+  end
   if group then
     vim.api.nvim_del_augroup_by_name(group)
     group = nil
@@ -285,14 +295,7 @@ M.setup = util.setup_check_wrap('lightboat.extra.markdown', function()
       util.key.set_keys(operation, c.markdown.keys)
     end,
   })
-  vim.api.nvim_create_autocmd('InsertEnter', {
-    group = group,
-    callback = function() last_key_in_insert = nil end,
-  })
-  vim.api.nvim_create_autocmd('InsertCharPre', {
-    group = group,
-    callback = function() last_key_in_insert = vim.v.char end,
-  })
+  on_key_ns_id = vim.on_key(function(key, typed) last_key_in_insert = typed or key end, nil)
 end, M.clear)
 
 return M
