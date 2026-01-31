@@ -57,7 +57,7 @@ while all the closing brackets will not add a space around the content. For exam
 - [N] `<leader>j`: Split horizontally and leave the cursor in the bottom window.
 - [N] `<leader>k`: Split horizontally and leave the cursor in the top window
 - [N] `<leader>l`: Split vertically and leave the cursor in the right window.
-- [N] `<leader>T`: Move current window to a new tab.
+- [N] `<leader>T`: Tab split, you can use this to make a window full screen.
 - [N] `<c-h>`: Move to the left window.
 - [N] `<c-j>`: Move to the bottom window.
 - [N] `<c-k>`: Move to the top window.
