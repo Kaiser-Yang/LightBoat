@@ -16,16 +16,16 @@ local prev_fold, next_fold = rep_move.make('zk', 'zj')
 local prev_misspell, next_misspell = rep_move.make('[s', ']s')
 local prev_open_fold, next_open_fold = rep_move.make('[z', ']z')
 
-if c.delete_default_commant then del({ 'n', 'o', 'x' }, 'gc') end
-if c.delete_default_diagnostic_under_cursor then
-  del('n', '<c-w>d')
-  del('n', '<c-w><c-d>')
-end
+-- if c.delete_default_commant then del({ 'n', 'o', 'x' }, 'gc') end
+-- if c.delete_default_diagnostic_under_cursor then
+-- del('n', '<c-w>d')
+-- del('n', '<c-w><c-d>')
+-- end
 
-if c.disable_default_find_match_in_inserat then
-  map('i', '<c-p>', '<nop>')
-  map('i', '<c-n>', '<nop>')
-end
+-- if c.disable_default_find_match_in_inserat then
+--   map('i', '<c-p>', '<nop>')
+--   map('i', '<c-n>', '<nop>')
+-- end
 
 local operation = {
   ['<m-x>'] = function()
@@ -193,29 +193,29 @@ local operation = {
     vim.notify(msg, level, { title = 'Treesitter' })
   end,
 }
-util.key.set_keys(operation, c.keys)
+-- util.key.set_keys(operation, c.keys)
 
 if vim.g.vscode then return end
 
-local yanky_loaded
-local function separator_wrap(keys)
-  assert(type(keys) == 'string', 'keys must be a string')
-  assert(#keys == 2, 'keys must be 2 characters long')
-  return function()
-    local res = '<esc>'
-    if keys:sub(1, 1) == 'y' then
-      if yanky_loaded == nil then
-        local ok, _ = pcall(require, 'yanky')
-        yanky_loaded = ok
-      end
-      res = res .. (yanky_loaded and '<plug>(YankyYank)' or 'y')
-    else
-      res = res .. keys:sub(1, 1)
-    end
-    vim.schedule(function() feedkeys(keys:sub(2, 2), 'n') end)
-    return res
-  end
-end
-for keys, value in pairs(c.separate_operator) do
-  if value then map('n', keys, separator_wrap(keys), { expr = true }) end
-end
+-- local yanky_loaded
+-- local function separator_wrap(keys)
+--   assert(type(keys) == 'string', 'keys must be a string')
+--   assert(#keys == 2, 'keys must be 2 characters long')
+--   return function()
+--     local res = '<esc>'
+--     if keys:sub(1, 1) == 'y' then
+--       if yanky_loaded == nil then
+--         local ok, _ = pcall(require, 'yanky')
+--         yanky_loaded = ok
+--       end
+--       res = res .. (yanky_loaded and '<plug>(YankyYank)' or 'y')
+--     else
+--       res = res .. keys:sub(1, 1)
+--     end
+--     vim.schedule(function() feedkeys(keys:sub(2, 2), 'n') end)
+--     return res
+--   end
+-- end
+-- for keys, value in pairs(c.separate_operator) do
+--   if value then map('n', keys, separator_wrap(keys), { expr = true }) end
+-- end

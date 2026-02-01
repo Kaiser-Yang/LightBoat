@@ -13,14 +13,14 @@ function M.clear()
 end
 
 M.setup = util.setup_check_wrap('lightboat.extra', function()
-  require('lightboat.extra.big_file').setup()
-  require('lightboat.extra.buffer').setup()
-  require('lightboat.extra.rep_move').setup()
-  require('lightboat.extra.line_wise').setup()
-  require('lightboat.extra.project').setup()
-  require('lightboat.extra.markdown').setup()
-  require('lightboat.extra.fold_sign').setup()
-  require('lightboat.extra.cmd').setup()
+  -- require('lightboat.extra.big_file').setup()
+  -- require('lightboat.extra.buffer').setup()
+  -- require('lightboat.extra.rep_move').setup()
+  -- require('lightboat.extra.line_wise').setup()
+  -- require('lightboat.extra.project').setup()
+  -- require('lightboat.extra.markdown').setup()
+  -- require('lightboat.extra.fold_sign').setup()
+  -- require('lightboat.extra.cmd').setup()
 end, M.clear)
 
 return M

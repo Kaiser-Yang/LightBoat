@@ -31,7 +31,7 @@ M.setup = util.setup_check_wrap('lightboat', function()
       callback = function(ev) log.debug('LazyLoad: ' .. vim.inspect(ev)) end,
     })
   end
-  log.debug('Opts: ' .. vim.inspect(config.get()))
+  log.debug('Opt: ' .. vim.inspect(config.get()))
   require('lightboat.extra').setup()
   util.network.check()
   util.git.detect()
