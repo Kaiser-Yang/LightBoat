@@ -2,11 +2,6 @@
 -- https://github.com/mluders/comfy-line-numbers.nvim
 -- But I did a lot improvements and changes
 
---- @class LineWise.Opts
---- @field consider_wrap boolean|fun():boolean Whether or not to act like 'gj' or 'gk' when there is no count
---- @field increase_count boolean Whether or not to increase count by one when there is a count
---- @field consider_invisible boolean Whether or not to consider invisible counts
-
 local util = require('lightboat.util')
 local config = require('lightboat.config')
 local group

@@ -1,7 +1,8 @@
 local util = require('lightboat.util')
+local h = require('lightboat.handler')
 
---- @class LightBoat.Opts
-local default_opts = {
+--- @class LightBoat.Opt
+local default = {
   debug = false,
   autocmd = require('lightboat.config.autocmd'),
   keymap = require('lightboat.config.keymap'),
@@ -30,61 +31,66 @@ local default_opts = {
   ufo = require('lightboat.config.ufo'),
   which_key = require('lightboat.config.which_key'),
   yanky = require('lightboat.config.yanky'),
+  --- @type LightBoat.GlobalKeySpec
+  global_key = {
+    ['1'] = {
+      key = '1',
+      mode = 'i',
+      expr = true,
+      handler = { title_1 = { priority = 0, handler = h.title(1, 'markdown') } },
+    },
+    ['2'] = {
+      key = '2',
+      mode = 'i',
+      expr = true,
+      handler = { title_2 = { priority = 0, handler = h.title(2, 'markdown') } },
+    },
+    ['3'] = {
+      key = '3',
+      mode = 'i',
+      expr = true,
+      handler = { title_3 = { priority = 0, handler = h.title(3, 'markdown') } },
+    },
+    ['4'] = {
+      key = '4',
+      mode = 'i',
+      expr = true,
+      handler = { title_4 = { priority = 0, handler = h.title(4, 'markdown') } },
+    },
+    ['s'] = {
+      key = 's',
+      mode = 'i',
+      expr = true,
+      handler = { separate_line = { priority = 0, handler = h.separate_line('markdown') } },
+    },
+  },
+  buffer_key = {}
 }
-
---- @param s string|table<string>
-local function lower_brackets(s)
-  --- @param str string
-  local function lower_one(str)
-    return str:gsub('%b<>', function(m)
-      local inner = m:sub(2, -2)
-      if inner:match('^[mM]%-%a$') then
-        inner = 'm' .. inner:sub(2)
-      else
-        inner = inner:lower()
-      end
-      return '<' .. inner .. '>'
-    end)
-  end
-  if type(s) == 'string' then
-    return lower_one(s)
-  elseif type(s) == 'table' then
-    local res = {}
-    for _, v in pairs(s) do
-      res[#res + 1] = lower_one(v)
-    end
-    return res
-  end
-end
-
-local function normalize_keys(t)
-  for k, v in pairs(t) do
-    if k == 'keys' and type(v) == 'table' then
-      for key, entry in pairs(v) do
-        local new_key = lower_brackets(key)
-        if entry and entry.key then entry.key = lower_brackets(entry.key) end
-        if new_key ~= key then
-          v[new_key] = v[key]
-          v[key] = nil
-        end
-      end
-    elseif type(v) == 'table' then
-      v = normalize_keys(v)
-    end
-  end
-  return t
-end
 
 local M = {}
 
-function M.clear() vim.g.lightboat_opts = vim.deepcopy(default_opts) end
+--- @type LightBoat.Opt
+local user_opts = {}
+function M.clear() vim.g.lightboat_opts = user_opts end
 
 M.setup = util.setup_check_wrap('lightboat.config', function()
-  vim.g.lightboat_opts = vim.tbl_deep_extend('force', default_opts, vim.g.lightboat_opts or {})
-  vim.g.lightboat_opts = normalize_keys(vim.g.lightboat_opts)
+  --- @type LightBoat.Opt
+  vim.g.lightboat_opts = vim.g.lightboat_opts or {}
+  user_opts = vim.deepcopy(vim.g.lightboat_opts)
+  if vim.g.lightboat_opts.global_key then
+    vim.g.lightboat_opts.global_key = util.key.normalise_key(vim.g.lightboat_opts.global_key)
+  end
+  if vim.g.lightboat_opts.buffer_key then
+    vim.g.lightboat_opts.buffer_key = util.key.normalise_key(vim.g.lightboat_opts.buffer_key)
+  end
+  default.global_key = util.key.normalise_key(default.global_key)
+  default.buffer_key = util.key.normalise_key(default.buffer_key)
+  vim.g.lightboat_opts = vim.tbl_deep_extend('force', default, vim.g.lightboat_opts)
+  util.key.setup_buffer_key(vim.g.lightboat_opts.buffer_key)
+  util.key.setup_global_key(vim.g.lightboat_opts.global_key)
 end, M.clear)
 
---- @return LightBoat.Opts
+--- @return LightBoat.Opt
 function M.get() return vim.g.lightboat_opts end
 
 return M

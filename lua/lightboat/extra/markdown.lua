@@ -177,10 +177,6 @@ local operation = {
       return 'f'
     end
   end,
-  ['1'] = local_leader_check_wrap('1', '<c-g>u<bs># '),
-  ['2'] = local_leader_check_wrap('2', '<c-g>u<bs>## '),
-  ['3'] = local_leader_check_wrap('3', '<c-g>u<bs>### '),
-  ['4'] = local_leader_check_wrap('4', '<c-g>u<bs>#### '),
   ['a'] = local_leader_check_wrap('a', '<c-g>u<bs>[](<++>)<++>' .. string.rep('<c-g>U<left>', 11)),
   ['b'] = local_leader_check_wrap('b', '<c-g>u<bs>****<++>' .. string.rep('<c-g>U<left>', 6)),
   ['c'] = local_leader_check_wrap(
@@ -194,7 +190,6 @@ local operation = {
     'M',
     '<c-g>u<bs>$$<cr><cr>$$<cr><cr><++>' .. string.rep('<up>', 3) .. string.rep('<right>', 2)
   ),
-  ['s'] = local_leader_check_wrap('s', '<c-g>u<bs>---<cr><cr>'),
   ['t'] = local_leader_check_wrap('t', '<c-g>u<bs>``<++>' .. string.rep('<c-g>U<left>', 5)),
   ['T'] = local_leader_check_wrap('T', '<c-g>u<bs>- [ ] '),
   ['o'] = 'A<cr>',
