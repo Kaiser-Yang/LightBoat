@@ -36,3 +36,8 @@ vim.api.nvim_create_autocmd('BufEnter', {
     if vim.bo.filetype:match('^dap%-repl') then vim.cmd('stopinsert') end
   end,
 })
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = group,
+  callback = function() vim.hl.on_yank({ timeout = 50 }) end,
+})

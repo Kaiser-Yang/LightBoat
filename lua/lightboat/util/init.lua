@@ -70,6 +70,7 @@ function M.ensure_list(value)
 end
 
 local did_setup = {}
+--- Wrap a setup function to ensure it is cleared before being set up again.
 --- @generic TCallback: fun(...)
 --- @param name string
 --- @param setup TCallback

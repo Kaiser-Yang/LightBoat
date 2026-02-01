@@ -94,7 +94,7 @@ local spec = {
     -- PERF:
     -- Paste or copy large text will be slow
     -- https://github.com/gbprod/yanky.nvim/issues/230
-    picker = { highlight = { on_yank = true, on_put = true, timer = 50 } },
+    picker = { highlight = { on_yank = false, on_put = true, timer = 50 } },
     system_clipboard = { sync_with_ring = true, clipboard_register = '+' },
   },
   keys = {},
