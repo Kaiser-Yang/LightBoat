@@ -94,6 +94,9 @@ function M.in_config_dir()
   return false
 end
 
+--- @generic R any
+--- @param opt fun(...):R|R
+--- @return R
 function M.get(opt, ...)
   if type(opt) == 'function' then
     return opt(...)

@@ -1,5 +1,4 @@
 local util = require('lightboat.util')
-local h = require('lightboat.handler')
 
 --- @class LightBoat.Opt
 local default = {
@@ -31,40 +30,6 @@ local default = {
   ufo = require('lightboat.config.ufo'),
   which_key = require('lightboat.config.which_key'),
   yanky = require('lightboat.config.yanky'),
-  --- @type LightBoat.GlobalKeySpec
-  global_key = {
-    ['1'] = {
-      key = '1',
-      mode = 'i',
-      expr = true,
-      handler = { title_1 = { priority = 0, handler = h.title(1, 'markdown') } },
-    },
-    ['2'] = {
-      key = '2',
-      mode = 'i',
-      expr = true,
-      handler = { title_2 = { priority = 0, handler = h.title(2, 'markdown') } },
-    },
-    ['3'] = {
-      key = '3',
-      mode = 'i',
-      expr = true,
-      handler = { title_3 = { priority = 0, handler = h.title(3, 'markdown') } },
-    },
-    ['4'] = {
-      key = '4',
-      mode = 'i',
-      expr = true,
-      handler = { title_4 = { priority = 0, handler = h.title(4, 'markdown') } },
-    },
-    ['s'] = {
-      key = 's',
-      mode = 'i',
-      expr = true,
-      handler = { separate_line = { priority = 0, handler = h.separate_line('markdown') } },
-    },
-  },
-  buffer_key = {}
 }
 
 local M = {}
@@ -77,17 +42,7 @@ M.setup = util.setup_check_wrap('lightboat.config', function()
   --- @type LightBoat.Opt
   vim.g.lightboat_opts = vim.g.lightboat_opts or {}
   user_opts = vim.deepcopy(vim.g.lightboat_opts)
-  if vim.g.lightboat_opts.global_key then
-    vim.g.lightboat_opts.global_key = util.key.normalise_key(vim.g.lightboat_opts.global_key)
-  end
-  if vim.g.lightboat_opts.buffer_key then
-    vim.g.lightboat_opts.buffer_key = util.key.normalise_key(vim.g.lightboat_opts.buffer_key)
-  end
-  default.global_key = util.key.normalise_key(default.global_key)
-  default.buffer_key = util.key.normalise_key(default.buffer_key)
   vim.g.lightboat_opts = vim.tbl_deep_extend('force', default, vim.g.lightboat_opts)
-  util.key.setup_buffer_key(vim.g.lightboat_opts.buffer_key)
-  util.key.setup_global_key(vim.g.lightboat_opts.global_key)
 end, M.clear)
 
 --- @return LightBoat.Opt

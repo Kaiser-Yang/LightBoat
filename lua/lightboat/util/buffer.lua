@@ -7,11 +7,20 @@ function M.normalize_buf(buf)
   return buf
 end
 
-function M.get_buf_size(buf)
-  buf = M.normalize_buf(buf)
-  local res = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf) - 1)
-  -- Add size of the last line
-  res = res + #vim.api.nvim_buf_get_lines(buf, -1, -1, false)
+--- Return the size of the buffer in bytes.
+--- @param buffer? integer The buffer number, defaults to the current buffer.
+--- @return integer
+function M.buffer_size(buffer)
+  buffer = M.normalize_buf(buffer)
+  local file_name = vim.api.nvim_buf_get_name(buffer)
+  local res
+  if not vim.bo[buffer].modified and M.is_file(file_name) then
+    res = vim.fn.getfsize(file_name)
+  else
+    res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
+    -- Add size of the last line
+    res = res + #vim.api.nvim_buf_get_lines(buffer, -1, -1, false)
+  end
   return res
 end
 

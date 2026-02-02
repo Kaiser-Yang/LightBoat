@@ -120,6 +120,7 @@ local operation = {
 local spec = {
   {
     'nvim-treesitter/nvim-treesitter',
+    cond = not vim.g.vscode,
     branch = 'main',
     build = ':TSUpdate',
     opts = {},
@@ -133,7 +134,6 @@ local spec = {
   {
     'nvim-treesitter/nvim-treesitter-context',
     cond = not vim.g.vscode,
-    lazy = false,
     opts = {
       max_lines = 3,
       on_attach = function(buf) return not big_file.is_big_file(buf) end,

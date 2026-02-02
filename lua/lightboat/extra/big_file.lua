@@ -1,26 +1,20 @@
 local M = {}
 local util = require('lightboat.util')
-local buffer = util.buffer
 local config = require('lightboat.config')
 local c
 local group
 
 --- Check if the buffer is a big file.
---- @param buf number? The buffer number, defaults to the current buffer.
---- @return boolean True if the buffer is a big file, false otherwise.
-function M.is_big_file(buf)
+--- @param buffer integer? The buffer number, defaults to the current buffer.
+--- @return boolean
+function M.is_big_file(buffer)
+  if not c.enabled then return false end
+  buffer = util.buffer.normalize_buf(buffer)
   if not c or not c.enabled then return false end
-  buf = buffer.normalize_buf(buf)
-  local buf_size
-  local file_name = vim.api.nvim_buf_get_name(buf)
-  if not vim.bo[buf].modified and buffer.is_file(file_name) then
-    buf_size = vim.fn.getfsize(file_name)
-  else
-    buf_size = buffer.get_buf_size(buf)
-  end
-  local line_count = vim.api.nvim_buf_line_count(buf)
-  return c.big_file_total and buf_size > c.big_file_total
-    or c.big_file_avg_line and buf_size > c.big_file_avg_line * line_count
+  local buffer_size = util.buffer.buffer_size(buffer)
+  local line_count = vim.api.nvim_buf_line_count(buffer)
+  return c.big_file_total and buffer_size > c.big_file_total
+    or c.big_file_average_line and buffer_size > c.big_file_average_line * line_count
 end
 
 function M.clear()

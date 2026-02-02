@@ -20,7 +20,7 @@ local function lower_bracket(s)
   return res
 end
 
---- Normalize keys in a KeySpec, making sure '<C-A>' and '<c-a>' are treated the same.
+--- Normalise keys in a KeySpec, making sure '<C-A>' and '<c-a>' are treated the same.
 --- @generic T: LightBoat.GlobalKeySpec | LightBoat.BufferKeySpec
 --- @param t T
 --- @return T
