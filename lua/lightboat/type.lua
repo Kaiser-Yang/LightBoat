@@ -3,6 +3,12 @@
 --- @field big_file_total integer
 --- @field big_file_average_line integer
 
+--- @class LightBoat.CommandSpec
+--- @field enabled boolean
+--- @field name string
+
+--- @alias LightBoat.CommandOpt table<string, LightBoat.CommandSpec>
+
 --- @class LightBoat.ComplexEventSpec
 --- @field event string
 --- @field pattern? string|string[]
