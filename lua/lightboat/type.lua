@@ -1,7 +1,8 @@
 --- @class LightBoat.BigFileOpt
 --- @field enabled boolean
---- @field big_file_total integer
---- @field big_file_average_line integer
+--- @field total integer
+--- @field every_line integer
+--- @field on_changed fun(buffer: integer)
 
 --- @class LightBoat.CommandSpec
 --- @field enabled boolean

@@ -160,9 +160,9 @@ M.setup = util.setup_check_wrap('lightboat.plugin.treesitter', function()
   group = vim.api.nvim_create_augroup('LightBoatTreesitter', {})
   vim.api.nvim_create_autocmd('User', {
     group = group,
-    pattern = 'BigFileDetector',
+    pattern = 'BigFileStatusChanged',
     callback = function(ev)
-      if not ev.data then return end
+      if not vim.b[ev.buf].big_file_status then return end
       if vim.treesitter.highlighter.active[ev.buf] then
         vim.treesitter.stop()
         vim.schedule(function() vim.notify('Treesitter stopped for big file', vim.log.levels.WARN) end)

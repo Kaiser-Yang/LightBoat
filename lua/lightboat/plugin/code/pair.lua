@@ -200,10 +200,10 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
   spec[3].keys = util.key.get_lazy_keys(operation.matchup, c.pair.keys)
   group = vim.api.nvim_create_augroup('LightBoatPair', {})
   vim.api.nvim_create_autocmd('User', {
-    pattern = 'BigFileDetector',
+    pattern = 'BigFileStatusChanged',
     group = group,
     callback = function(ev)
-      if not ev.data then return end
+      if not vim.b[ev.buf].big_file_status then return end
       local ok, internal = pcall(require, 'nvim-ts-autotag.internal')
       if not ok then return end
       internal.detach(ev.buf)

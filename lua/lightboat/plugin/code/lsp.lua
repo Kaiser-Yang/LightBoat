@@ -153,10 +153,10 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
   -- https://github.com/neovim/neovim/issues/35361
   -- Memory did not goes down for large files???
   vim.api.nvim_create_autocmd('User', {
-    pattern = 'BigFileDetector',
+    pattern = 'BigFileStatusChanged',
     group = group,
     callback = function(ev)
-      if not ev.data then return end
+      if not vim.b[ev.buf].big_file_status then return end
       local clients = vim.lsp.get_clients({ bufnr = ev.buf })
       local notice = false
       for _, client in ipairs(clients) do

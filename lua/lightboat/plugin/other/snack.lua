@@ -399,7 +399,7 @@ M.setup = util.setup_check_wrap('lightboat.plugin.snack', function()
   if c.extra.big_file.enabled then
     spec.opts.picker.previewers.file = {
       max_size = c.extra.big_file.big_file_total,
-      max_line_length = c.extra.big_file.big_file_average_line,
+      max_line_length = c.extra.big_file.every_line,
     }
   end
   spec.keys = util.key.get_lazy_keys(operation, c.snack.keys)
