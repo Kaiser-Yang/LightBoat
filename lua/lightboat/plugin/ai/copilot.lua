@@ -22,10 +22,7 @@ local spec = {
     filetypes = { ['*'] = true },
     copilot_node_command = 'node',
     server_opts_overrides = {},
-    should_attach = function(bufnr)
-      return require('lightboat.config.extra.buffer').is_visible_buffer(bufnr)
-        and not require('lightboat.extra.big_file').is_big_file(bufnr)
-    end,
+    should_attach = function(bufnr) return not require('lightboat.extra.big_file').is_big_file(bufnr) end,
   },
 }
 function M.spec() return spec end

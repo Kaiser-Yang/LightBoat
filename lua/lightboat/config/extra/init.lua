@@ -3,7 +3,6 @@ local M = {
   root_markers = { '.git', '.nvim', '.vscode' },
   markdown_fts = { 'markdown', 'gitcommit', 'text', 'Avante', 'AvanteInput' },
   big_file = require('lightboat.config.extra.big_file'),
-  buffer = require('lightboat.config.extra.buffer'),
   fold_sign = require('lightboat.config.extra.fold_sign'),
   line_wise = require('lightboat.config.extra.line_wise'),
   project = require('lightboat.config.extra.project'),

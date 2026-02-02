@@ -1,7 +1,5 @@
 local M = {
   search = require('lightboat.util.search'),
-  lfu = require('lightboat.util.lfu'),
-  lru = require('lightboat.util.lru'),
   buffer = require('lightboat.util.buffer'),
   key = require('lightboat.util.key'),
   network = require('lightboat.util.network'),
