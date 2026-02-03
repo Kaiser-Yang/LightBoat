@@ -1,4 +1,3 @@
-local M = {}
 local util = require('lightboat.util')
 
 --- @param n integer
@@ -38,11 +37,130 @@ function M.markdown_goto_placeholder()
   end
 end
 
-function M.repmove_comma() require('repmove').comma() end
-function M.repmove_semicolon() require('repmove').semicolon() end
-function M.repmove_builtin_f() require('repmove').builtin_f() end
-function M.repmove_builtin_F() require('repmove').builtin_F() end
-function M.repmove_builtin_t() require('repmove').builtin_t() end
-function M.repmove_builtin_T() require('repmove').builtin_T() end
+--- @param direction 'next'|'previous'
+--- @param position 'start'|'end'
+local function go_to(direction, position, query_string)
+  return require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string)
+end
+
+local function select(query_string, query_group)
+  return require('nvim-treesitter-textobjects.select').select_textobject(query_string, query_group)
+end
+
+--- @param direction 'next'|'previous'
+local function swap(direction, query_string)
+  return require('nvim-treesitter-textobjects.swap')['swap_' .. direction](query_string)
+end
+
+--- @type table<string, function>
+local repmove = {}
+--- @param previous string|function
+--- @return table<function>
+local function ensure_repmove(previous, next)
+  if not repmove[previous] or not repmove[next] then
+    repmove[previous], repmove[next] = require('repmove').make(previous, next)
+  end
+  return { repmove[previous], repmove[next] }
+end
+-- stylua: ignore start
+-- HACK:
+-- This below can not cycle
+function M.next_loop_start() return go_to('next', 'start', '@loop.outer') end
+function M.next_class_start() return go_to('next', 'start', '@class.outer') end
+function M.next_block_start() return go_to('next', 'start', '@block.outer') end
+function M.next_return_start() return go_to('next', 'start', '@return.outer') end
+function M.next_conditional_start() return go_to('next', 'start', '@conditional.outer') end
+function M.next_function_start() return go_to('next', 'start', '@function.outer') end
+function M.next_parameter_start() return go_to('next', 'start', '@parameter.inner') end
+function M.previous_loop_start() return go_to('previous', 'start', '@loop.outer') end
+function M.previous_class_start() return go_to('previous', 'start', '@class.outer') end
+function M.previous_block_start() return go_to('previous', 'start', '@block.outer') end
+function M.previous_return_start() return go_to('previous', 'start', '@return.outer') end
+function M.previous_conditional_start() return go_to('previous', 'start', '@conditional.outer') end
+function M.previous_function_start() return go_to('previous', 'start', '@function.outer') end
+function M.previous_parameter_start() return go_to('previous', 'start', '@parameter.inner') end
+
+function M.next_loop_end() return go_to('next', 'end', '@loop.outer') end
+function M.next_class_end() return go_to('next', 'end', '@class.outer') end
+function M.next_block_end() return go_to('next', 'end', '@block.outer') end
+function M.next_return_end() return go_to('next', 'end', '@return.outer') end
+function M.next_conditional_end() return go_to('next', 'end', '@conditional.outer') end
+function M.next_function_end() return go_to('next', 'end', '@function.outer') end
+function M.next_parameter_end() return go_to('next', 'end', '@parameter.inner') end
+function M.previous_loop_end() return go_to('previous', 'end', '@loop.outer') end
+function M.previous_class_end() return go_to('previous', 'end', '@class.outer') end
+function M.previous_block_end() return go_to('previous', 'end', '@block.outer') end
+function M.previous_return_end() return go_to('previous', 'end', '@return.outer') end
+function M.previous_conditional_end() return go_to('previous', 'end', '@conditional.outer') end
+function M.previous_function_end() return go_to('previous', 'end', '@function.outer') end
+function M.previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
+
+function M.around_function() return select('@function.outer')() end
+function M.around_class() return select('@class.outer')() end
+function M.around_block() return select('@block.outer')() end
+function M.around_conditional() return select('@conditional.outer')() end
+function M.around_loop() return select('@loop.outer')() end
+function M.around_return() return select('@return.outer')() end
+function M.around_parameter() return select('@parameter.outer')() end
+function M.inside_function() return select('@function.inner')() end
+function M.inside_class() return select('@class.inner')() end
+function M.inside_block() return select('@block.inner')() end
+function M.inside_conditional() return select('@conditional.inner')() end
+function M.inside_loop() return select('@loop.inner')() end
+function M.inside_return() return select('@return.inner')() end
+function M.inside_parameter() return select('@parameter.inner')() end
+
+function M.swap_with_next_function() return swap('next', '@function.outer') end
+function M.swap_with_next_class() return swap('next', '@class.outer') end
+function M.swap_with_next_block() return swap('next', '@block.outer') end
+function M.swap_with_next_conditional() return swap('next', '@conditional.outer') end
+function M.swap_with_next_loop() return swap('next', '@loop.outer') end
+function M.swap_with_next_return() return swap('next', '@return.outer') end
+function M.swap_with_next_parameter() return swap('next', '@parameter.inner') end
+function M.swap_with_previous_class() return swap('previous', '@class.outer') end
+function M.swap_with_previous_function() return swap('previous', '@function.outer') end
+function M.swap_with_previous_block() return swap('previous', '@block.outer') end
+function M.swap_with_previous_conditional() return swap('previous', '@conditional.outer') end
+function M.swap_with_previous_loop() return swap('previous', '@loop.outer') end
+function M.swap_with_previous_return() return swap('previous', '@return.outer') end
+function M.swap_with_previous_parameter() return swap('previous', '@parameter.inner') end
+
+function M.repmove_comma() return require('repmove').comma() end
+function M.repmove_semicolon() return require('repmove').semicolon() end
+function M.repmove_builtin_f() return require('repmove').builtin_f() end
+function M.repmove_builtin_F() return require('repmove').builtin_F() end
+function M.repmove_builtin_t() return require('repmove').builtin_t() end
+function M.repmove_builtin_T() return require('repmove').builtin_T() end
+function M.repmove_next_misspelled() return ensure_repmove('[s', ']s')[2]() end
+function M.repmove_next_function_start() return ensure_repmove(M.previous_function_start, M.next_function_start)[2]() end
+function M.repmove_next_class_start() return ensure_repmove(M.previous_class_start, M.next_class_start)[2]() end
+function M.repmove_next_block_start() return ensure_repmove(M.previous_block_start, M.next_block_start)[2]() end
+function M.repmove_next_loop_start() return ensure_repmove(M.previous_loop_start, M.next_loop_start)[2]() end
+function M.repmove_next_return_start() return ensure_repmove(M.previous_return_start, M.next_return_start)[2]() end
+function M.repmove_next_parameter_start() return ensure_repmove(M.previous_parameter_start, M.next_parameter_start)[2]() end
+function M.repmove_next_conditional_start() return ensure_repmove(M.previous_conditional_start, M.next_conditional_start)[2]() end
+function M.repmove_next_function_end() return ensure_repmove(M.previous_function_end, M.next_function_end)[2]() end
+function M.repmove_next_class_end() return ensure_repmove(M.previous_class_end, M.next_class_end)[2]() end
+function M.repmove_next_block_end() return ensure_repmove(M.previous_block_end, M.next_block_end)[2]() end
+function M.repmove_next_loop_end() return ensure_repmove(M.previous_loop_end, M.next_loop_end)[2]() end
+function M.repmove_next_return_end() return ensure_repmove(M.previous_return_end, M.next_return_end)[2]() end
+function M.repmove_next_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[2]() end
+function M.repmove_next_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[2]() end
+function M.repmove_previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
+function M.repmove_previous_function_start() return ensure_repmove(M.previous_function_start, M.next_function_start)[1]() end
+function M.repmove_previous_class_start() return ensure_repmove(M.previous_class_start, M.next_class_start)[1]() end
+function M.repmove_previous_block_start() return ensure_repmove(M.previous_block_start, M.next_block_start)[1]() end
+function M.repmove_previous_loop_start() return ensure_repmove(M.previous_loop_start, M.next_loop_start)[1]() end
+function M.repmove_previous_return_start() return ensure_repmove(M.previous_return_start, M.next_return_start)[1]() end
+function M.repmove_previous_parameter_start() return ensure_repmove(M.previous_parameter_start, M.next_parameter_start)[1]() end
+function M.repmove_previous_conditional_start() return ensure_repmove(M.previous_conditional_start, M.next_conditional_start)[1]() end
+function M.repmove_previous_function_end() return ensure_repmove(M.previous_function_end, M.next_function_end)[1]() end
+function M.repmove_previous_class_end() return ensure_repmove(M.previous_class_end, M.next_class_end)[1]() end
+function M.repmove_previous_block_end() return ensure_repmove(M.previous_block_end, M.next_block_end)[1]() end
+function M.repmove_previous_loop_end() return ensure_repmove(M.previous_loop_end, M.next_loop_end)[1]() end
+function M.repmove_previous_return_end() return ensure_repmove(M.previous_return_end, M.next_return_end)[1]() end
+function M.repmove_previous_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[1]() end
+function M.repmove_previous_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[1]() end
+-- stylua: ignore end
 
 return M
