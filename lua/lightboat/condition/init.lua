@@ -5,11 +5,6 @@ local util = require('lightboat.util')
 ---@return boolean
 function M.filetype(filetype) return vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype) end
 
----@param filetype string|string[]
-function M.filetype_wrap(filetype)
-  return function() return M.filetype(filetype) end
-end
-
 ---@param key string|string[]
 ---@return boolean
 function M.last_key(key)
@@ -22,13 +17,6 @@ function M.last_key(key)
   end
   return false
 end
-
---- @param key string|string[]
---- @return fun(): boolean
-function M.last_key_wrap(key)
-  return function() return M.last_key(key) end
-end
-
 
 function M.treesitter_available()
   -- HACK:
