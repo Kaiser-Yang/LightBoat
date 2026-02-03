@@ -26,7 +26,6 @@ local default = {
   sign = require('lightboat.config.sign'),
   snack = require('lightboat.config.snack'),
   todo = require('lightboat.config.todo'),
-  treesitter = require('lightboat.config.treesitter'),
   ufo = require('lightboat.config.ufo'),
   which_key = require('lightboat.config.which_key'),
   yanky = require('lightboat.config.yanky'),
