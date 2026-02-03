@@ -28,4 +28,12 @@ end
 function M.last_key_wrap(key)
   return function() return M.last_key(key) end
 end
+
+
+function M.treesitter_available()
+  -- HACK:
+  -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
+  return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
+end
+
 return M
