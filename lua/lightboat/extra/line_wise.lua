@@ -1,3 +1,4 @@
+-- TODO: make this be a new plugin
 -- This idea comes from:
 -- https://github.com/mluders/comfy-line-numbers.nvim
 -- But I did a lot improvements and changes

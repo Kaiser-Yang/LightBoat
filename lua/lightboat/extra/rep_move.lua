@@ -1,3 +1,4 @@
+--- TODO: make this be a new plugin
 local config = require('lightboat.config')
 local util = require('lightboat.util')
 local big_file = require('lightboat.extra.big_file')

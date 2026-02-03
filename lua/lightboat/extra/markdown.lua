@@ -1,3 +1,4 @@
+-- TODO: make this be a new plugin
 -- Some markdown support for markdown files
 -- Author: KaiserYang
 
