@@ -1,11 +1,8 @@
 --- TODO: make this be a new plugin
-local config = require('lightboat.config')
 local util = require('lightboat.util')
 local big_file = require('lightboat.extra.big_file')
 local map = util.key.set
-local del = util.key.del
 local feedkeys = util.key.feedkeys
-local c
 local M = {}
 --- @type table<number, { prev: function?, next: function? }>
 local last_motion = {}
@@ -161,18 +158,11 @@ end
 
 function M.clear()
   last_motion = {}
-  if c and c.enabled then
-    del({ 'n', 'v' }, ',')
-    del({ 'n', 'v' }, ';')
-  end
-  c = nil
 end
 
 -- WARN:
 -- We do not support 'o' mode now
 M.setup = util.setup_check_wrap('lightboat.extra.rep_move', function()
-  c = config.get().extra.rep_move
-  if not c.enabled then return end
   map({ 'n', 'v' }, ',', function()
     local buf = vim.api.nvim_get_current_buf()
     ensure_last_motion(buf)
@@ -199,8 +189,6 @@ end, M.clear)
 --- @param next_func function|string
 --- @return function|string, function|string
 function M.make(prev_func, next_func)
-  c = config.get().extra.rep_move
-  if not c.enabled then return prev_func, next_func end
   return repeat_wrap(prev_func, next_func, true), repeat_wrap(prev_func, next_func, false)
 end
 

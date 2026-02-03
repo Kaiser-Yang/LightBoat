@@ -4,7 +4,6 @@ local util = require('lightboat.util')
 --- @param n integer
 --- @return string
 function M.markdown_title(n) return '<c-g>u<bs>' .. string.rep('#', n) .. ' ' end
-
 M.markdown_separate_line = '<c-g>u<bs>---<cr><cr>'
 M.markdown_math_inline = '<c-g>u<bs>$  $<++>' .. string.rep('<c-g>U<left>', 6)
 M.markdown_math_inline_2 = '<c-g>u<bs>$$  $$<++>' .. string.rep('<c-g>U<left>', 7)
@@ -38,5 +37,12 @@ function M.markdown_goto_placeholder()
     return 'f'
   end
 end
+
+function M.repmove_comma() require('repmove').comma() end
+function M.repmove_semicolon() require('repmove').semicolon() end
+function M.repmove_builtin_f() require('repmove').builtin_f() end
+function M.repmove_builtin_F() require('repmove').builtin_F() end
+function M.repmove_builtin_t() require('repmove').builtin_t() end
+function M.repmove_builtin_T() require('repmove').builtin_T() end
 
 return M

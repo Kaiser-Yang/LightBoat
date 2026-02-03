@@ -5,15 +5,7 @@ local map = util.key.set
 local del = util.key.del
 local feedkeys = util.key.feedkeys
 local rep_move = require('lightboat.extra.rep_move')
-local prev_find, next_find = rep_move.make('F', 'f')
-local prev_till, next_till = rep_move.make('T', 't')
-local prev_word, next_word = rep_move.make('b', 'w')
-local prev_big_word, next_big_word = rep_move.make('B', 'W')
-local prev_end_word, next_end_word = rep_move.make('ge', 'e')
-local prev_big_end_word, next_big_end_word = rep_move.make('gE', 'E')
-local prev_search, next_search = rep_move.make('N', 'n')
 local prev_fold, next_fold = rep_move.make('zk', 'zj')
-local prev_misspell, next_misspell = rep_move.make('[s', ']s')
 local prev_open_fold, next_open_fold = rep_move.make('[z', ']z')
 
 -- if c.delete_default_commant then del({ 'n', 'o', 'x' }, 'gc') end
