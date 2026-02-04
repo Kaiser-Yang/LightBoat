@@ -2,6 +2,97 @@
 
 Faster, faster and faster! A neovim distro based on my dotfiles.
 
+## FAQs
+
+### How to add a new language server?
+
+By default, only `lua_ls` is enabled when `lua-language-server` is executable.
+If you want to add a new language server:
+
+- Install it while `mason.nvim`. You just need to use `:Mason` command to open the
+  `mason.nvim` window, and then you can search and install the language server you want.
+- Use `vim.lsp.enable(name)` to enable your language server. You can put this line
+  in `init.lua`.
+
+Moreover, if you want to change the configuration of a language server, you just need to
+create a `lua` file with the name of the language server under `~/.config/nvim/lsp/`.
+
+For example, I want to install `gopls`:
+
+- Use `:Mason`, and find `gopls`.
+- Create a file called `gopls.lua` under `~/.config/nvim/lsp/`, and then put
+  the configuration you want in this file. For example:
+
+```lua
+return {
+  settings = {
+    gopls = {
+      analyses = { unusedparams = true, },
+      staticcheck = true,
+    },
+  },
+}
+```
+
+- Finally, put `vim.lsp.enable('gopls')` in the end of `init.lua`
+
+Don't know names of language servers?
+You can check [here](https://github.com/neovim/nvim-lspconfig/tree/master/lsp).
+
+### How to install language servers automatically?
+
+If you switch to another machine, you may want to install all the language servers
+you used before automatically. Create a file named `mason.lua` under the `plugin` directory, then put the following code in the end of your `init.lua`:
+
+```lua
+return {
+  'williamboman/mason.nvim',
+  config = function(_, opts)
+    require('mason').setup(opts)
+    for i, package_name  in ipairs({ 'lua-language-server', 'gopls' }) do
+      for source in require('mason-registry.sources').iter({ include_uninstalled = true }) do
+        local pkg = source:get_package(package_name)
+        if pkg then pkg:install() end
+      end
+    end
+  end,
+}
+```
+
+**NOTE**: You should run `:Mason` at least once to make sure all the sources are loaded, then restart `neovim` to make the above code work.
+
+### How to change the configuration of a plugin?
+
+You just need to create a `lua` file under `lua/plugin` with any name except `init.lua`.
+For example, if you want to change the configuration of `saghen/blink.cmp`, you can create
+a file called `lua/plugin/blink_cmp.lua`, and then you can write your configuration like below:
+
+```lua
+return {
+  -- This is the plugin name, you should not change it.
+  'saghen/blink.cmp',
+  opts = {
+    -- Your configuration here
+    -- For example, to enable auto-pairs after accepting completion
+    completion = { accept = { auto_brackets = true, }, },
+  }
+}
+```
+
+### How to disable auto-brackets after accepting completion?
+
+```lua
+-- 'saghen/blink.cmp'
+opts.completion.accept.auto_brackets = false
+```
+
+### How to customize the border of floating windows?
+
+```lua
+-- See :help 'winborder' for more details
+vim.o.winborder = 'rounded'
+```
+
 ## Installation
 
 For better experience, you can use
