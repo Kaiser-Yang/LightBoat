@@ -59,6 +59,19 @@ return {
 }
 ```
 
+### How to format file automatically on save?
+
+You can put the following code in your `init.lua` to enable auto-format on save:
+
+```lua
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function(args)
+    require("conform").format({ bufnr = args.buf })
+  end,
+})
+```
+
 **NOTE**: You should run `:Mason` at least once to make sure all the sources are loaded, then restart `neovim` to make the above code work.
 
 ### How to change the configuration of a plugin?
