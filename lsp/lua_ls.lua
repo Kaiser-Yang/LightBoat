@@ -1,7 +1,8 @@
-local util = require('lightboat.util')
 return {
   on_init = function(client)
+    local util = require('lightboat.util')
     if not util.in_config_dir() then return end
+    local lazy_path = util.lazy_path()
     client.config.settings.Lua = {
       runtime = {
         version = 'LuaJIT',
@@ -14,12 +15,12 @@ return {
         checkThirdParty = false,
         library = {
           vim.env.VIMRUNTIME,
-          util.get_light_boat_root(),
+          lazy_path .. '/LightBoat',
+          lazy_path .. '/maplayer.nvim',
+          lazy_path .. '/repmove.nvim',
         },
       },
     }
   end,
-  settings = {
-    Lua = {},
-  },
+  settings = { Lua = {} },
 }

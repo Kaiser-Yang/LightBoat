@@ -9,7 +9,9 @@ local M = {
 
 -- HACK:
 -- Better way to do this?
-function M.get_light_boat_root() return (vim.env.LAZY_PATH or vim.fn.stdpath('data') .. '/lazy') .. '/LightBoat' end
+function M.get_light_boat_root() return M.lazy_path .. '/LightBoat' end
+
+function M.lazy_path() return (vim.env.LAZY_PATH or vim.fn.stdpath('data') .. '/lazy') end
 
 --- Setup plugins for LightBoat.
 --- @param plugins table A table of plugin configurations.
@@ -85,7 +87,13 @@ end
 function M.in_config_dir()
   local paths = { vim.fn.expand('%:p'), vim.fn.getcwd() }
   for _, path in ipairs(paths) do
-    if path:find('nvim') or path:find('LightBoat') or path:find('lightboat') or path:find('dotfile') then
+    if
+      path:find('nvim')
+      or path:find('LightBoat')
+      or path:find('lightboat')
+      or path:find('dotfile')
+      or path:find(M.lazy_path())
+    then
       return true
     end
   end

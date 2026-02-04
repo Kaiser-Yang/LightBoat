@@ -5,7 +5,7 @@ return {
   -- conform = require('lightboat.plugin.code.conform'),
   -- dap = require('lightboat.plugin.code.dap'),
   -- interesting_words = require('lightboat.plugin.code.interesting_words'),
-  -- lsp = require('lightboat.plugin.code.lsp'),
+  require('lightboat.plugin.code.lsp'),
   -- mason = require('lightboat.plugin.code.mason'),
   -- nvim_dap_go = require('lightboat.plugin.code.nvim_dap_go'),
   -- nvim_jdtls = require('lightboat.plugin.code.nvim_jdtls'),

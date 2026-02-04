@@ -14,7 +14,6 @@ local default = {
   flash = require('lightboat.config.flash'),
   img_clip = require('lightboat.config.img_clip'),
   interesting_words = require('lightboat.config.interesting_words'),
-  lsp = require('lightboat.config.lsp'),
   mason = require('lightboat.config.mason'),
   neo_tree = require('lightboat.config.neo_tree'),
   noice = require('lightboat.config.noice'),

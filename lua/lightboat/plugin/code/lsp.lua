@@ -1,9 +1,7 @@
 local util = require('lightboat.util')
-local config = require('lightboat.config')
 local big_file = require('lightboat.extra.big_file')
 local rep_move = require('lightboat.extra.rep_move')
 local map = util.key.set
-local c
 local group
 local feedkeys = util.key.feedkeys
 local prev_diagnostic, next_diagnostic = rep_move.make(
@@ -21,8 +19,6 @@ local function start_config(bufnr, lsp_config)
   })
 end
 
-local M = {}
-
 local operation = {
   ['gd'] = '<cmd>Lspsaga goto_definition<cr>',
   ['grI'] = '<cmd>Lspsaga finder imp<cr>',
@@ -35,58 +31,7 @@ local operation = {
   [']d'] = next_diagnostic,
   ['[d'] = prev_diagnostic,
 }
-local spec = {
-  { 'neovim/nvim-lspconfig', cond = not vim.g.vscode },
-  {
-    'nvimdev/lspsaga.nvim',
-    cond = not vim.g.vscode,
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    event = 'LspAttach',
-    opts = {
-      callhierarchy = { keys = { edit = { '<cr>' }, quit = { 'q', '<esc>' } } },
-      definition = { keys = { quit = { 'q', '<esc>' } } },
-      code_action = { keys = { quit = { 'q', '<esc>' }, exec = '<cr>' } },
-      diagnostic = { keys = { exec_action = '<cr>', quit = { 'q', '<esc>' }, quit_in_show = { 'q', '<esc>' } } },
-      finder = {
-        keys = {
-          quit = { 'q', '<esc>' },
-          shutter = { '<m-w>' },
-          split = { 's', '<c-s>', '<leader>j', '<leader>k' },
-          vsplit = { 'v', '<c-v>', '<leader>l', '<leader>h' },
-          toggle_or_open = { 'o', '<cr>' },
-        },
-      },
-      rename = { in_select = false, auto_save = true, keys = { quit = { '<c-c>' } } },
-      lightbulb = { enable = false },
-    },
-    config = function(_, opts)
-      local ok, lsp_saga = pcall(require, 'catppuccin.groups.integrations.lsp_saga')
-      if ok then opts.ui = { kind = lsp_saga.custom_kind() } end
-      require('lspsaga').setup(opts)
-    end,
-    keys = {},
-  },
-}
-
-function M.spec() return spec end
-
-function M.clear()
-  assert(spec[2][1] == 'nvimdev/lspsaga.nvim')
-  spec[2].keys = {}
-  c = nil
-  if group then
-    vim.api.nvim_del_augroup_by_id(group)
-    group = nil
-  end
-end
-
-M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
-  if vim.g.vscode then return spec end
-  c = config.get()
-  for _, s in ipairs(spec) do
-    s.enabled = c.lsp.enabled
-  end
-  assert(spec[2][1] == 'nvimdev/lspsaga.nvim')
+function an()
   group = vim.api.nvim_create_augroup('LightBoatLsp', {})
   for name, lsp_config in pairs(c.lsp.config) do
     if not lsp_config then goto continue end
@@ -180,7 +125,14 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
       end
     end,
   })
-  return spec
-end, M.clear)
-
-return M
+end
+return {
+  {
+    'neovim/nvim-lspconfig',
+    dependencies = 'saghen/blink.cmp',
+    cond = not vim.g.vscode,
+    config = function()
+      if vim.fn.executable('lua-language-server') ~= 0 then vim.lsp.enable('lua_ls') end
+    end,
+  },
+}
