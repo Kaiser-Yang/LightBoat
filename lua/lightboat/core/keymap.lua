@@ -15,6 +15,7 @@ local prev_search, next_search = rep_move.make('N', 'n')
 local prev_fold, next_fold = rep_move.make('zk', 'zj')
 local prev_misspell, next_misspell = rep_move.make('[s', ']s')
 local prev_open_fold, next_open_fold = rep_move.make('[z', ']z')
+local line_wise_key_wrap = require('lightboat.extra.line_wise').line_wise_key_wrap
 
 if c.delete_default_commant then del({ 'n', 'o', 'x' }, 'gc') end
 if c.delete_default_diagnostic_under_cursor then
@@ -31,7 +32,7 @@ local operation = {
   ['<m-x>'] = function()
     if vim.fn.mode('1') == 'no' then
       if vim.v.operator == 'd' and vim.v.register == '+' then
-        return '<esc>' .. tostring(vim.v.count) .. util.extra.line_wise_key_wrap('"+dd', c.keys['<m-x>'].opts)()
+        return '<esc>' .. tostring(vim.v.count) .. line_wise_key_wrap('"+dd', c.keys['<m-x>'].opts)()
       end
     else
       return '"+d'
