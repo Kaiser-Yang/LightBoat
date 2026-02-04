@@ -8,7 +8,6 @@ local default = {
   buffer_line = require('lightboat.config.buffer_line'),
   comment = require('lightboat.config.comment'),
   conflict = require('lightboat.config.conflict'),
-  conform = require('lightboat.config.conform'),
   dap = require('lightboat.config.dap'),
   extra = require('lightboat.config.extra'),
   -- flash = require('lightboat.config.flash'),
