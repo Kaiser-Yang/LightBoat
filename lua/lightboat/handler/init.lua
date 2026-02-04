@@ -40,16 +40,25 @@ end
 --- @param direction 'next'|'previous'
 --- @param position 'start'|'end'
 local function go_to(direction, position, query_string)
-  return require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string)
+  require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string)
+  -- HACK:
+  -- We do not know if the operation is successful or not, so just return true
+  return true
 end
 
 local function select(query_string, query_group)
-  return require('nvim-treesitter-textobjects.select').select_textobject(query_string, query_group)
+  require('nvim-treesitter-textobjects.select').select_textobject(query_string, query_group)
+  -- HACK:
+  -- We do not know if the operation is successful or not, so just return true
+  return true
 end
 
 --- @param direction 'next'|'previous'
 local function swap(direction, query_string)
-  return require('nvim-treesitter-textobjects.swap')['swap_' .. direction](query_string)
+  require('nvim-treesitter-textobjects.swap')['swap_' .. direction](query_string)
+  -- HACK:
+  -- We do not know if the operation is successful or not, so just return true
+  return true
 end
 
 --- @type table<string, function>
