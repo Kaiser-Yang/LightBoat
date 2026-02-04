@@ -71,6 +71,45 @@ local function ensure_repmove(previous, next)
   end
   return { repmove[previous], repmove[next] }
 end
+
+--- Copied from nvim-treesitter-textobjects.select
+--- @param start_row integer 0 indexed
+--- @param start_col integer 0 indexed
+--- @param end_row integer 0 indexed
+--- @param end_col integer 0 indexed, exclusive
+--- @param selection_mode string
+local function update_selection(start_row, start_col, end_row, end_col, selection_mode)
+  selection_mode = selection_mode or 'v'
+
+  -- enter visual mode if normal or operator-pending (no) mode
+  -- Why? According to https://learnvimscriptthehardway.stevelosh.com/chapters/15.html
+  --   If your operator-pending mapping ends with some text visually selected, Vim will operate on that text.
+  --   Otherwise, Vim will operate on the text between the original cursor position and the new position.
+  local mode = vim.api.nvim_get_mode()
+  selection_mode = vim.api.nvim_replace_termcodes(selection_mode, true, true, true)
+  if mode.mode ~= selection_mode then vim.cmd.normal({ selection_mode, bang = true }) end
+
+  -- end positions with `col=0` mean "up to the end of the previous line, including the newline character"
+  if end_col == 0 then
+    end_row = end_row - 1
+    -- +1 is needed because we are interpreting `end_col` to be exclusive afterwards
+    end_col = #vim.api.nvim_buf_get_lines(0, end_row, end_row + 1, true)[1] + 1
+  end
+
+  local end_col_offset = 1
+  if selection_mode == 'v' and vim.o.selection == 'exclusive' then end_col_offset = 0 end
+  end_col = end_col - end_col_offset
+
+  -- Position is 1, 0 indexed.
+  vim.api.nvim_win_set_cursor(0, { start_row + 1, start_col })
+  vim.cmd('normal! o')
+  vim.api.nvim_win_set_cursor(0, { end_row + 1, end_col })
+end
+
+function M.around_file()
+  update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V')
+  return true
+end
 -- stylua: ignore start
 -- HACK:
 -- This below can not cycle
