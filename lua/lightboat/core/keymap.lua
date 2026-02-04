@@ -4,9 +4,9 @@ local util = require('lightboat.util')
 local map = util.key.set
 local del = util.key.del
 local feedkeys = util.key.feedkeys
-local rep_move = require('lightboat.extra.rep_move')
-local prev_fold, next_fold = rep_move.make('zk', 'zj')
-local prev_open_fold, next_open_fold = rep_move.make('[z', ']z')
+-- local rep_move = require('lightboat.extra.rep_move')
+-- local prev_fold, next_fold = rep_move.make('zk', 'zj')
+-- local prev_open_fold, next_open_fold = rep_move.make('[z', ']z')
 
 -- if c.delete_default_commant then del({ 'n', 'o', 'x' }, 'gc') end
 -- if c.delete_default_diagnostic_under_cursor then
