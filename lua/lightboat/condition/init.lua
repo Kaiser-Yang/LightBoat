@@ -24,4 +24,9 @@ function M.treesitter_available()
   return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
 end
 
+function M.completion_menu_visible() return require('blink.cmp').is_menu_visible() end
+function M.snippet_active() return require('blink.cmp').snippet_active() end
+function M.documentation_visible() return require('blink.cmp').is_documentation_visible() end
+function M.signature_visible() return require('blink.cmp').is_signature_visible() end
+
 return M

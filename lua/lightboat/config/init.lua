@@ -5,7 +5,6 @@ local default = {
   debug = false,
   autocmd = require('lightboat.config.autocmd'),
   keymap = require('lightboat.config.keymap'),
-  blink_cmp = require('lightboat.config.blink_cmp'),
   buffer_line = require('lightboat.config.buffer_line'),
   comment = require('lightboat.config.comment'),
   conflict = require('lightboat.config.conflict'),

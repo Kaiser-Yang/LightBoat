@@ -1,5 +1,7 @@
 local util = require('lightboat.util')
 
+local M = {}
+
 --- @param n integer
 --- @return string
 function M.markdown_title(n) return '<c-g>u<bs>' .. string.rep('#', n) .. ' ' end
@@ -39,8 +41,8 @@ end
 
 --- @param direction 'next'|'previous'
 --- @param position 'start'|'end'
-local function go_to(direction, position, query_string)
-  require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string)
+local function go_to(direction, position, query_string, query_group)
+  require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string, query_group)
   -- HACK:
   -- We do not know if the operation is successful or not, so just return true
   return true
@@ -210,5 +212,19 @@ function M.repmove_previous_return_end() return ensure_repmove(M.previous_return
 function M.repmove_previous_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[1]() end
 function M.repmove_previous_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[1]() end
 -- stylua: ignore end
+
+function M.next_completion_item() return require('blink.cmp').select_next() end
+function M.previous_completion_item() return require('blink.cmp').select_prev() end
+function M.accept_completion_item() return require('blink.cmp').accept() end
+function M.cancel_completion() return require('blink.cmp').cancel() end
+function M.show_completion() return require('blink.cmp').show() end
+function M.snippet_forward() return require('blink.cmp').snippet_forward() end
+function M.snippet_backward() return require('blink.cmp').snippet_backward() end
+function M.show_signature() return require('blink.cmp').show_signature() end
+function M.hide_signature() return require('blink.cmp').hide_signature() end
+function M.scroll_documentation_up() return require('blink.cmp').scroll_documentation_up() end
+function M.scroll_documentation_down() return require('blink.cmp').scroll_documentation_down() end
+function M.scroll_signature_up() return require('blink.cmp').scroll_signature_up() end
+function M.scroll_signature_down() return require('blink.cmp').scroll_signature_down() end
 
 return M
