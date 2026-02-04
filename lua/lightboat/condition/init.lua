@@ -28,5 +28,6 @@ function M.completion_menu_visible() return require('blink.cmp').is_menu_visible
 function M.snippet_active() return require('blink.cmp').snippet_active() end
 function M.documentation_visible() return require('blink.cmp').is_documentation_visible() end
 function M.signature_visible() return require('blink.cmp').is_signature_visible() end
+function M.signature_not_visible() return not M.signature_visible() end
 
 return M
