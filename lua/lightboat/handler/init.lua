@@ -145,20 +145,20 @@ function M.previous_conditional_end() return go_to('previous', 'end', '@conditio
 function M.previous_function_end() return go_to('previous', 'end', '@function.outer') end
 function M.previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
 
-function M.around_function() return select('@function.outer')() end
-function M.around_class() return select('@class.outer')() end
-function M.around_block() return select('@block.outer')() end
-function M.around_conditional() return select('@conditional.outer')() end
-function M.around_loop() return select('@loop.outer')() end
-function M.around_return() return select('@return.outer')() end
-function M.around_parameter() return select('@parameter.outer')() end
-function M.inside_function() return select('@function.inner')() end
-function M.inside_class() return select('@class.inner')() end
-function M.inside_block() return select('@block.inner')() end
-function M.inside_conditional() return select('@conditional.inner')() end
-function M.inside_loop() return select('@loop.inner')() end
-function M.inside_return() return select('@return.inner')() end
-function M.inside_parameter() return select('@parameter.inner')() end
+function M.around_function() return select('@function.outer') end
+function M.around_class() return select('@class.outer') end
+function M.around_block() return select('@block.outer') end
+function M.around_conditional() return select('@conditional.outer') end
+function M.around_loop() return select('@loop.outer') end
+function M.around_return() return select('@return.outer') end
+function M.around_parameter() return select('@parameter.outer') end
+function M.inside_function() return select('@function.inner') end
+function M.inside_class() return select('@class.inner') end
+function M.inside_block() return select('@block.inner') end
+function M.inside_conditional() return select('@conditional.inner') end
+function M.inside_loop() return select('@loop.inner') end
+function M.inside_return() return select('@return.inner') end
+function M.inside_parameter() return select('@parameter.inner') end
 
 function M.swap_with_next_function() return swap('next', '@function.outer') end
 function M.swap_with_next_class() return swap('next', '@class.outer') end
