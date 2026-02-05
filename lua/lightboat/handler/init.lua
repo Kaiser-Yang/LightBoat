@@ -1,5 +1,30 @@
 local util = require('lightboat.util')
 
+--- @param key string
+local function auto_pair(key)
+  local core = require('ultimate-autopair.core')
+  core.get_run(util.key.termcodes(key))
+  return core.run_run(util.key.termcodes(key))
+end
+
+--- @param key string
+--- @param mode string | string[]
+--- @param n integer|nil
+local function hack(key, mode, n)
+  key = util.key.termcodes(key)
+  n = n or 1
+  for _ = 1, n do
+    local ok, input_key = pcall(vim.fn.getcharstr)
+    if input_key == '' or input_key == '' or not ok then return true end
+    key = key .. input_key
+  end
+  if util.key.has_map(mode, key) then
+    util.key.feedkeys(key, 'm')
+    return true
+  end
+  return '<esc>' .. key
+end
+
 local M = {}
 
 --- @param n integer
@@ -66,6 +91,7 @@ end
 --- @type table<string, function>
 local repmove = {}
 --- @param previous string|function
+--- @param next string|function
 --- @return table<function>
 local function ensure_repmove(previous, next)
   if not repmove[previous] or not repmove[next] then
@@ -108,10 +134,6 @@ local function update_selection(start_row, start_col, end_row, end_col, selectio
   vim.api.nvim_win_set_cursor(0, { end_row + 1, end_col })
 end
 
-function M.around_file()
-  update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V')
-  return true
-end
 -- stylua: ignore start
 -- HACK:
 -- This below can not cycle
@@ -122,6 +144,7 @@ function M.next_return_start() return go_to('next', 'start', '@return.outer') en
 function M.next_conditional_start() return go_to('next', 'start', '@conditional.outer') end
 function M.next_function_start() return go_to('next', 'start', '@function.outer') end
 function M.next_parameter_start() return go_to('next', 'start', '@parameter.inner') end
+function M.next_fold_start() return go_to('next', 'start', '@fold', "folds") end
 function M.previous_loop_start() return go_to('previous', 'start', '@loop.outer') end
 function M.previous_class_start() return go_to('previous', 'start', '@class.outer') end
 function M.previous_block_start() return go_to('previous', 'start', '@block.outer') end
@@ -129,6 +152,7 @@ function M.previous_return_start() return go_to('previous', 'start', '@return.ou
 function M.previous_conditional_start() return go_to('previous', 'start', '@conditional.outer') end
 function M.previous_function_start() return go_to('previous', 'start', '@function.outer') end
 function M.previous_parameter_start() return go_to('previous', 'start', '@parameter.inner') end
+function M.previous_fold_start() return go_to('previous', 'start', '@fold', "folds") end
 
 function M.next_loop_end() return go_to('next', 'end', '@loop.outer') end
 function M.next_class_end() return go_to('next', 'end', '@class.outer') end
@@ -137,6 +161,7 @@ function M.next_return_end() return go_to('next', 'end', '@return.outer') end
 function M.next_conditional_end() return go_to('next', 'end', '@conditional.outer') end
 function M.next_function_end() return go_to('next', 'end', '@function.outer') end
 function M.next_parameter_end() return go_to('next', 'end', '@parameter.inner') end
+function M.next_fold_end() return go_to('next', 'end', '@fold', "folds") end
 function M.previous_loop_end() return go_to('previous', 'end', '@loop.outer') end
 function M.previous_class_end() return go_to('previous', 'end', '@class.outer') end
 function M.previous_block_end() return go_to('previous', 'end', '@block.outer') end
@@ -144,6 +169,10 @@ function M.previous_return_end() return go_to('previous', 'end', '@return.outer'
 function M.previous_conditional_end() return go_to('previous', 'end', '@conditional.outer') end
 function M.previous_function_end() return go_to('previous', 'end', '@function.outer') end
 function M.previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
+function M.previous_fold_end() return go_to('previous', 'end', '@fold', "folds") end
+
+function M.next_section() require('vim.treesitter._headings').jump({ count = 1 }) return true end
+function M.previous_section() require('vim.treesitter._headings').jump({ count = -1 }) return true end
 
 function M.around_function() return select('@function.outer') end
 function M.around_class() return select('@class.outer') end
@@ -189,6 +218,7 @@ function M.repmove_next_loop_start() return ensure_repmove(M.previous_loop_start
 function M.repmove_next_return_start() return ensure_repmove(M.previous_return_start, M.next_return_start)[2]() end
 function M.repmove_next_parameter_start() return ensure_repmove(M.previous_parameter_start, M.next_parameter_start)[2]() end
 function M.repmove_next_conditional_start() return ensure_repmove(M.previous_conditional_start, M.next_conditional_start)[2]() end
+function M.repmove_next_fold_start() return ensure_repmove(M.previous_fold_start, M.next_fold_start)[2]() end
 function M.repmove_next_function_end() return ensure_repmove(M.previous_function_end, M.next_function_end)[2]() end
 function M.repmove_next_class_end() return ensure_repmove(M.previous_class_end, M.next_class_end)[2]() end
 function M.repmove_next_block_end() return ensure_repmove(M.previous_block_end, M.next_block_end)[2]() end
@@ -196,6 +226,7 @@ function M.repmove_next_loop_end() return ensure_repmove(M.previous_loop_end, M.
 function M.repmove_next_return_end() return ensure_repmove(M.previous_return_end, M.next_return_end)[2]() end
 function M.repmove_next_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[2]() end
 function M.repmove_next_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[2]() end
+function M.repmove_next_fold_end() return ensure_repmove(M.previous_fold_end, M.next_fold_end)[2]() end
 function M.repmove_previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
 function M.repmove_previous_function_start() return ensure_repmove(M.previous_function_start, M.next_function_start)[1]() end
 function M.repmove_previous_class_start() return ensure_repmove(M.previous_class_start, M.next_class_start)[1]() end
@@ -204,6 +235,7 @@ function M.repmove_previous_loop_start() return ensure_repmove(M.previous_loop_s
 function M.repmove_previous_return_start() return ensure_repmove(M.previous_return_start, M.next_return_start)[1]() end
 function M.repmove_previous_parameter_start() return ensure_repmove(M.previous_parameter_start, M.next_parameter_start)[1]() end
 function M.repmove_previous_conditional_start() return ensure_repmove(M.previous_conditional_start, M.next_conditional_start)[1]() end
+function M.repmove_previous_fold_start() return ensure_repmove(M.previous_fold_start, M.next_fold_start)[1]() end
 function M.repmove_previous_function_end() return ensure_repmove(M.previous_function_end, M.next_function_end)[1]() end
 function M.repmove_previous_class_end() return ensure_repmove(M.previous_class_end, M.next_class_end)[1]() end
 function M.repmove_previous_block_end() return ensure_repmove(M.previous_block_end, M.next_block_end)[1]() end
@@ -211,13 +243,19 @@ function M.repmove_previous_loop_end() return ensure_repmove(M.previous_loop_end
 function M.repmove_previous_return_end() return ensure_repmove(M.previous_return_end, M.next_return_end)[1]() end
 function M.repmove_previous_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[1]() end
 function M.repmove_previous_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[1]() end
--- stylua: ignore end
+function M.repmove_previous_fold_end() return ensure_repmove(M.previous_fold_end, M.next_fold_end)[1]() end
+
+function M.repmove_next_section() return ensure_repmove(M.previous_section, M.next_section)[1]() end
+function M.repmove_previous_section() return ensure_repmove(M.previous_section, M.next_section)[2]() end
+
+function M.around_file() update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 
 function M.next_completion_item() return require('blink.cmp').select_next() end
 function M.previous_completion_item() return require('blink.cmp').select_prev() end
 function M.accept_completion_item() return require('blink.cmp').accept() end
 function M.cancel_completion() return require('blink.cmp').cancel() end
 function M.show_completion() return require('blink.cmp').show() end
+function M.hide_completion() return require('blink.cmp').hide() end
 function M.snippet_forward() return require('blink.cmp').snippet_forward() end
 function M.snippet_backward() return require('blink.cmp').snippet_backward() end
 function M.show_signature() return require('blink.cmp').show_signature() end
@@ -226,5 +264,61 @@ function M.scroll_documentation_up() return require('blink.cmp').scroll_document
 function M.scroll_documentation_down() return require('blink.cmp').scroll_documentation_down() end
 function M.scroll_signature_up() return require('blink.cmp').scroll_signature_up() end
 function M.scroll_signature_down() return require('blink.cmp').scroll_signature_down() end
+function M.async_format() return require('conform').format({ async = true }) end
+
+function M.auto_pair_wrap(key) return function() return auto_pair(key) end end
+
+M.surround_normal = '<plug>(nvim-surround-normal)'
+M.surround_normal_cur = '<plug>(nvim-surround-normal-cur)'
+M.surround_normal_line = '<plug>(nvim-surround-normal-line)'
+M.surround_normal_cur_line = '<plug>(nvim-surround-normal-cur-line)'
+M.surround_insert = '<plug>(nvim-surround-insert)'
+M.surround_insert_line = '<plug>(nvim-surround-insert-line)'
+M.surround_delete = '<plug>(nvim-surround-delete)'
+M.surround_change = '<plug>(nvim-surround-change)'
+M.surround_change_line = '<plug>(nvim-surround-change-line)'
+M.surround_visual = '<plug>(nvim-surround-visual)'
+M.surround_visual_line = '<plug>(nvim-surround-visual-line)'
+
+function M.hack_s(key)
+  key = key or 's'
+  local res
+  if vim.v.operator == 'y' then
+    res = M.surround_normal
+  elseif vim.v.operator == 'd' then
+    res = M.surround_delete
+  elseif vim.v.operator == 'c' then
+    res = M.surround_change
+  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
+    -- HACK:
+    -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
+    res = M.surround_normal_cur
+  end
+  if not res then return key end
+  return '<esc>' .. res
+end
+function M.hack_S(key)
+  local res
+  if vim.v.operator == 'y' then
+    res = M.surround_normal_line
+  elseif vim.v.operator == 'c' then
+    res = M.surround_change_line
+  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
+    -- HACK:
+    -- We can not tell if now is in line mode, which means "ysS" will behavior like "ySS"
+    res = M.surround_normal_cur_line
+  end
+  if not res then return key end
+  return '<esc>' .. res
+end
+function M.hack_left_curly_bracket(key) key = key or '[' return hack(key, { 'n', 'x', 'o' }) end
+function M.hack_right_curly_bracket(key) key = key or ']' return hack(key, { 'n', 'x', 'o' }) end
+function M.hack_alt_s(key) key = key or '<m-s>' return hack(key, 'n', 2) end
+function M.hack_s_wrap(key) return function() return M.hack_s(key) end end
+function M.hack_S_wrap(key) return function() return M.hack_S(key) end end
+function M.hack_left_curly_bracket_wrap(key) return function() return M.hack_left_curly_bracket(key) end end
+function M.hack_right_curly_bracket_wrap(key) return function() return M.hack_right_curly_bracket(key) end end
+function M.hack_alt_s_wrap(key) return function() return M.hack_alt_s(key) end end
+-- stylua: ignore end
 
 return M

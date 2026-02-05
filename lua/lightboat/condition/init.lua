@@ -4,6 +4,21 @@ local util = require('lightboat.util')
 ---@param filetype string|string[]
 ---@return boolean
 function M.filetype(filetype) return vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype) end
+---@param filetype string|string[]
+---@return boolean
+function M.not_filetype(filetype) return not M.filetype(filetype) end
+
+---@param filetype string|string[]
+---@return function
+function M.filetype_wrap(filetype)
+  return function() return M.filetype(filetype) end
+end
+
+---@param filetype string|string[]
+---@return function
+function M.not_filetype_wrap(filetype)
+  return function() return M.not_filetype(filetype) end
+end
 
 ---@param key string|string[]
 ---@return boolean
@@ -25,6 +40,7 @@ function M.treesitter_available()
 end
 
 function M.completion_menu_visible() return require('blink.cmp').is_menu_visible() end
+function M.completion_menu_not_visible() return not M.completion_menu_visible() end
 function M.snippet_active() return require('blink.cmp').snippet_active() end
 function M.documentation_visible() return require('blink.cmp').is_documentation_visible() end
 function M.signature_visible() return require('blink.cmp').is_signature_visible() end
