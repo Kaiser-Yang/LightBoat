@@ -264,6 +264,7 @@ function M.scroll_documentation_up() return require('blink.cmp').scroll_document
 function M.scroll_documentation_down() return require('blink.cmp').scroll_documentation_down() end
 function M.scroll_signature_up() return require('blink.cmp').scroll_signature_up() end
 function M.scroll_signature_down() return require('blink.cmp').scroll_signature_down() end
+
 function M.async_format() return require('conform').format({ async = true }) end
 
 function M.auto_pair_wrap(key) return function() return auto_pair(key) end end

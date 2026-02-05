@@ -9,7 +9,7 @@ return {
   require('lightboat.plugin.code.mason'),
   -- nvim_dap_go = require('lightboat.plugin.code.nvim_dap_go'),
   -- nvim_jdtls = require('lightboat.plugin.code.nvim_jdtls'),
-  -- pair = require('lightboat.plugin.code.pair'),
+  require('lightboat.plugin.code.pair'),
   -- overseer = require('lightboat.plugin.code.overseer'),
   -- todo = require('lightboat.plugin.code.todo'),
 }
