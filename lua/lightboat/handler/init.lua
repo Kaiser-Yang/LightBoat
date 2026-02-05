@@ -11,15 +11,15 @@ end
 --- @param mode string | string[]
 --- @param n integer|nil
 local function hack(key, mode, n)
-  key = util.key.termcodes(key)
   n = n or 1
   for _ = 1, n do
     local ok, input_key = pcall(vim.fn.getcharstr)
     if input_key == '' or input_key == '' or not ok then return true end
     key = key .. input_key
   end
+  key = util.key.termcodes(key)
   if util.key.has_map(mode, key) then
-    util.key.feedkeys(key, 'm')
+    util.key.feedkeys(key, 'm', false)
     return true
   end
   return '<esc>' .. key
