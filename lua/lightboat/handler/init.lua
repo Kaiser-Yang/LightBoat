@@ -2,6 +2,23 @@ local M = {}
 
 local util = require('lightboat.util')
 
+local function previous_conflict()
+  ensure_plugin('git-conflict')
+  return '<plug>(git-conflict-prev-conflict)'
+end
+local function next_conflict()
+  ensure_plugin('git-conflict')
+  return '<plug>(git-conflict-next-conflict)'
+end
+local function next_git_hunk()
+  require('gitsigns').nav_hunk('next')
+  return true
+end
+local function previous_git_hunk()
+  require('gitsigns').nav_hunk('prev')
+  return true
+end
+
 local function hack_s(key)
   key = key or 's'
   local res
@@ -39,24 +56,6 @@ local function auto_pair(key)
   local core = require('ultimate-autopair.core')
   core.get_run(util.key.termcodes(key))
   return core.run_run(util.key.termcodes(key))
-end
-
---- @param key string
---- @param mode string | string[]
---- @param n integer|nil
-local function hack(key, mode, n)
-  n = n or 1
-  for _ = 1, n do
-    local ok, input_key = pcall(vim.fn.getcharstr)
-    if input_key == '' or input_key == '' or not ok then return true end
-    key = key .. input_key
-  end
-  key = util.key.termcodes(key)
-  if util.key.has_map(mode, key) then
-    util.key.feedkeys(key, 'm', false)
-    return true
-  end
-  return '<esc>' .. key
 end
 
 --- @param n integer
@@ -274,7 +273,7 @@ function M.previous_conditional_end() return ensure_repmove(previous_conditional
 function M.next_section() return ensure_repmove(previous_section, next_section)[1]() end
 function M.previous_section() return ensure_repmove(previous_section, next_section)[2]() end
 
-function M.around_file() update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
+function M.select_file() update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 
 function M.next_completion_item() return require('blink.cmp').select_next() end
 function M.previous_completion_item() return require('blink.cmp').select_prev() end
@@ -307,9 +306,27 @@ M.surround_change_line = '<plug>(nvim-surround-change-line)'
 M.surround_visual = '<plug>(nvim-surround-visual)'
 M.surround_visual_line = '<plug>(nvim-surround-visual-line)'
 
-function M.hack_wrap(key, mode, n) mode, n = (mode or 'n'), (n or 1) return function() return hack(key, mode, n) end end
 function M.hack_s_wrap(key) return function() return hack_s(key) end end
 function M.hack_S_wrap(key) return function() return hack_S(key) end end
+
+function M.stage_hunk() require('gitsigns').stage_hunk() return true end
+function M.undo_stage_hunk() require('gitsigns').undo_stage_hunk() return true end
+function M.stage_buffer() require('gitsigns').stage_buffer() return true end
+function M.unstage_buffer() require('gitsigns').reset_buffer_index() return true end
+function M.stage_selection() require('gitsigns').stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) return true end
+function M.reset_hunk() require('gitsigns').reset_hunk() return true end
+function M.reset_buffer() require('gitsigns').reset_buffer() return true end
+function M.reset_selection() require('gitsigns').reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) return true end
+function M.preview_hunk() require('gitsigns').preview_hunk() return true end
+function M.preview_hunk_inline() require('gitsigns').preview_hunk_inline() return true end
+function M.blame_line() require('gitsigns').blame_line({ full = true }) return true end
+function M.toggle_current_line_blame() require('gitsigns').toggle_current_line_blame() return true end
+function M.toggle_word_diff() require('gitsigns').toggle_word_diff() return true end
+function M.select_hunk() require('gitsigns').select_hunk() return true end
+function M.previous_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[1]() end
+function M.next_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[2]() end
+function M.previous_conflict() return ensure_repmove(next_conflict, previous_conflict)[1]() end
+function M.next_conflict() return ensure_repmove(next_conflict, previous_conflict)[2]() end
 -- stylua: ignore end
 
 return M
