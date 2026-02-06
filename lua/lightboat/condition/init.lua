@@ -41,9 +41,12 @@ end
 
 function M.completion_menu_visible() return require('blink.cmp').is_menu_visible() end
 function M.completion_menu_not_visible() return not M.completion_menu_visible() end
+function M.completion_item_selected() return M.completion_menu_visible() and require('blink.cmp').get_selected_item() ~= nil end
 function M.snippet_active() return require('blink.cmp').snippet_active() end
 function M.documentation_visible() return require('blink.cmp').is_documentation_visible() end
 function M.signature_visible() return require('blink.cmp').is_signature_visible() end
 function M.signature_not_visible() return not M.signature_visible() end
+function M.git_executable() return vim.fn.executable('git') == 1 end
+function M.is_git_repository() return util.git.is_git_repository() end
 
 return M
