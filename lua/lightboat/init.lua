@@ -5,21 +5,7 @@ local log = util.log
 local group
 local debug
 
-function M.clear()
-  util.clear_color_detection()
-  util.git.clear()
-  util.network.clear()
-  require('lightboat.extra').clear()
-  if debug then
-    log.set_level(log.level.INFO)
-    vim.api.nvim_del_augroup_by_id(group)
-    group = nil
-  end
-  debug = nil
-  config.clear()
-end
-
-M.setup = util.setup_check_wrap('lightboat', function()
+M.setup = function()
   config.setup()
   debug = config.get().debug
   if debug then
@@ -36,6 +22,6 @@ M.setup = util.setup_check_wrap('lightboat', function()
   util.network.check()
   util.git.detect()
   util.start_to_detect_color()
-end, M.clear)
+end
 
 return M
