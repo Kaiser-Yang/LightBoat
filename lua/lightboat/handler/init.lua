@@ -1,4 +1,38 @@
+local M = {}
+
 local util = require('lightboat.util')
+
+local function hack_s(key)
+  key = key or 's'
+  local res
+  if vim.v.operator == 'y' then
+    res = M.surround_normal
+  elseif vim.v.operator == 'd' then
+    res = M.surround_delete
+  elseif vim.v.operator == 'c' then
+    res = M.surround_change
+  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
+    -- HACK:
+    -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
+    res = M.surround_normal_cur
+  end
+  if not res then return key end
+  return '<esc>' .. res
+end
+local function hack_S(key)
+  local res
+  if vim.v.operator == 'y' then
+    res = M.surround_normal_line
+  elseif vim.v.operator == 'c' then
+    res = M.surround_change_line
+  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
+    -- HACK:
+    -- We can not tell if now is in line mode, which means "ysS" will behavior like "ySS"
+    res = M.surround_normal_cur_line
+  end
+  if not res then return key end
+  return '<esc>' .. res
+end
 
 --- @param key string
 local function auto_pair(key)
@@ -24,8 +58,6 @@ local function hack(key, mode, n)
   end
   return '<esc>' .. key
 end
-
-local M = {}
 
 --- @param n integer
 --- @return string
@@ -275,45 +307,9 @@ M.surround_change_line = '<plug>(nvim-surround-change-line)'
 M.surround_visual = '<plug>(nvim-surround-visual)'
 M.surround_visual_line = '<plug>(nvim-surround-visual-line)'
 
-function M.hack_s(key)
-  key = key or 's'
-  local res
-  if vim.v.operator == 'y' then
-    res = M.surround_normal
-  elseif vim.v.operator == 'd' then
-    res = M.surround_delete
-  elseif vim.v.operator == 'c' then
-    res = M.surround_change
-  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
-    -- HACK:
-    -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
-    res = M.surround_normal_cur
-  end
-  if not res then return key end
-  return '<esc>' .. res
-end
-function M.hack_S(key)
-  local res
-  if vim.v.operator == 'y' then
-    res = M.surround_normal_line
-  elseif vim.v.operator == 'c' then
-    res = M.surround_change_line
-  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
-    -- HACK:
-    -- We can not tell if now is in line mode, which means "ysS" will behavior like "ySS"
-    res = M.surround_normal_cur_line
-  end
-  if not res then return key end
-  return '<esc>' .. res
-end
-function M.hack_left_curly_bracket(key) key = key or '[' return hack(key, { 'n', 'x', 'o' }) end
-function M.hack_right_curly_bracket(key) key = key or ']' return hack(key, { 'n', 'x', 'o' }) end
-function M.hack_alt_s(key) key = key or '<m-s>' return hack(key, 'n', 2) end
-function M.hack_s_wrap(key) return function() return M.hack_s(key) end end
-function M.hack_S_wrap(key) return function() return M.hack_S(key) end end
-function M.hack_left_curly_bracket_wrap(key) return function() return M.hack_left_curly_bracket(key) end end
-function M.hack_right_curly_bracket_wrap(key) return function() return M.hack_right_curly_bracket(key) end end
-function M.hack_alt_s_wrap(key) return function() return M.hack_alt_s(key) end end
+function M.hack_wrap(key, mode, n) mode, n = (mode or 'n'), (n or 1) return function() return hack(key, mode, n) end end
+function M.hack_s_wrap(key) return function() return hack_s(key) end end
+function M.hack_S_wrap(key) return function() return hack_S(key) end end
 -- stylua: ignore end
 
 return M
