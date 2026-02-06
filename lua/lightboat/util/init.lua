@@ -92,7 +92,8 @@ function M.in_config_dir()
       or path:find('LightBoat')
       or path:find('lightboat')
       or path:find('dotfile')
-      or path:find(M.lazy_path())
+      or path == M.lazy_path()
+      or path == vim.fn.stdpath('config')
     then
       return true
     end
