@@ -146,7 +146,6 @@ local function next_return_start() return go_to('next', 'start', '@return.outer'
 local function next_conditional_start() return go_to('next', 'start', '@conditional.outer') end
 local function next_function_start() return go_to('next', 'start', '@function.outer') end
 local function next_parameter_start() return go_to('next', 'start', '@parameter.inner') end
-local function next_fold_start() return go_to('next', 'start', '@fold', "folds") end
 local function previous_loop_start() return go_to('previous', 'start', '@loop.outer') end
 local function previous_class_start() return go_to('previous', 'start', '@class.outer') end
 local function previous_block_start() return go_to('previous', 'start', '@block.outer') end
@@ -154,7 +153,6 @@ local function previous_return_start() return go_to('previous', 'start', '@retur
 local function previous_conditional_start() return go_to('previous', 'start', '@conditional.outer') end
 local function previous_function_start() return go_to('previous', 'start', '@function.outer') end
 local function previous_parameter_start() return go_to('previous', 'start', '@parameter.inner') end
-local function previous_fold_start() return go_to('previous', 'start', '@fold', "folds") end
 
 local function next_loop_end() return go_to('next', 'end', '@loop.outer') end
 local function next_class_end() return go_to('next', 'end', '@class.outer') end
@@ -163,7 +161,6 @@ local function next_return_end() return go_to('next', 'end', '@return.outer') en
 local function next_conditional_end() return go_to('next', 'end', '@conditional.outer') end
 local function next_function_end() return go_to('next', 'end', '@function.outer') end
 local function next_parameter_end() return go_to('next', 'end', '@parameter.inner') end
-local function next_fold_end() return go_to('next', 'end', '@fold', "folds") end
 local function previous_loop_end() return go_to('previous', 'end', '@loop.outer') end
 local function previous_class_end() return go_to('previous', 'end', '@class.outer') end
 local function previous_block_end() return go_to('previous', 'end', '@block.outer') end
@@ -171,7 +168,6 @@ local function previous_return_end() return go_to('previous', 'end', '@return.ou
 local function previous_conditional_end() return go_to('previous', 'end', '@conditional.outer') end
 local function previous_function_end() return go_to('previous', 'end', '@function.outer') end
 local function previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
-local function previous_fold_end() return go_to('previous', 'end', '@fold', "folds") end
 
 local function next_section() require('vim.treesitter._headings').jump({ count = 1 }) return true end
 local function previous_section() require('vim.treesitter._headings').jump({ count = -1 }) return true end
@@ -220,7 +216,6 @@ function M.next_loop_start() return ensure_repmove(previous_loop_start, next_loo
 function M.next_return_start() return ensure_repmove(previous_return_start, next_return_start)[2]() end
 function M.next_parameter_start() return ensure_repmove(previous_parameter_start, next_parameter_start)[2]() end
 function M.next_conditional_start() return ensure_repmove(previous_conditional_start, next_conditional_start)[2]() end
-function M.next_fold_start() return ensure_repmove(previous_fold_start, next_fold_start)[2]() end
 function M.next_function_end() return ensure_repmove(previous_function_end, next_function_end)[2]() end
 function M.next_class_end() return ensure_repmove(previous_class_end, next_class_end)[2]() end
 function M.next_block_end() return ensure_repmove(previous_block_end, next_block_end)[2]() end
@@ -228,7 +223,6 @@ function M.next_loop_end() return ensure_repmove(previous_loop_end, next_loop_en
 function M.next_return_end() return ensure_repmove(previous_return_end, next_return_end)[2]() end
 function M.next_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[2]() end
 function M.next_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[2]() end
-function M.next_fold_end() return ensure_repmove(previous_fold_end, next_fold_end)[2]() end
 function M.previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
 function M.previous_function_start() return ensure_repmove(previous_function_start, next_function_start)[1]() end
 function M.previous_class_start() return ensure_repmove(previous_class_start, next_class_start)[1]() end
@@ -237,7 +231,6 @@ function M.previous_loop_start() return ensure_repmove(previous_loop_start, next
 function M.previous_return_start() return ensure_repmove(previous_return_start, next_return_start)[1]() end
 function M.previous_parameter_start() return ensure_repmove(previous_parameter_start, next_parameter_start)[1]() end
 function M.previous_conditional_start() return ensure_repmove(previous_conditional_start, next_conditional_start)[1]() end
-function M.previous_fold_start() return ensure_repmove(previous_fold_start, next_fold_start)[1]() end
 function M.previous_function_end() return ensure_repmove(previous_function_end, next_function_end)[1]() end
 function M.previous_class_end() return ensure_repmove(previous_class_end, next_class_end)[1]() end
 function M.previous_block_end() return ensure_repmove(previous_block_end, next_block_end)[1]() end
@@ -245,7 +238,6 @@ function M.previous_loop_end() return ensure_repmove(previous_loop_end, next_loo
 function M.previous_return_end() return ensure_repmove(previous_return_end, next_return_end)[1]() end
 function M.previous_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[1]() end
 function M.previous_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[1]() end
-function M.previous_fold_end() return ensure_repmove(previous_fold_end, next_fold_end)[1]() end
 
 function M.next_section() return ensure_repmove(previous_section, next_section)[1]() end
 function M.previous_section() return ensure_repmove(previous_section, next_section)[2]() end
