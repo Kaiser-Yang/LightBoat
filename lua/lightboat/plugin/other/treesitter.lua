@@ -2,21 +2,21 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     cond = not vim.g.vscode,
+    -- This plugin can not be lazy loaded, make sure it is loaded during startup
+    lazy = false,
     branch = 'main',
     build = ':TSUpdate',
     opts = {},
   },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
-    -- INFO:
-    -- Disable entire built-in ftplugin mappings to avoid conflicts.
-    -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
-    init = function() vim.g.no_plugin_maps = true end,
+    lazy = true,
     branch = 'main',
     opts = {},
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
+    event = 'VeryLazy',
     cond = not vim.g.vscode,
     opts = {},
   },

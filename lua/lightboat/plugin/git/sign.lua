@@ -1,7 +1,7 @@
 return {
   'lewis6991/gitsigns.nvim',
   event = { { event = 'User', pattern = 'GitRepoDetected' } },
-  cond = not vim.g.vscode,
+  cond = not vim.g.vscode and vim.fn.executable('git') == 1,
   opts = {
     current_line_blame = true,
     current_line_blame_opts = { delay = 300 },

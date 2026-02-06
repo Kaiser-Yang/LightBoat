@@ -1,6 +1,14 @@
 local M = {}
 
 local util = require('lightboat.util')
+--- @type table<string, boolean>
+local plugin_loaded = {}
+local function ensure_plugin(name)
+  if not plugin_loaded[name] then
+    require(name)
+    plugin_loaded[name] = true
+  end
+end
 
 local function previous_conflict()
   ensure_plugin('git-conflict')
@@ -294,17 +302,17 @@ function M.async_format() return require('conform').format({ async = true }) end
 
 function M.auto_pair_wrap(key) return function() return auto_pair(key) end end
 
-M.surround_normal = '<plug>(nvim-surround-normal)'
-M.surround_normal_cur = '<plug>(nvim-surround-normal-cur)'
-M.surround_normal_line = '<plug>(nvim-surround-normal-line)'
-M.surround_normal_cur_line = '<plug>(nvim-surround-normal-cur-line)'
-M.surround_insert = '<plug>(nvim-surround-insert)'
-M.surround_insert_line = '<plug>(nvim-surround-insert-line)'
-M.surround_delete = '<plug>(nvim-surround-delete)'
-M.surround_change = '<plug>(nvim-surround-change)'
-M.surround_change_line = '<plug>(nvim-surround-change-line)'
-M.surround_visual = '<plug>(nvim-surround-visual)'
-M.surround_visual_line = '<plug>(nvim-surround-visual-line)'
+function M.surround_normal() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal)' end
+function M.surround_normal_cur() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-cur)' end
+function M.surround_normal_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-line)' end
+function M.surround_normal_cur_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-cur-line)' end
+function M.surround_insert() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-insert)' end
+function M.surround_insert_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-insert-line)' end
+function M.surround_delete() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-delete)' end
+function M.surround_change() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-change)' end
+function M.surround_change_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-change-line)' end
+function M.surround_visual() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual)' end
+function M.surround_visual_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual-line)' end
 
 function M.hack_s_wrap(key) return function() return hack_s(key) end end
 function M.hack_S_wrap(key) return function() return hack_S(key) end end

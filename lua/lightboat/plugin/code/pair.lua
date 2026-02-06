@@ -2,7 +2,7 @@ return {
   {
     'altermo/ultimate-autopair.nvim',
     cond = not vim.g.vscode,
-    event = { 'InsertEnter', 'CmdlineEnter' },
+    lazy = true,
     branch = 'v0.6',
     opts = { tabout = { enable = true }, space2 = { enable = true }, fastwarp = { faster = true } },
     config = function(_, opts)
@@ -15,8 +15,9 @@ return {
   {
     'kylechui/nvim-surround',
     version = '*',
+    lazy = true,
     opts = {
-      move_cursor = "sticky",
+      move_cursor = 'sticky',
       keymaps = {
         insert = false,
         insert_line = false,
