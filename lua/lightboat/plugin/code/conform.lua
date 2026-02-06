@@ -2,7 +2,15 @@ return {
   'stevearc/conform.nvim',
   dependencies = { 'williamboman/mason.nvim' },
   cond = not vim.g.vscode,
-  opts = { formatters_by_ft = { lua = { 'stylua' } }, default_format_opts = { lsp_format = 'fallback' } },
+  opts = {
+    formatters_by_ft = {
+      lua = { 'stylua' },
+      c = { 'clang-format' },
+      cpp = { 'clang-format' },
+      go = { 'goimports', 'gofmt' },
+    },
+    default_format_opts = { lsp_format = 'fallback' },
+  },
   init = function()
     -- NOTE:
     -- make sure use conform instead of lsp for formatexpr
