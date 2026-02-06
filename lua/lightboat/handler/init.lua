@@ -92,10 +92,12 @@ end
 local repmove = {}
 --- @param previous string|function
 --- @param next string|function
+--- @param comma? string|function
+--- @param semicolon? string|function
 --- @return table<function>
-local function ensure_repmove(previous, next)
+local function ensure_repmove(previous, next, comma, semicolon)
   if not repmove[previous] or not repmove[next] then
-    repmove[previous], repmove[next] = require('repmove').make(previous, next)
+    repmove[previous], repmove[next] = require('repmove').make(previous, next, comma, semicolon)
   end
   return { repmove[previous], repmove[next] }
 end
@@ -137,42 +139,42 @@ end
 -- stylua: ignore start
 -- HACK:
 -- This below can not cycle
-function M.next_loop_start() return go_to('next', 'start', '@loop.outer') end
-function M.next_class_start() return go_to('next', 'start', '@class.outer') end
-function M.next_block_start() return go_to('next', 'start', '@block.outer') end
-function M.next_return_start() return go_to('next', 'start', '@return.outer') end
-function M.next_conditional_start() return go_to('next', 'start', '@conditional.outer') end
-function M.next_function_start() return go_to('next', 'start', '@function.outer') end
-function M.next_parameter_start() return go_to('next', 'start', '@parameter.inner') end
-function M.next_fold_start() return go_to('next', 'start', '@fold', "folds") end
-function M.previous_loop_start() return go_to('previous', 'start', '@loop.outer') end
-function M.previous_class_start() return go_to('previous', 'start', '@class.outer') end
-function M.previous_block_start() return go_to('previous', 'start', '@block.outer') end
-function M.previous_return_start() return go_to('previous', 'start', '@return.outer') end
-function M.previous_conditional_start() return go_to('previous', 'start', '@conditional.outer') end
-function M.previous_function_start() return go_to('previous', 'start', '@function.outer') end
-function M.previous_parameter_start() return go_to('previous', 'start', '@parameter.inner') end
-function M.previous_fold_start() return go_to('previous', 'start', '@fold', "folds") end
+local function next_loop_start() return go_to('next', 'start', '@loop.outer') end
+local function next_class_start() return go_to('next', 'start', '@class.outer') end
+local function next_block_start() return go_to('next', 'start', '@block.outer') end
+local function next_return_start() return go_to('next', 'start', '@return.outer') end
+local function next_conditional_start() return go_to('next', 'start', '@conditional.outer') end
+local function next_function_start() return go_to('next', 'start', '@function.outer') end
+local function next_parameter_start() return go_to('next', 'start', '@parameter.inner') end
+local function next_fold_start() return go_to('next', 'start', '@fold', "folds") end
+local function previous_loop_start() return go_to('previous', 'start', '@loop.outer') end
+local function previous_class_start() return go_to('previous', 'start', '@class.outer') end
+local function previous_block_start() return go_to('previous', 'start', '@block.outer') end
+local function previous_return_start() return go_to('previous', 'start', '@return.outer') end
+local function previous_conditional_start() return go_to('previous', 'start', '@conditional.outer') end
+local function previous_function_start() return go_to('previous', 'start', '@function.outer') end
+local function previous_parameter_start() return go_to('previous', 'start', '@parameter.inner') end
+local function previous_fold_start() return go_to('previous', 'start', '@fold', "folds") end
 
-function M.next_loop_end() return go_to('next', 'end', '@loop.outer') end
-function M.next_class_end() return go_to('next', 'end', '@class.outer') end
-function M.next_block_end() return go_to('next', 'end', '@block.outer') end
-function M.next_return_end() return go_to('next', 'end', '@return.outer') end
-function M.next_conditional_end() return go_to('next', 'end', '@conditional.outer') end
-function M.next_function_end() return go_to('next', 'end', '@function.outer') end
-function M.next_parameter_end() return go_to('next', 'end', '@parameter.inner') end
-function M.next_fold_end() return go_to('next', 'end', '@fold', "folds") end
-function M.previous_loop_end() return go_to('previous', 'end', '@loop.outer') end
-function M.previous_class_end() return go_to('previous', 'end', '@class.outer') end
-function M.previous_block_end() return go_to('previous', 'end', '@block.outer') end
-function M.previous_return_end() return go_to('previous', 'end', '@return.outer') end
-function M.previous_conditional_end() return go_to('previous', 'end', '@conditional.outer') end
-function M.previous_function_end() return go_to('previous', 'end', '@function.outer') end
-function M.previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
-function M.previous_fold_end() return go_to('previous', 'end', '@fold', "folds") end
+local function next_loop_end() return go_to('next', 'end', '@loop.outer') end
+local function next_class_end() return go_to('next', 'end', '@class.outer') end
+local function next_block_end() return go_to('next', 'end', '@block.outer') end
+local function next_return_end() return go_to('next', 'end', '@return.outer') end
+local function next_conditional_end() return go_to('next', 'end', '@conditional.outer') end
+local function next_function_end() return go_to('next', 'end', '@function.outer') end
+local function next_parameter_end() return go_to('next', 'end', '@parameter.inner') end
+local function next_fold_end() return go_to('next', 'end', '@fold', "folds") end
+local function previous_loop_end() return go_to('previous', 'end', '@loop.outer') end
+local function previous_class_end() return go_to('previous', 'end', '@class.outer') end
+local function previous_block_end() return go_to('previous', 'end', '@block.outer') end
+local function previous_return_end() return go_to('previous', 'end', '@return.outer') end
+local function previous_conditional_end() return go_to('previous', 'end', '@conditional.outer') end
+local function previous_function_end() return go_to('previous', 'end', '@function.outer') end
+local function previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
+local function previous_fold_end() return go_to('previous', 'end', '@fold', "folds") end
 
-function M.next_section() require('vim.treesitter._headings').jump({ count = 1 }) return true end
-function M.previous_section() require('vim.treesitter._headings').jump({ count = -1 }) return true end
+local function next_section() require('vim.treesitter._headings').jump({ count = 1 }) return true end
+local function previous_section() require('vim.treesitter._headings').jump({ count = -1 }) return true end
 
 function M.around_function() return select('@function.outer') end
 function M.around_class() return select('@class.outer') end
@@ -204,49 +206,49 @@ function M.swap_with_previous_loop() return swap('previous', '@loop.outer') end
 function M.swap_with_previous_return() return swap('previous', '@return.outer') end
 function M.swap_with_previous_parameter() return swap('previous', '@parameter.inner') end
 
-function M.repmove_comma() return require('repmove').comma() end
-function M.repmove_semicolon() return require('repmove').semicolon() end
-function M.repmove_builtin_f() return require('repmove').builtin_f() end
-function M.repmove_builtin_F() return require('repmove').builtin_F() end
-function M.repmove_builtin_t() return require('repmove').builtin_t() end
-function M.repmove_builtin_T() return require('repmove').builtin_T() end
-function M.repmove_next_misspelled() return ensure_repmove('[s', ']s')[2]() end
-function M.repmove_next_function_start() return ensure_repmove(M.previous_function_start, M.next_function_start)[2]() end
-function M.repmove_next_class_start() return ensure_repmove(M.previous_class_start, M.next_class_start)[2]() end
-function M.repmove_next_block_start() return ensure_repmove(M.previous_block_start, M.next_block_start)[2]() end
-function M.repmove_next_loop_start() return ensure_repmove(M.previous_loop_start, M.next_loop_start)[2]() end
-function M.repmove_next_return_start() return ensure_repmove(M.previous_return_start, M.next_return_start)[2]() end
-function M.repmove_next_parameter_start() return ensure_repmove(M.previous_parameter_start, M.next_parameter_start)[2]() end
-function M.repmove_next_conditional_start() return ensure_repmove(M.previous_conditional_start, M.next_conditional_start)[2]() end
-function M.repmove_next_fold_start() return ensure_repmove(M.previous_fold_start, M.next_fold_start)[2]() end
-function M.repmove_next_function_end() return ensure_repmove(M.previous_function_end, M.next_function_end)[2]() end
-function M.repmove_next_class_end() return ensure_repmove(M.previous_class_end, M.next_class_end)[2]() end
-function M.repmove_next_block_end() return ensure_repmove(M.previous_block_end, M.next_block_end)[2]() end
-function M.repmove_next_loop_end() return ensure_repmove(M.previous_loop_end, M.next_loop_end)[2]() end
-function M.repmove_next_return_end() return ensure_repmove(M.previous_return_end, M.next_return_end)[2]() end
-function M.repmove_next_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[2]() end
-function M.repmove_next_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[2]() end
-function M.repmove_next_fold_end() return ensure_repmove(M.previous_fold_end, M.next_fold_end)[2]() end
-function M.repmove_previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
-function M.repmove_previous_function_start() return ensure_repmove(M.previous_function_start, M.next_function_start)[1]() end
-function M.repmove_previous_class_start() return ensure_repmove(M.previous_class_start, M.next_class_start)[1]() end
-function M.repmove_previous_block_start() return ensure_repmove(M.previous_block_start, M.next_block_start)[1]() end
-function M.repmove_previous_loop_start() return ensure_repmove(M.previous_loop_start, M.next_loop_start)[1]() end
-function M.repmove_previous_return_start() return ensure_repmove(M.previous_return_start, M.next_return_start)[1]() end
-function M.repmove_previous_parameter_start() return ensure_repmove(M.previous_parameter_start, M.next_parameter_start)[1]() end
-function M.repmove_previous_conditional_start() return ensure_repmove(M.previous_conditional_start, M.next_conditional_start)[1]() end
-function M.repmove_previous_fold_start() return ensure_repmove(M.previous_fold_start, M.next_fold_start)[1]() end
-function M.repmove_previous_function_end() return ensure_repmove(M.previous_function_end, M.next_function_end)[1]() end
-function M.repmove_previous_class_end() return ensure_repmove(M.previous_class_end, M.next_class_end)[1]() end
-function M.repmove_previous_block_end() return ensure_repmove(M.previous_block_end, M.next_block_end)[1]() end
-function M.repmove_previous_loop_end() return ensure_repmove(M.previous_loop_end, M.next_loop_end)[1]() end
-function M.repmove_previous_return_end() return ensure_repmove(M.previous_return_end, M.next_return_end)[1]() end
-function M.repmove_previous_parameter_end() return ensure_repmove(M.previous_parameter_end, M.next_parameter_end)[1]() end
-function M.repmove_previous_conditional_end() return ensure_repmove(M.previous_conditional_end, M.next_conditional_end)[1]() end
-function M.repmove_previous_fold_end() return ensure_repmove(M.previous_fold_end, M.next_fold_end)[1]() end
+function M.comma() return require('repmove').comma() end
+function M.semicolon() return require('repmove').semicolon() end
+function M.f() return ensure_repmove('F', 'f', ',', ';')[2]() end
+function M.F() return ensure_repmove('F', 'f', ',', ';')[1]() end
+function M.t() return ensure_repmove('T', 't', ',', ';')[2]() end
+function M.T() return ensure_repmove('T', 't', ',', ';')[1]() end
+function M.next_misspelled() return ensure_repmove('[s', ']s')[2]() end
+function M.next_function_start() return ensure_repmove(previous_function_start, next_function_start)[2]() end
+function M.next_class_start() return ensure_repmove(previous_class_start, next_class_start)[2]() end
+function M.next_block_start() return ensure_repmove(previous_block_start, next_block_start)[2]() end
+function M.next_loop_start() return ensure_repmove(previous_loop_start, next_loop_start)[2]() end
+function M.next_return_start() return ensure_repmove(previous_return_start, next_return_start)[2]() end
+function M.next_parameter_start() return ensure_repmove(previous_parameter_start, next_parameter_start)[2]() end
+function M.next_conditional_start() return ensure_repmove(previous_conditional_start, next_conditional_start)[2]() end
+function M.next_fold_start() return ensure_repmove(previous_fold_start, next_fold_start)[2]() end
+function M.next_function_end() return ensure_repmove(previous_function_end, next_function_end)[2]() end
+function M.next_class_end() return ensure_repmove(previous_class_end, next_class_end)[2]() end
+function M.next_block_end() return ensure_repmove(previous_block_end, next_block_end)[2]() end
+function M.next_loop_end() return ensure_repmove(previous_loop_end, next_loop_end)[2]() end
+function M.next_return_end() return ensure_repmove(previous_return_end, next_return_end)[2]() end
+function M.next_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[2]() end
+function M.next_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[2]() end
+function M.next_fold_end() return ensure_repmove(previous_fold_end, next_fold_end)[2]() end
+function M.previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
+function M.previous_function_start() return ensure_repmove(previous_function_start, next_function_start)[1]() end
+function M.previous_class_start() return ensure_repmove(previous_class_start, next_class_start)[1]() end
+function M.previous_block_start() return ensure_repmove(previous_block_start, next_block_start)[1]() end
+function M.previous_loop_start() return ensure_repmove(previous_loop_start, next_loop_start)[1]() end
+function M.previous_return_start() return ensure_repmove(previous_return_start, next_return_start)[1]() end
+function M.previous_parameter_start() return ensure_repmove(previous_parameter_start, next_parameter_start)[1]() end
+function M.previous_conditional_start() return ensure_repmove(previous_conditional_start, next_conditional_start)[1]() end
+function M.previous_fold_start() return ensure_repmove(previous_fold_start, next_fold_start)[1]() end
+function M.previous_function_end() return ensure_repmove(previous_function_end, next_function_end)[1]() end
+function M.previous_class_end() return ensure_repmove(previous_class_end, next_class_end)[1]() end
+function M.previous_block_end() return ensure_repmove(previous_block_end, next_block_end)[1]() end
+function M.previous_loop_end() return ensure_repmove(previous_loop_end, next_loop_end)[1]() end
+function M.previous_return_end() return ensure_repmove(previous_return_end, next_return_end)[1]() end
+function M.previous_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[1]() end
+function M.previous_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[1]() end
+function M.previous_fold_end() return ensure_repmove(previous_fold_end, next_fold_end)[1]() end
 
-function M.repmove_next_section() return ensure_repmove(M.previous_section, M.next_section)[1]() end
-function M.repmove_previous_section() return ensure_repmove(M.previous_section, M.next_section)[2]() end
+function M.next_section() return ensure_repmove(previous_section, next_section)[1]() end
+function M.previous_section() return ensure_repmove(previous_section, next_section)[2]() end
 
 function M.around_file() update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 
