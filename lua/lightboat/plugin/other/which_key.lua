@@ -1,38 +1,22 @@
-local util = require('lightboat.util')
-local config = require('lightboat.config')
-local c
-local operation = {
-  ['<leader>?'] = function() require('which-key').show() end,
-}
-local spec = {
+-- PERF:
+-- When enabling the registers plugin, (default on, opts.plugins.registers = true)
+-- it will cause a performance problem when the content is large.
+return {
   'folke/which-key.nvim',
   cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
     delay = vim.o.timeoutlen,
     sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
-    -- PERF:
-    -- When enabling the registers plugin,
-    -- it will cause a performance problem when the content is large.
-    plugins = { spelling = { enabled = false }, registers = true },
-    -- BUG:
-    -- See https://github.com/folke/which-key.nvim/issues/1033
-    filter = function(mapping) return not mapping.lhs:match('^z.*') end,
+    filter = function(mapping)
+      -- BUG:
+      -- See https://github.com/folke/which-key.nvim/issues/1033
+      if mapping.lhs:match('^z') then return false end
+      if (mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v') and not mapping.lhs:match('^[ai%[%]]') then
+        return false
+      end
+      return true
+    end,
+    defer = function(ctx) return ctx.mode == 'V' or ctx.mode == '<C-V>' end,
   },
-  keys = {},
 }
-
-local M = {}
-
-function M.spec() return spec end
-
-function M.clear() spec.keys = {} end
-
-M.setup = util.setup_check_wrap('lightboat.plugin.which_key', function()
-  c = config.get().which_key
-  spec.enabled = c.enabled
-  spec.keys = util.key.get_lazy_keys(operation, c.keys)
-  return spec
-end, M.clear)
-
-return M

@@ -21,7 +21,6 @@ local default = {
   snack = require('lightboat.config.snack'),
   todo = require('lightboat.config.todo'),
   ufo = require('lightboat.config.ufo'),
-  which_key = require('lightboat.config.which_key'),
   yanky = require('lightboat.config.yanky'),
 }
 
