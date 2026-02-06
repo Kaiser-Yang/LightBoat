@@ -19,7 +19,6 @@ local default = {
   overseer = require('lightboat.config.overseer'),
   pair = require('lightboat.config.pair'),
   resizer = require('lightboat.config.resizer'),
-  sign = require('lightboat.config.sign'),
   snack = require('lightboat.config.snack'),
   todo = require('lightboat.config.todo'),
   ufo = require('lightboat.config.ufo'),
