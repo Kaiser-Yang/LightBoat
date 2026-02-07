@@ -6,7 +6,7 @@ A chainable condition builder for LightBoat that allows creating complex conditi
 
 - Create instances using `cond()` or `cond.new()`
 - Chain multiple conditions together
-- All conditions are connected with `and` logic (short-circuit evaluation)
+- All conditions are connected with `AND` logic (short-circuit evaluation)
 - Callable instances that return boolean results
 
 ## Usage
