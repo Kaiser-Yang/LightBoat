@@ -35,40 +35,42 @@ end
 local last_count = 1
 local function hack_s(key)
   key = key or 's'
-  if vim.v.operator ~= 'g@' then last_count = vim.v.count1 end
+  local op = vim.v.operator
+  if op ~= 'g@' then last_count = vim.v.count1 end
   local res
-  if vim.v.operator == 'y' then
+  if op == 'y' then
     res = M.surround_normal
-  elseif vim.v.operator == 'd' then
+  elseif op == 'd' then
     res = M.surround_delete
-  elseif vim.v.operator == 'c' then
+  elseif op == 'c' then
     res = M.surround_change
-  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
+  elseif op == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
     -- HACK:
     -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
     res = M.surround_normal_current
   end
   if not res then return key end
-  local count = vim.v.operator ~= 'g@' and vim.v.count1 or last_count
+  local count = op ~= 'g@' and vim.v.count1 or last_count
   -- FIX: this will make the which-key not show
   util.key.feedkeys('<esc>' .. tostring(count) .. res(), 'n')
   return true
 end
 local function hack_S(key)
   key = key or 'S'
-  if vim.v.operator ~= 'g@' then last_count = vim.v.count1 end
+  local op = vim.v.operator
+  if op ~= 'g@' then last_count = vim.v.count1 end
   local res
-  if vim.v.operator == 'y' then
+  if op == 'y' then
     res = M.surround_normal_line
-  elseif vim.v.operator == 'c' then
+  elseif op == 'c' then
     res = M.surround_change_line
-  elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
+  elseif op == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
     -- HACK:
     -- We can not tell if now is in line mode, which means "ysS" will behavior like "ySS"
     res = M.surround_normal_current_line
   end
   if not res then return key end
-  local count = vim.v.operator ~= 'g@' and vim.v.count1 or last_count
+  local count = op ~= 'g@' and vim.v.count1 or last_count
   -- FIX: this will make the which-key not show
   util.key.feedkeys('<esc>' .. tostring(count) .. res(), 'n')
   return true
