@@ -1,52 +1,208 @@
-local M = {}
 local util = require('lightboat.util')
 
----@param filetype string|string[]
----@return boolean
-function M.filetype(filetype) return vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype) end
----@param filetype string|string[]
----@return boolean
-function M.not_filetype(filetype) return not M.filetype(filetype) end
+---@class Cond
+---@field private _conditions function[]
+local Cond = {}
+Cond.__index = Cond
 
----@param filetype string|string[]
----@return function
-function M.filetype_wrap(filetype)
-  return function() return M.filetype(filetype) end
+---Create a new Cond instance
+---@return Cond
+function Cond.new()
+  local self = setmetatable({}, Cond)
+  self._conditions = {}
+  return self
 end
 
----@param filetype string|string[]
----@return function
-function M.not_filetype_wrap(filetype)
-  return function() return M.not_filetype(filetype) end
-end
+---Make Cond callable with ()
+---@return Cond
+setmetatable(Cond, {
+  __call = function(cls) return cls.new() end,
+})
 
----@param key string|string[]
+---Make Cond instance callable to evaluate all conditions
 ---@return boolean
-function M.last_key(key)
-  local last_key = util.key.last_key()
-  if last_key == nil then return false end
-  last_key = util.key.termcodes(last_key)
-  for _, k in ipairs(util.ensure_list(key)) do
-    k = util.key.termcodes(k)
-    if last_key:match(k .. '$') then return true end
+function Cond:__call()
+  for _, condition in ipairs(self._conditions) do
+    if not condition() then return false end
   end
-  return false
+  return true
 end
 
-function M.treesitter_available()
-  -- HACK:
-  -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
-  return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
+---Create a copy of current instance
+---@return Cond
+function Cond:_copy()
+  local copy = Cond.new()
+  copy._conditions = vim.deepcopy(self._conditions)
+  return copy
 end
 
-function M.completion_menu_visible() return require('blink.cmp').is_menu_visible() end
-function M.completion_menu_not_visible() return not M.completion_menu_visible() end
-function M.completion_item_selected() return M.completion_menu_visible() and require('blink.cmp').get_selected_item() ~= nil end
-function M.snippet_active() return require('blink.cmp').snippet_active() end
-function M.documentation_visible() return require('blink.cmp').is_documentation_visible() end
-function M.signature_visible() return require('blink.cmp').is_signature_visible() end
-function M.signature_not_visible() return not M.signature_visible() end
-function M.git_executable() return vim.fn.executable('git') == 1 end
-function M.is_git_repository() return util.git.is_git_repository() end
+---Add a filetype condition
+---@param filetype string|string[]
+---@return Cond
+function Cond:filetype(filetype)
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype)
+  end)
+  return copy
+end
 
-return M
+---Add a not_filetype condition
+---@param filetype string|string[]
+---@return Cond
+function Cond:not_filetype(filetype)
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return not vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype)
+  end)
+  return copy
+end
+
+---Add a last_key condition
+---@param key string|string[]
+---@return Cond
+function Cond:last_key(key)
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    local last_key = util.key.last_key()
+    if last_key == nil then return false end
+    last_key = util.key.termcodes(last_key)
+    for _, k in ipairs(util.ensure_list(key)) do
+      k = util.key.termcodes(k)
+      if last_key:match(k .. '$') then return true end
+    end
+    return false
+  end)
+  return copy
+end
+
+---Add a treesitter_available condition
+---@return Cond
+function Cond:treesitter_available()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    -- HACK:
+    -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
+    return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
+  end)
+  return copy
+end
+
+---Add a completion_menu_visible condition
+---@return Cond
+function Cond:completion_menu_visible()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return require('blink.cmp').is_menu_visible()
+  end)
+  return copy
+end
+
+---Add a completion_menu_not_visible condition
+---@return Cond
+function Cond:completion_menu_not_visible()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return not require('blink.cmp').is_menu_visible()
+  end)
+  return copy
+end
+
+---Add a completion_item_selected condition
+---@return Cond
+function Cond:completion_item_selected()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    local blink = require('blink.cmp')
+    return blink.is_menu_visible() and blink.get_selected_item() ~= nil
+  end)
+  return copy
+end
+
+---Add a snippet_active condition
+---@return Cond
+function Cond:snippet_active()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return require('blink.cmp').snippet_active()
+  end)
+  return copy
+end
+
+---Add a documentation_visible condition
+---@return Cond
+function Cond:documentation_visible()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return require('blink.cmp').is_documentation_visible()
+  end)
+  return copy
+end
+
+---Add a signature_visible condition
+---@return Cond
+function Cond:signature_visible()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return require('blink.cmp').is_signature_visible()
+  end)
+  return copy
+end
+
+---Add a signature_not_visible condition
+---@return Cond
+function Cond:signature_not_visible()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return not require('blink.cmp').is_signature_visible()
+  end)
+  return copy
+end
+
+---Add a executable condition
+---@param name string
+---@return Cond
+function Cond:executable(name)
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return vim.fn.executable(name) == 1
+  end)
+  return copy
+end
+
+---Add a is_git_repository condition
+---@return Cond
+function Cond:is_git_repository()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return util.git.is_git_repository()
+  end)
+  return copy
+end
+
+---Add a has_conflict condition
+---@return Cond
+function Cond:has_conflict()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    return util.git.has_conflict()
+  end)
+  return copy
+end
+
+---Add a custom condition function
+---@param custom_condition any
+---@return Cond
+function Cond:add(custom_condition)
+  local copy = self:_copy()
+  if type(custom_condition) == 'function' or (type(custom_condition) == 'table' and custom_condition.__call) then
+    table.insert(copy._conditions, custom_condition)
+  else
+    table.insert(copy._conditions, function()
+      return not not custom_condition
+    end)
+  end
+  return copy
+end
+
+return Cond
