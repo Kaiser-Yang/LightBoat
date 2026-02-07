@@ -2,12 +2,13 @@
 -- When enabling the registers plugin, (default on, opts.plugins.registers = true)
 -- it will cause a performance problem when the content is large.
 return {
-  'folke/which-key.nvim',
+  'Kaiser-Yang/which-key.nvim',
   cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
     delay = vim.o.timeoutlen,
     sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
+    triggers = { { '<auto>', mode = 'icnxso' } },
     filter = function(mapping)
       -- BUG:
       -- See https://github.com/folke/which-key.nvim/issues/1033
@@ -17,6 +18,5 @@ return {
       end
       return true
     end,
-    defer = function(ctx) return ctx.mode == 'V' or ctx.mode == '<C-V>' end,
   },
 }
