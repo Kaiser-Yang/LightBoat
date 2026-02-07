@@ -10,6 +10,11 @@ local function ensure_plugin(name)
   end
 end
 
+-- HACK:
+-- Those below do not support vim.v.count
+local function next_todo() return require('todo-comments').jump_next() end
+local function previous_todo() return require('todo-comments').jump_prev() end
+
 local function previous_conflict()
   ensure_plugin('git-conflict')
   return '<plug>(git-conflict-prev-conflict)'
@@ -208,9 +213,13 @@ local function previous_conditional_end() return go_to('previous', 'end', '@cond
 local function previous_function_end() return go_to('previous', 'end', '@function.outer') end
 local function previous_parameter_end() return go_to('previous', 'end', '@parameter.inner') end
 
+-- HACK:
+-- Those below do not support vim.v.count
 local function next_section() require('vim.treesitter._headings').jump({ count = 1 }) return true end
 local function previous_section() require('vim.treesitter._headings').jump({ count = -1 }) return true end
 
+-- HACK:
+-- Those below do not support vim.v.count
 function M.around_function() return select('@function.outer') end
 function M.around_class() return select('@class.outer') end
 function M.around_block() return select('@block.outer') end
@@ -226,6 +235,8 @@ function M.inside_loop() return select('@loop.inner') end
 function M.inside_return() return select('@return.inner') end
 function M.inside_parameter() return select('@parameter.inner') end
 
+-- HACK:
+-- this below do not support vim.v.count
 function M.swap_with_next_function() return swap('next', '@function.outer') end
 function M.swap_with_next_class() return swap('next', '@class.outer') end
 function M.swap_with_next_block() return swap('next', '@block.outer') end
@@ -241,6 +252,8 @@ function M.swap_with_previous_loop() return swap('previous', '@loop.outer') end
 function M.swap_with_previous_return() return swap('previous', '@return.outer') end
 function M.swap_with_previous_parameter() return swap('previous', '@parameter.inner') end
 
+-- HACK:
+-- Those below do not support vim.v.count
 function M.comma() return require('repmove').comma() end
 function M.semicolon() return require('repmove').semicolon() end
 function M.f() return ensure_repmove('F', 'f', ',', ';')[2]() end
@@ -248,6 +261,8 @@ function M.F() return ensure_repmove('F', 'f', ',', ';')[1]() end
 function M.t() return ensure_repmove('T', 't', ',', ';')[2]() end
 function M.T() return ensure_repmove('T', 't', ',', ';')[1]() end
 function M.next_misspelled() return ensure_repmove('[s', ']s')[2]() end
+function M.previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
+
 function M.next_function_start() return ensure_repmove(previous_function_start, next_function_start)[2]() end
 function M.next_class_start() return ensure_repmove(previous_class_start, next_class_start)[2]() end
 function M.next_block_start() return ensure_repmove(previous_block_start, next_block_start)[2]() end
@@ -262,7 +277,6 @@ function M.next_loop_end() return ensure_repmove(previous_loop_end, next_loop_en
 function M.next_return_end() return ensure_repmove(previous_return_end, next_return_end)[2]() end
 function M.next_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[2]() end
 function M.next_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[2]() end
-function M.previous_misspelled() return ensure_repmove('[s', ']s')[1]() end
 function M.previous_function_start() return ensure_repmove(previous_function_start, next_function_start)[1]() end
 function M.previous_class_start() return ensure_repmove(previous_class_start, next_class_start)[1]() end
 function M.previous_block_start() return ensure_repmove(previous_block_start, next_block_start)[1]() end
@@ -278,8 +292,8 @@ function M.previous_return_end() return ensure_repmove(previous_return_end, next
 function M.previous_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[1]() end
 function M.previous_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[1]() end
 
-function M.next_section() return ensure_repmove(previous_section, next_section)[1]() end
-function M.previous_section() return ensure_repmove(previous_section, next_section)[2]() end
+function M.next_section() return ensure_repmove(previous_section, next_section)[2]() end
+function M.previous_section() return ensure_repmove(previous_section, next_section)[1]() end
 
 function M.select_file() update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 
@@ -299,13 +313,21 @@ function M.scroll_signature_up() return require('blink.cmp').scroll_signature_up
 function M.scroll_signature_down() return require('blink.cmp').scroll_signature_down() end
 
 function M.async_format() return require('conform').format({ async = true }) end
+function M.async_format_selection()
+  return require('conform').format({ async = true }, function(err)
+    if not err then util.feedkeys('<esc>', 'n') end
+  end)
+end
+
+function M.next_todo() return ensure_repmove(previous_todo, next_todo)[2]() end
+function M.previous_todo() return ensure_repmove(previous_todo, next_todo)[1]() end
 
 function M.auto_pair_wrap(key) return function() return auto_pair(key) end end
 
 function M.surround_normal() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal)' end
-function M.surround_normal_cur() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-cur)' end
+function M.surround_normal_current() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-cur)' end
 function M.surround_normal_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-line)' end
-function M.surround_normal_cur_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-cur-line)' end
+function M.surround_normal_current_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal-cur-line)' end
 function M.surround_insert() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-insert)' end
 function M.surround_insert_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-insert-line)' end
 function M.surround_delete() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-delete)' end
