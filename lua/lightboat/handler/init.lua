@@ -44,7 +44,7 @@ local function hack_s(key)
   elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
     -- HACK:
     -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
-    res = M.surround_normal_cur
+    res = M.surround_normal_current
   end
   if not res then return key end
   util.key.feedkeys('<esc>', 'n')
@@ -59,7 +59,7 @@ local function hack_S(key)
   elseif vim.v.operator == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
     -- HACK:
     -- We can not tell if now is in line mode, which means "ysS" will behavior like "ySS"
-    res = M.surround_normal_cur_line
+    res = M.surround_normal_current_line
   end
   if not res then return key end
   util.key.feedkeys('<esc>', 'n')
