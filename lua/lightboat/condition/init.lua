@@ -158,7 +158,7 @@ end
 ---@return Condition
 function Condition:value(val)
   table.insert(self.conditions, function()
-    return not not val
+    return val ~= nil and val ~= false
   end)
   return self
 end
