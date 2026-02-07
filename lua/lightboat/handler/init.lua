@@ -33,44 +33,21 @@ local function previous_git_hunk()
 end
 
 local last_count = 1
-local function hack_s(key)
-  key = key or 's'
+local function hack(key, suffix)
+  key = key or (suffix == '' and 's' or 'S')
   local op = vim.v.operator
   if op ~= 'g@' then last_count = vim.v.count1 end
   local res
   if op == 'y' then
-    res = M.surround_normal
+    res = M['surround_normal' .. suffix]
   elseif op == 'd' then
-    res = M.surround_delete
+    res = M['surround_delete' .. suffix]
   elseif op == 'c' then
-    res = M.surround_change
+    res = M['surround_change' .. suffix]
   elseif op == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
     -- HACK:
     -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
-    res = M.surround_normal_current
-  end
-  if not res then return key end
-  if op ~= 'g@' then
-    util.key.feedkeys('<esc>', 'n')
-    vim.schedule(function() util.key.feedkeys(tostring(vim.v.count1) .. res(), 'n') end)
-  else
-    util.key.feedkeys('<esc>' .. tostring(last_count) .. res(), 'n')
-  end
-  return true
-end
-local function hack_S(key)
-  key = key or 'S'
-  local op = vim.v.operator
-  if op ~= 'g@' then last_count = vim.v.count1 end
-  local res
-  if op == 'y' then
-    res = M.surround_normal_line
-  elseif op == 'c' then
-    res = M.surround_change_line
-  elseif op == 'g@' and vim.o.operatorfunc:find('nvim%-surround') then
-    -- HACK:
-    -- We can not tell if now is in line mode, which means "ysS" will behavior like "ySS"
-    res = M.surround_normal_current_line
+    res = M['surround_normal_current' .. suffix]
   end
   if not res then return key end
   if op ~= 'g@' then
@@ -354,8 +331,8 @@ function M.surround_change_line() ensure_plugin('nvim-surround') return '<plug>(
 function M.surround_visual() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual)' end
 function M.surround_visual_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual-line)' end
 
-function M.hack_s_wrap(key) return function() return hack_s(key) end end
-function M.hack_S_wrap(key) return function() return hack_S(key) end end
+function M.hack_s_wrap(key) return function() return hack(key, '') end end
+function M.hack_S_wrap(key) return function() return hack(key, '_line') end end
 
 function M.stage_hunk() require('gitsigns').stage_hunk() return true end
 function M.undo_stage_hunk() require('gitsigns').undo_stage_hunk() return true end
