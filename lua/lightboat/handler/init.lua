@@ -32,8 +32,10 @@ local function previous_git_hunk()
   return true
 end
 
+local last_count = 1
 local function hack_s(key)
   key = key or 's'
+  if vim.v.operator ~= 'g@' then last_count = vim.v.count1 end
   local res
   if vim.v.operator == 'y' then
     res = M.surround_normal
@@ -47,10 +49,14 @@ local function hack_s(key)
     res = M.surround_normal_current
   end
   if not res then return key end
-  util.key.feedkeys('<esc>', 'n')
-  return res()
+  local count = vim.v.operator ~= 'g@' and vim.v.count1 or last_count
+  -- FIX: this will make the which-key not show
+  util.key.feedkeys('<esc>' .. tostring(count) .. res(), 'n')
+  return true
 end
 local function hack_S(key)
+  key = key or 'S'
+  if vim.v.operator ~= 'g@' then last_count = vim.v.count1 end
   local res
   if vim.v.operator == 'y' then
     res = M.surround_normal_line
@@ -62,8 +68,10 @@ local function hack_S(key)
     res = M.surround_normal_current_line
   end
   if not res then return key end
-  util.key.feedkeys('<esc>', 'n')
-  return res()
+  local count = vim.v.operator ~= 'g@' and vim.v.count1 or last_count
+  -- FIX: this will make the which-key not show
+  util.key.feedkeys('<esc>' .. tostring(count) .. res(), 'n')
+  return true
 end
 
 --- @param key string
