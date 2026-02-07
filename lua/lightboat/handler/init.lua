@@ -50,9 +50,12 @@ local function hack_s(key)
     res = M.surround_normal_current
   end
   if not res then return key end
-  local count = op ~= 'g@' and vim.v.count1 or last_count
-  -- FIX: this will make the which-key not show
-  util.key.feedkeys('<esc>' .. tostring(count) .. res(), 'n')
+  if op ~= 'g@' then
+    util.key.feedkeys('<esc>', 'n')
+    vim.schedule(function() util.key.feedkeys(tostring(vim.v.count1) .. res(), 'n') end)
+  else
+    util.key.feedkeys('<esc>' .. tostring(last_count) .. res(), 'n')
+  end
   return true
 end
 local function hack_S(key)
@@ -70,9 +73,12 @@ local function hack_S(key)
     res = M.surround_normal_current_line
   end
   if not res then return key end
-  local count = op ~= 'g@' and vim.v.count1 or last_count
-  -- FIX: this will make the which-key not show
-  util.key.feedkeys('<esc>' .. tostring(count) .. res(), 'n')
+  if op ~= 'g@' then
+    util.key.feedkeys('<esc>', 'n')
+    vim.schedule(function() util.key.feedkeys(tostring(vim.v.count1) .. res(), 'n') end)
+  else
+    util.key.feedkeys('<esc>' .. tostring(last_count) .. res(), 'n')
+  end
   return true
 end
 
