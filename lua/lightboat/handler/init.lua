@@ -47,7 +47,8 @@ local function hack_s(key)
     res = M.surround_normal_cur
   end
   if not res then return key end
-  return '<esc>' .. res
+  util.key.feedkeys('<esc>', 'n')
+  return res()
 end
 local function hack_S(key)
   local res
@@ -61,7 +62,8 @@ local function hack_S(key)
     res = M.surround_normal_cur_line
   end
   if not res then return key end
-  return '<esc>' .. res
+  util.key.feedkeys('<esc>', 'n')
+  return res()
 end
 
 --- @param key string
