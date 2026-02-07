@@ -1,7 +1,7 @@
 return {
   require('lightboat.plugin.code.blink_cmp'),
   -- color = require('lightboat.plugin.code.color'),
-  -- comment = require('lightboat.plugin.code.comment'),
+  require('lightboat.plugin.code.comment'),
   require('lightboat.plugin.code.conform'),
   -- dap = require('lightboat.plugin.code.dap'),
   -- interesting_words = require('lightboat.plugin.code.interesting_words'),

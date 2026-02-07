@@ -357,6 +357,23 @@ function M.previous_hunk() return ensure_repmove(previous_git_hunk, next_git_hun
 function M.next_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[2]() end
 function M.previous_conflict() return ensure_repmove(next_conflict, previous_conflict)[1]() end
 function M.next_conflict() return ensure_repmove(next_conflict, previous_conflict)[2]() end
+
+function M.comment() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise)' end
+function M.comment_line() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_linewise_count)' or '<plug>(comment_toggle_linewise_current)' end
+function M.comment_line_insert() -- TODO:
+end
+function M.comment_selection() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise_visual)' end
+function M.comment_block_style() ensure_plugin('Comment') return '<plug>(comment_toggle_blockwise)' end
+function M.comment_line_block_style() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_blockwise_count)' or '<plug>(comment_toggle_blockwise_current)' end
+function M.comment_line_block_style_insert() -- TODO:
+end
+function M.comment_selection_block_style() ensure_plugin('Comment') return '<plug>(comment_toggle_blockwise_visual)' end
+function M.comment_above() require('Comment.api').insert.linewise.above() return true end
+function M.comment_below() require('Comment.api').insert.linewise.below() return true end
+function M.comment_eol() require('Comment.api').insert.linewise.eol()return true end
+function M.comment_above_block_style() require('Comment.api').insert.blockwise.above() return true end
+function M.comment_below_block_style() require('Comment.api').insert.blockwise.below() return true end
+function M.comment_eol_block_style() require('Comment.api').insert.blockwise.eol() return true end
 -- stylua: ignore end
 
 return M

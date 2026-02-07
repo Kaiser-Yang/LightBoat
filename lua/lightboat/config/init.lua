@@ -6,7 +6,6 @@ local default = {
   autocmd = require('lightboat.config.autocmd'),
   keymap = require('lightboat.config.keymap'),
   buffer_line = require('lightboat.config.buffer_line'),
-  comment = require('lightboat.config.comment'),
   dap = require('lightboat.config.dap'),
   extra = require('lightboat.config.extra'),
   -- flash = require('lightboat.config.flash'),
