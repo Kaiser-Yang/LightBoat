@@ -1,6 +1,10 @@
 local action = require('lightboat.action')
 local M = {}
 
+local last_key = nil
+vim.on_key(function(key, typed) last_key = typed or key end, nil)
+function M.last_key() return last_key end
+
 --- Set a map
 --- @param mode string|string[]?
 --- @param lhs string

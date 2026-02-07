@@ -48,4 +48,9 @@ function M.detect()
     })
 end
 
+--- Detect if the buffer is in a Git repository.
+---@param buffer number?
+---@return boolean
+function M.is_git_repository(buffer) return vim.fs.root(buffer or 0, '.git') ~= nil end
+
 return M
