@@ -11,5 +11,5 @@ return {
   -- nvim_jdtls = require('lightboat.plugin.code.nvim_jdtls'),
   require('lightboat.plugin.code.pair'),
   -- overseer = require('lightboat.plugin.code.overseer'),
-  -- todo = require('lightboat.plugin.code.todo'),
+  require('lightboat.plugin.code.todo'),
 }

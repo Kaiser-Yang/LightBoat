@@ -19,7 +19,6 @@ local default = {
   pair = require('lightboat.config.pair'),
   resizer = require('lightboat.config.resizer'),
   snack = require('lightboat.config.snack'),
-  todo = require('lightboat.config.todo'),
   ufo = require('lightboat.config.ufo'),
   yanky = require('lightboat.config.yanky'),
 }
