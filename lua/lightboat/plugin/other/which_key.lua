@@ -6,7 +6,7 @@ return {
   cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
-    delay = vim.o.timeoutlen,
+    delay = function() return vim.o.timeoutlen end,
     sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
     triggers = { { '<auto>', mode = 'icnxso' } },
     filter = function(mapping)
