@@ -189,6 +189,12 @@ end
 function Cond:cursor_not_eol()
   local copy = self:_copy()
   table.insert(copy._conditions, function()
+    local mode = vim.api.nvim_get_mode().mode
+    if mode:sub(1, 1) == 'c' then
+      local col = vim.fn.getcmdpos() - 1
+      local line = vim.fn.getcmdline()
+      return col < #line
+    end
     local col = vim.api.nvim_win_get_cursor(0)[2]
     local line = vim.api.nvim_get_current_line()
     return col < #line
