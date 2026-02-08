@@ -13,7 +13,6 @@ local default = {
   noice = require('lightboat.config.noice'),
   non_ascii = require('lightboat.config.non_ascii'),
   overseer = require('lightboat.config.overseer'),
-  pair = require('lightboat.config.pair'),
   resizer = require('lightboat.config.resizer'),
   snack = require('lightboat.config.snack'),
   ufo = require('lightboat.config.ufo'),
