@@ -3,7 +3,6 @@ local util = require('lightboat.util')
 --- @class LightBoat.Opt
 local default = {
   debug = false,
-  autocmd = require('lightboat.config.autocmd'),
   keymap = require('lightboat.config.keymap'),
   buffer_line = require('lightboat.config.buffer_line'),
   dap = require('lightboat.config.dap'),
