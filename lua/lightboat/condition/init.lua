@@ -205,4 +205,16 @@ function Cond:add(custom_condition)
   return copy
 end
 
+---Add a cursor not eol condition
+---@return Cond
+function Cond:cursor_not_eol()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    local col = vim.api.nvim_win_get_cursor(0)[2]
+    local line = vim.api.nvim_get_current_line()
+    return col < #line
+  end)
+  return copy
+end
+
 return Cond
