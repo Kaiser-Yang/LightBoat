@@ -345,8 +345,12 @@ function M.reset_selection() require('gitsigns').reset_hunk({ vim.fn.line('.'), 
 function M.preview_hunk() require('gitsigns').preview_hunk() return true end
 function M.preview_hunk_inline() require('gitsigns').preview_hunk_inline() return true end
 function M.blame_line() require('gitsigns').blame_line({ full = true }) return true end
-function M.toggle_current_line_blame() require('gitsigns').toggle_current_line_blame() return true end
-function M.toggle_word_diff() require('gitsigns').toggle_word_diff() return true end
+function M.toggle_current_line_blame()
+  util.toggle_notify('Current Line Blame', require('gitsigns').toggle_current_line_blame(), { title = 'Git Signs'})
+  return true end
+function M.toggle_word_diff()
+  util.toggle_notify('Word Diff', require('gitsigns').toggle_word_diff(), { title = 'Git Signs' })
+  return true end
 function M.select_hunk() require('gitsigns').select_hunk() return true end
 function M.previous_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[1]() end
 function M.next_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[2]() end
