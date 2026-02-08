@@ -13,7 +13,7 @@ return {
       -- BUG:
       -- See https://github.com/folke/which-key.nvim/issues/1033
       if mapping.lhs:match('^z') then return false end
-      if (mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v') and not mapping.lhs:match('^[ai%[%]]') then
+      if (mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v') and not mapping.lhs:match('^[sSai%[%]]') then
         return false
       end
       return true
