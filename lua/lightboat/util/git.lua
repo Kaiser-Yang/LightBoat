@@ -54,7 +54,6 @@ end
 --- This function only works once. Each event will be triggered only once.
 --- This is used to lazy load some git related plugins, such as gitsigns, diffview, etc.
 function M.detect()
-  if vim.fn.executable('git') == 0 then return end
   if started then return end
   started = true
   -- Detect once for the current directory
