@@ -1,6 +1,6 @@
 return {
   -- flash = require('lightboat.plugin.other.flash'),
-  -- guess_indent = require('lightboat.plugin.other.guess_indent'),
+  require('lightboat.plugin.other.guess_indent'),
   -- neo_tree = require('lightboat.plugin.other.neo_tree'),
   -- non_ascii = require('lightboat.plugin.other.non_ascii'),
   -- resizer = require('lightboat.plugin.other.resizer'),

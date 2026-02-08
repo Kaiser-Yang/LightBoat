@@ -1,35 +1,5 @@
-local util = require('lightboat.util')
-local spec = {
+return {
   'NMAC427/guess-indent.nvim',
-  lazy = false,
-  opts = {
-    filetype_exclude = {
-      'netrw',
-      'tutor',
-      'neo-tree',
-      'Avante',
-      'AvanteInput',
-    },
-    buftype_exclude = {
-      'help',
-      'nofile',
-      'terminal',
-      'prompt',
-    },
-    on_tab_options = {
-      expandtab = false,
-      tabstop = 4,
-      shiftwidth = 4,
-    },
-  },
+  event = 'BufReadPre',
+  opts = { filetype_exclude = { 'netrw', 'tutor', 'neo-tree', 'nvim-tree', 'Avante', 'AvanteInput' } },
 }
-
-local M = {}
-
-function M.spec() return spec end
-
-function M.clear() end
-
-M.setup = util.setup_check_wrap('lightboat.plugin.guess_indent', function() return spec end, M.clear)
-
-return M
