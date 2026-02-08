@@ -242,4 +242,12 @@ function M.reverse_list(list)
   return reversed
 end
 
+function M.toggle_notify(name, state, opts)
+  if state then
+    vim.notify('[' .. name .. ']: Enabled', vim.log.levels.INFO, opts)
+  else
+    vim.notify('[' .. name .. ']: Disabled', vim.log.levels.INFO, opts)
+  end
+end
+
 return M
