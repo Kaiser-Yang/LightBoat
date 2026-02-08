@@ -41,9 +41,7 @@ end
 ---@return Cond
 function Cond:filetype(filetype)
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype)
-  end)
+  table.insert(copy._conditions, function() return vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype) end)
   return copy
 end
 
@@ -52,9 +50,10 @@ end
 ---@return Cond
 function Cond:not_filetype(filetype)
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return not vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype)
-  end)
+  table.insert(
+    copy._conditions,
+    function() return not vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype) end
+  )
   return copy
 end
 
@@ -92,9 +91,7 @@ end
 ---@return Cond
 function Cond:completion_menu_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return require('blink.cmp').is_menu_visible()
-  end)
+  table.insert(copy._conditions, function() return require('blink.cmp').is_menu_visible() end)
   return copy
 end
 
@@ -102,9 +99,7 @@ end
 ---@return Cond
 function Cond:completion_menu_not_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return not require('blink.cmp').is_menu_visible()
-  end)
+  table.insert(copy._conditions, function() return not require('blink.cmp').is_menu_visible() end)
   return copy
 end
 
@@ -123,9 +118,7 @@ end
 ---@return Cond
 function Cond:snippet_active()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return require('blink.cmp').snippet_active()
-  end)
+  table.insert(copy._conditions, function() return require('blink.cmp').snippet_active() end)
   return copy
 end
 
@@ -133,9 +126,7 @@ end
 ---@return Cond
 function Cond:documentation_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return require('blink.cmp').is_documentation_visible()
-  end)
+  table.insert(copy._conditions, function() return require('blink.cmp').is_documentation_visible() end)
   return copy
 end
 
@@ -143,9 +134,7 @@ end
 ---@return Cond
 function Cond:signature_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return require('blink.cmp').is_signature_visible()
-  end)
+  table.insert(copy._conditions, function() return require('blink.cmp').is_signature_visible() end)
   return copy
 end
 
@@ -153,9 +142,7 @@ end
 ---@return Cond
 function Cond:signature_not_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return not require('blink.cmp').is_signature_visible()
-  end)
+  table.insert(copy._conditions, function() return not require('blink.cmp').is_signature_visible() end)
   return copy
 end
 
@@ -164,9 +151,7 @@ end
 ---@return Cond
 function Cond:executable(name)
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return vim.fn.executable(name) == 1
-  end)
+  table.insert(copy._conditions, function() return vim.fn.executable(name) == 1 end)
   return copy
 end
 
@@ -174,9 +159,7 @@ end
 ---@return Cond
 function Cond:is_git_repository()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return util.git.is_git_repository()
-  end)
+  table.insert(copy._conditions, function() return util.git.is_git_repository() end)
   return copy
 end
 
@@ -184,9 +167,7 @@ end
 ---@return Cond
 function Cond:has_conflict()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    return util.git.has_conflict()
-  end)
+  table.insert(copy._conditions, function() return util.git.has_conflict() end)
   return copy
 end
 
@@ -198,9 +179,7 @@ function Cond:add(custom_condition)
   if type(custom_condition) == 'function' or (type(custom_condition) == 'table' and custom_condition.__call) then
     table.insert(copy._conditions, custom_condition)
   else
-    table.insert(copy._conditions, function()
-      return not not custom_condition
-    end)
+    table.insert(copy._conditions, function() return not not custom_condition end)
   end
   return copy
 end
