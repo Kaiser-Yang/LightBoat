@@ -7,7 +7,8 @@ local operation = {
 }
 return {
   'akinsho/git-conflict.nvim',
-  cond = not vim.g.vscode and vim.fn.executable('git') == 1,
+  cond = not vim.g.vscode,
+  enabled = vim.fn.executable('git') == 1,
   version = '*',
   lazy = false,
   opts = {
