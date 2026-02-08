@@ -17,19 +17,19 @@ local function start_git_repo_detection()
   end)
 end
 
+local conflict_cmd = {
+  'git',
+  'diff',
+  '--quiet',
+  '--diff-filter=U',
+}
+local conflict_opts = {
+  stdout = false,
+  stderr = false,
+  cwd = vim.fn.getcwd(),
+}
 local function start_git_conflict_detection()
   if not M.is_git_repository() then return end
-  local cmd = {
-    'git',
-    'diff',
-    '--quiet',
-    '--diff-filter=U',
-  }
-  local opts = {
-    stdout = false,
-    stderr = false,
-    cwd = vim.fn.getcwd(),
-  }
   --- @param out vim.SystemCompleted
   local callback = function(out)
     if out.code ~= 1 then return end
@@ -37,16 +37,16 @@ local function start_git_conflict_detection()
       vim.api.nvim_exec_autocmds('User', { pattern = 'GitConflictDetected' })
       if git_conflict_detector then
         vim.api.nvim_del_augroup_by_id(git_conflict_detector)
-        git_conflict_detector = out
+        git_conflict_detector = nil
       end
     end)
   end
-  vim.system(cmd, opts, callback)
+  vim.system(conflict_cmd, conflict_opts, callback)
   -- Check for buffer's directory once more
   local buf_dir = vim.fn.expand('%:h')
-  if buf_dir ~= opts.cwd then
-    opts.cmd = buf_dir
-    vim.system(cmd, opts, callback)
+  if buf_dir ~= conflict_opts.cwd then
+    conflict_opts.cmd = buf_dir
+    vim.system(conflict_cmd, conflict_opts, callback)
   end
 end
 
@@ -75,6 +75,14 @@ end
 --- @param window? integer
 function M.is_git_repository(buffer, window)
   return vim.fs.root(buffer or 0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(window), '.git')
+end
+
+--- @param buffer? integer
+--- @param window? integer
+function M.has_conflict(buffer, window)
+  if not M.is_git_repository(buffer, window) then return false end
+  buffer = buffer and buffer ~= 0 and buffer or vim.api.nvim_get_current_buf()
+  return vim.system(conflict_cmd, conflict_opts):wait(50).code == 1
 end
 
 return M

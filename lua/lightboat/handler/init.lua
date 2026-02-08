@@ -15,14 +15,21 @@ end
 local function next_todo() return require('todo-comments').jump_next() end
 local function previous_todo() return require('todo-comments').jump_prev() end
 
-local function previous_conflict()
-  ensure_plugin('git-conflict')
-  return '<plug>(git-conflict-prev-conflict)'
-end
-local function next_conflict()
-  ensure_plugin('git-conflict')
-  return '<plug>(git-conflict-next-conflict)'
-end
+local previous_conflict = '<plug>(resolve-prev)'
+local next_conflict = '<plug>(resolve-next)'
+M.choose_current_conflict = '<plug>(resolve-ours)'
+M.choose_incoming_conflict = '<plug>(resolve-theirs)'
+M.choose_both_conflict = '<plug>(resolve-both)'
+M.choose_both_reverse_conflict = '<plug>(resolve-both-reverse)'
+M.choose_none_conflict = '<plug>(resolve-none)'
+M.choose_ancestor_conflict = '<plug>(resolve-base)'
+M.list_conflict = '<plug>(resolve-list)'
+M.diff_current_conflict = '<plug>(resolve-diff-ours)'
+M.diff_incoming_conflict = '<plug>(resolve-diff-theirs)'
+M.diff_both_conflict = '<plug>(resolve-diff-both)'
+M.diff_current_incoming_conflict = '<plug>(resolve-diff-vs)'
+M.diff_incoming_current_conflict = '<plug>(resolve-diff-vs-reverse)'
+
 local function next_git_hunk()
   require('gitsigns').nav_hunk('next')
   return true
@@ -357,8 +364,8 @@ function M.toggle_word_diff()
 function M.select_hunk() require('gitsigns').select_hunk() return true end
 function M.previous_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[1]() end
 function M.next_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[2]() end
-function M.previous_conflict() return ensure_repmove(next_conflict, previous_conflict)[1]() end
-function M.next_conflict() return ensure_repmove(next_conflict, previous_conflict)[2]() end
+function M.previous_conflict() ensure_plugin('resolve') return ensure_repmove(previous_conflict, next_conflict)[1]() end
+function M.next_conflict() ensure_plugin('resolve') return ensure_repmove(previous_conflict, next_conflict)[2]() end
 
 function M.comment() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise)' end
 function M.comment_line() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_linewise_count)' or '<plug>(comment_toggle_linewise_current)' end
