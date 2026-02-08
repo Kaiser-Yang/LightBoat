@@ -311,7 +311,10 @@ function M.scroll_signature_down() return require('blink.cmp').scroll_signature_
 function M.async_format() return require('conform').format({ async = true }) end
 function M.async_format_selection()
   return require('conform').format({ async = true }, function(err)
-    if not err then util.feedkeys('<esc>', 'n') end
+    util.key.feedkeys('<esc>', 'n')
+    if err then
+      util.notify('Async Format Failed: ' .. err, vim.log.levels.ERROR, { title = 'Conform' })
+    end
   end)
 end
 
