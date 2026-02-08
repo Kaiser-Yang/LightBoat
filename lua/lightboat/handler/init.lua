@@ -374,5 +374,77 @@ function M.comment_above_block_style() require('Comment.api').insert.blockwise.a
 function M.comment_below_block_style() require('Comment.api').insert.blockwise.below() return true end
 function M.comment_eol_block_style() require('Comment.api').insert.blockwise.eol() return true end
 -- stylua: ignore end
+-- HACK:
+-- This function can not be repeatable
+function M.delete_to_eol_insert()
+  local line = vim.api.nvim_get_current_line()
+  local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+  util.key.feedkeys('<c-g>u', 'nt')
+  vim.api.nvim_set_current_line(line:sub(1, cursor_col))
+  return true
+end
 
+function M.delete_to_eol_command()
+  local line = vim.fn.getcmdline()
+  local col = vim.fn.getcmdpos() - 1
+  return string.rep('<del>', #line - col)
+end
+
+-- HACK:
+-- Find a way to implement this in command line mode
+M.delete_to_eow_insert = '<c-g>u<cmd>normal! de<cr>'
+
+function M.toggle_treesitter_highlight()
+  local buf = vim.api.nvim_get_current_buf()
+  local status = vim.treesitter.highlighter.active[buf] == nil
+  util.toggle_notify('Treesitter Highlight', status, { title = 'Treesitter' })
+  if status then
+    vim.treesitter.start(buf)
+  else
+    vim.treesitter.stop(buf)
+  end
+  return true
+end
+
+function M.toggle_inlay_hint()
+  local status = vim.lsp.inlay_hint.is_enabled() == false
+  util.toggle_notify('Inlay Hint', status, { title = 'LSP' })
+  if status then
+    vim.lsp.inlay_hint.enable()
+  else
+    vim.lsp.inlay_hint.disable()
+  end
+  return true
+end
+
+function M.toggle_spell()
+  local status = vim.wo.spell == false
+  util.toggle_notify('Spell', status, { title = 'Neovim' })
+  vim.wo.spell = status
+  return true
+end
+
+function M.toggle_expandtab()
+  local status = vim.bo.expandtab == false
+  util.toggle_notify('Expandtab', status, { title = 'Neovim' })
+  vim.bo.expandtab = status
+  return true
+end
+
+M.system_cut = '"+d'
+M.split_above = '<cmd>set nosplitbelow|split<cr>'
+M.split_below = '<cmd>set splitbelow|split<cr>'
+M.split_left = '<cmd>set nosplitright|vsplit<cr>'
+M.split_right = '<cmd>set splitright|vsplit<cr>'
+M.split_tab = '<cmd>tab split<cr>'
+M.cursor_to_above_window = '<c-w>k'
+M.cursor_to_below_window = '<c-w>j'
+M.cursor_to_left_window = '<c-w>h'
+M.cursor_to_right_window = '<c-w>l'
+M.nop = '<nop>'
+-- HACK:
+-- Those two may break the dot repeat
+M.cursor_to_eol_insert = '<c-g>U<end>'
+M.cursor_to_first_non_blank_insert = '<c-g>U<c-o>^'
+M.cursor_to_bol_command = '<home>'
 return M
