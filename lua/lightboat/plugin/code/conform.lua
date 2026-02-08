@@ -7,9 +7,11 @@ return {
       lua = { 'stylua' },
       c = { 'clang-format' },
       cpp = { 'clang-format' },
-      go = { 'goimports', 'gofmt' },
+      go = { 'goimports' },
+      python = { 'black' },
+      bash = { 'shellharden' },
     },
-    default_format_opts = { lsp_format = 'fallback' },
+    default_format_opts = { lsp_format = 'fallback', stop_after_first = true },
   },
   init = function()
     -- NOTE:
