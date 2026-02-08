@@ -202,4 +202,13 @@ function Cond:cursor_not_eol()
   return copy
 end
 
+---Add a lsp_attached condition
+---@return Cond
+function Cond:lsp_attached()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 end)
+  return copy
+end
+
+
 return Cond
