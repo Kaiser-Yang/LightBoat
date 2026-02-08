@@ -2,8 +2,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     cond = not vim.g.vscode,
-    -- This plugin can not be lazy loaded, make sure it is loaded during startup
-    lazy = false,
+    event = 'VeryLazy',
     branch = 'main',
     build = ':TSUpdate',
     opts = {},
