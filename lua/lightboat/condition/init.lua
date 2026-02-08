@@ -202,6 +202,44 @@ function Cond:cursor_not_eol()
   return copy
 end
 
+---Add a cursor not bol condition
+---@return Cond
+function Cond:cursor_not_bol()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    local mode = vim.api.nvim_get_mode().mode
+    if mode:sub(1, 1) == 'c' then
+      local col = vim.fn.getcmdpos() - 1
+      return col > 0
+    end
+    local col = vim.api.nvim_win_get_cursor(0)[2]
+    return col > 0
+  end)
+  return copy
+end
+
+---Add a cursor not fist_non_blank condition
+---@return Cond
+function Cond:cursor_not_first_non_blank()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function()
+    local mode = vim.api.nvim_get_mode().mode
+    if mode:sub(1, 1) == 'c' then
+      local col = vim.fn.getcmdpos() - 1
+      local line = vim.fn.getcmdline()
+      local first_non_blank = line:find('%S')
+      if first_non_blank == nil then first_non_blank = #line + 1 end
+      return col ~= first_non_blank - 1
+    end
+    local col = vim.api.nvim_win_get_cursor(0)[2]
+    local line = vim.api.nvim_get_current_line()
+    local first_non_blank = line:find('%S')
+    if first_non_blank == nil then first_non_blank = #line + 1 end
+    return col ~= first_non_blank - 1
+  end)
+  return copy
+end
+
 ---Add a lsp_attached condition
 ---@return Cond
 function Cond:lsp_attached()
@@ -209,6 +247,5 @@ function Cond:lsp_attached()
   table.insert(copy._conditions, function() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 end)
   return copy
 end
-
 
 return Cond
