@@ -8,15 +8,18 @@ return {
   opts = {
     delay = function() return vim.o.timeoutlen end,
     sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
-    triggers = { { '<auto>', mode = 'icnxso' } },
+    triggers = { { '<auto>', mode = 'icnxso' }, { 'a', mode = 'xs' }, { 'i', mode = 'xs' } },
     filter = function(mapping)
       -- BUG:
       -- See https://github.com/folke/which-key.nvim/issues/1033
       if mapping.lhs:match('^z') then return false end
-      if (mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v') and not mapping.lhs:match('^[sSai%[%]]') then
+      if
+        (mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v') and not mapping.lhs:match('^[sSai%[%] ]')
+      then
         return false
       end
       return true
     end,
+    defer = function() return false end,
   },
 }
