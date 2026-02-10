@@ -89,15 +89,28 @@ end
 
 function Cond:treesitter_highlight_available()
   local copy = self:_copy()
+  table.insert(
+    copy._conditions,
+    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'highlights') ~= nil end
+  )
   return copy
 end
+
 function Cond:treesitter_foldexpr_available()
   local copy = self:_copy()
+  table.insert(
+    copy._conditions,
+    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'folds') ~= nil end
+  )
   return copy
 end
 
 function Cond:treesitter_indentexpr_available()
   local copy = self:_copy()
+  table.insert(
+    copy._conditions,
+    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') ~= nil end
+  )
   return copy
 end
 
