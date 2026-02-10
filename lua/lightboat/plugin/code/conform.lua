@@ -6,7 +6,7 @@ return {
       lua = { 'stylua' },
       c = { 'clang-format' },
       cpp = { 'clang-format' },
-      go = { 'goimports' },
+      go = { 'goimports', 'gofmt' },
       python = { 'black' },
       bash = { 'shellharden' },
     },
