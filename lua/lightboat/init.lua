@@ -17,6 +17,50 @@ local setup_autocmd = function()
       end
     end,
   })
+  -- INFO: this should be checked when blink.cmp updates
+  -- Copied from blink.cmp
+  local capabilities = {
+    textDocument = {
+      completion = {
+        completionItem = {
+          snippetSupport = true,
+          commitCharactersSupport = false, -- todo:
+          documentationFormat = { 'markdown', 'plaintext' },
+          deprecatedSupport = true,
+          preselectSupport = false, -- todo:
+          tagSupport = { valueSet = { 1 } }, -- deprecated
+          insertReplaceSupport = true, -- todo:
+          resolveSupport = {
+            properties = {
+              'documentation',
+              'detail',
+              'additionalTextEdits',
+              'command',
+              'data',
+              -- todo: support more properties? should test if it improves latency
+            },
+          },
+          insertTextModeSupport = {
+            -- todo: support adjustIndentation
+            valueSet = { 1 }, -- asIs
+          },
+          labelDetailsSupport = true,
+        },
+        completionList = {
+          itemDefaults = {
+            'commitCharacters',
+            'editRange',
+            'insertTextFormat',
+            'insertTextMode',
+            'data',
+          },
+        },
+
+        contextSupport = true,
+        insertTextMode = 1, -- asIs
+      },
+    },
+  }
   vim.api.nvim_create_autocmd('User', {
     pattern = 'VeryLazy',
     group = group,
@@ -24,6 +68,7 @@ local setup_autocmd = function()
       -- Make sure these two are loaded if they are installed
       pcall(require, 'nvim-lspconfig')
       pcall(require, 'mason.nvim')
+      vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
       local lsp_path = vim.fn.stdpath('config')
       if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
       lsp_path = lsp_path .. 'after/lsp'

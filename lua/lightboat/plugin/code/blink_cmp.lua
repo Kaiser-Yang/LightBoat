@@ -7,7 +7,7 @@ return {
     { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode },
   },
   version = '1.*',
-  event = 'VeryLazy',
+  event = { 'InsertEnter', 'CmdlineEnter' },
   opts = {
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
