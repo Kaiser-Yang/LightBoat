@@ -82,10 +82,22 @@ function Cond:treesitter_available()
   table.insert(copy._conditions, function()
     -- HACK:
     -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
-    local parser = vim.treesitter.get_parser(nil, nil, { error = false })
-    if not parser or vim.fn.executable('tree-sitter') == 0 then return false end
-    return vim.tbl_contains(require('nvim-treesitter.config').get_installed(), parser:lang())
+    return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
   end)
+  return copy
+end
+
+function Cond:treesitter_highlight_available()
+  local copy = self:_copy()
+  return copy
+end
+function Cond:treesitter_foldexpr_available()
+  local copy = self:_copy()
+  return copy
+end
+
+function Cond:treesitter_indentexpr_available()
+  local copy = self:_copy()
   return copy
 end
 
