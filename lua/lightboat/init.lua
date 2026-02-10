@@ -98,7 +98,7 @@ local setup_autocmd = function()
     callback = function(args)
       if not enabled('conform_on_save') then return end
       require('conform').format({ bufnr = args.buf }, function(err)
-        if err then vim.notify('Format failed: ' .. err, vim.log.levels.ERROR) end
+        if err then vim.schedule(function() vim.notify('Format failed: ' .. err, vim.log.levels.ERROR) end) end
         if not err and not guessed[args.buf] and enabled('conform_on_save_reguess_indent') then
           guessed[args.buf] = true
           require('guess-indent').set_from_buffer(args.buf, true, true)
