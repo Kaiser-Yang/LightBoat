@@ -275,11 +275,4 @@ function Cond:lsp_attached()
   return copy
 end
 
----Add a git conflict condition
----@return Cond
-function Cond:has_conflict()
-  local copy = self:_copy()
-  table.insert(copy._conditions, function() return util.git.has_conflict() end)
-  return copy
-end
 return Cond
