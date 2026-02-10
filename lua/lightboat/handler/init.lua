@@ -10,6 +10,82 @@ local function ensure_plugin(name)
   end
 end
 
+local function kmp_prefix(word)
+  local n = #word
+  local prefix = { 0 }
+  local k = 0
+  for i = 2, n do
+    while k > 0 and word:sub(k + 1, k + 1) ~= word:sub(i, i) do
+      k = prefix[k]
+    end
+    if word:sub(k + 1, k + 1) == word:sub(i, i) then k = k + 1 end
+    prefix[i] = k
+  end
+  return prefix
+end
+
+local function kmp_search(text, word)
+  if #word == 0 then return 1 end
+  local prefix = kmp_prefix(word)
+  local j = 0
+  for i = 1, #text do
+    while j > 0 and word:sub(j + 1, j + 1) ~= text:sub(i, i) do
+      j = prefix[j]
+    end
+    if word:sub(j + 1, j + 1) == text:sub(i, i) then j = j + 1 end
+    if j == #word then return i - #word + 1 end
+  end
+  return -1
+end
+
+local function toggle_comment_insert_mode(block_style)
+  local before_line = vim.api.nvim_get_current_line()
+  if before_line:match('^%s*$') then
+    if not block_style then return vim.bo.commentstring:gsub('%%s', '') end
+    return true
+  end
+  local _, before_col = unpack(vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()))
+  local at_end = before_col == #before_line
+  vim.schedule(function()
+    local current_line = vim.api.nvim_get_current_line()
+    if #current_line == 0 then return end
+    local delta = #current_line - #before_line
+    local first_neq_col
+    local min_len = math.min(#current_line, #before_line)
+    for i = 1, min_len do
+      if current_line:sub(i, i) ~= before_line:sub(i, i) then
+        first_neq_col = i
+        break
+      end
+    end
+    local left_delta = kmp_search(
+      delta > 0 and current_line:sub(first_neq_col) or before_line:sub(first_neq_col),
+      delta < 0 and current_line:sub(first_neq_col) or before_line:sub(first_neq_col)
+    ) - 1
+    local row, col = unpack(vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()))
+    if delta > 0 then
+      if col < first_neq_col - 1 then return end
+      col = col + left_delta
+      if at_end then col = col + 1 end
+    else
+      if col < first_neq_col - 1 then
+        return
+      elseif col < first_neq_col + left_delta - 1 then
+        col = col - (math.abs(left_delta - (first_neq_col + left_delta - 1 - col)))
+      else
+        col = col - (left_delta - math.abs(col - before_col))
+      end
+    end
+    -- HACK: this may affect the dot repeat
+    vim.api.nvim_win_set_cursor(0, { row, col })
+  end)
+  ensure_plugin('Comment')
+  return '<c-o>'
+    .. (block_style and '<plug>(comment_toggle_blockwise_current)' or '<plug>(comment_toggle_linewise_current)')
+end
+
+M.auto_indent = '<c-f>'
+
 -- HACK:
 -- Those below do not support vim.v.count
 local function next_todo() return require('todo-comments').jump_next() end
@@ -316,14 +392,6 @@ function M.scroll_signature_up() return require('blink.cmp').scroll_signature_up
 function M.scroll_signature_down() return require('blink.cmp').scroll_signature_down() end
 
 function M.async_format() return require('conform').format({ async = true }) end
-function M.async_format_selection()
-  return require('conform').format({ async = true }, function(err)
-    util.key.feedkeys('<esc>', 'n')
-    if err then
-      util.notify('Async Format Failed: ' .. err, vim.log.levels.ERROR, { title = 'Conform' })
-    end
-  end)
-end
 
 function M.next_todo() return ensure_repmove(previous_todo, next_todo)[2]() end
 function M.previous_todo() return ensure_repmove(previous_todo, next_todo)[1]() end
@@ -355,6 +423,8 @@ function M.reset_selection() require('gitsigns').reset_hunk({ vim.fn.line('.'), 
 function M.preview_hunk() require('gitsigns').preview_hunk() return true end
 function M.preview_hunk_inline() require('gitsigns').preview_hunk_inline() return true end
 function M.blame_line() require('gitsigns').blame_line({ full = true }) return true end
+function M.diff_this() require('gitsigns').diffthis('~') return true end
+function M.quickfix_all_hunk() require('gitsigns').setqflist('all') return true end
 function M.toggle_current_line_blame()
   util.toggle_notify('Current Line Blame', require('gitsigns').toggle_current_line_blame(), { title = 'Git Signs'})
   return true end
@@ -369,13 +439,11 @@ function M.next_conflict() ensure_plugin('resolve') return ensure_repmove(previo
 
 function M.comment() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise)' end
 function M.comment_line() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_linewise_count)' or '<plug>(comment_toggle_linewise_current)' end
-function M.comment_line_insert() -- TODO:
-end
+function M.comment_line_insert() return toggle_comment_insert_mode(false) end
 function M.comment_selection() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise_visual)' end
 function M.comment_block_style() ensure_plugin('Comment') return '<plug>(comment_toggle_blockwise)' end
 function M.comment_line_block_style() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_blockwise_count)' or '<plug>(comment_toggle_blockwise_current)' end
-function M.comment_line_block_style_insert() -- TODO:
-end
+function M.comment_line_block_style_insert() return toggle_comment_insert_mode(true) end
 function M.comment_selection_block_style() ensure_plugin('Comment') return '<plug>(comment_toggle_blockwise_visual)' end
 function M.comment_above() require('Comment.api').insert.linewise.above() return true end
 function M.comment_below() require('Comment.api').insert.linewise.below() return true end
