@@ -65,7 +65,7 @@ local setup_autocmd = function()
     pattern = 'VeryLazy',
     group = group,
     callback = function()
-      -- Make sure these two are loaded if they are installed
+      -- Make sure nvim-lspconfig is loaded if installed
       pcall(require, 'nvim-lspconfig')
       vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
       local lsp_path = vim.fn.stdpath('config')
