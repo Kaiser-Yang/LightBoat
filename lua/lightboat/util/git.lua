@@ -65,7 +65,7 @@ function M.detect()
   })
   start_git_conflict_detection()
   git_conflict_detector = vim.api.nvim_create_augroup('LightBoatGitConflictDetector', {})
-  vim.api.nvim_create_autocmd({ 'BufReadPre', 'DirChanged' }, {
+  vim.api.nvim_create_autocmd({ 'BufReadPre', 'DirChanged', 'FileChangedShell' }, {
     group = git_conflict_detector,
     callback = start_git_conflict_detection,
   })
@@ -82,7 +82,7 @@ end
 function M.has_conflict(buffer, window)
   if not M.is_git_repository(buffer, window) then return false end
   buffer = buffer and buffer ~= 0 and buffer or vim.api.nvim_get_current_buf()
-  return vim.system(conflict_cmd, conflict_opts):wait(50).code == 1
+  return vim.system(conflict_cmd, conflict_opts):wait().code == 1
 end
 
 return M
