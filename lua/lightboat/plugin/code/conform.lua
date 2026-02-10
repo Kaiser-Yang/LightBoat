@@ -1,6 +1,5 @@
 return {
   'stevearc/conform.nvim',
-  dependencies = { 'williamboman/mason.nvim' },
   cond = not vim.g.vscode,
   opts = {
     formatters_by_ft = {
