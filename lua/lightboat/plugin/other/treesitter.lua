@@ -2,6 +2,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     cond = not vim.g.vscode,
+    cmd = { 'TSUpdate', 'TSInstall', 'TSUninstall', 'TSInstallFromGrammar' },
     event = 'VeryLazy',
     branch = 'main',
     build = ':TSUpdate',
@@ -15,7 +16,6 @@ return {
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
-    event = 'VeryLazy',
     cond = not vim.g.vscode,
     opts = {},
   },
