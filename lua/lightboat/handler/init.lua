@@ -10,78 +10,42 @@ local function ensure_plugin(name)
   end
 end
 
-local function kmp_prefix(word)
-  local n = #word
-  local prefix = { 0 }
-  local k = 0
-  for i = 2, n do
-    while k > 0 and word:sub(k + 1, k + 1) ~= word:sub(i, i) do
-      k = prefix[k]
-    end
-    if word:sub(k + 1, k + 1) == word:sub(i, i) then k = k + 1 end
-    prefix[i] = k
+-- HACK:
+-- This will break the dot repeat
+local function toggle_comment_insert_mode()
+  local commentstring = vim.bo.commentstring
+  if
+    not commentstring
+    or commentstring:match('^%s*$')
+    or commentstring:match('%%s') == nil
+    or not commentstring:match('%%s$')
+  then
+    return
   end
-  return prefix
-end
-
-local function kmp_search(text, word)
-  if #word == 0 then return 1 end
-  local prefix = kmp_prefix(word)
-  local j = 0
-  for i = 1, #text do
-    while j > 0 and word:sub(j + 1, j + 1) ~= text:sub(i, i) do
-      j = prefix[j]
+  local indent, line = vim.api.nvim_get_current_line():match('^(%s*)(.*)$')
+  local first_neq_col
+  for i = 1, math.min(#line, #commentstring) do
+    if commentstring:sub(i, i + 1) == '%s' then break end
+    if line:sub(i, i) ~= commentstring:sub(i, i) then
+      first_neq_col = i
+      break
     end
-    if word:sub(j + 1, j + 1) == text:sub(i, i) then j = j + 1 end
-    if j == #word then return i - #word + 1 end
   end
-  return -1
-end
-
-local function toggle_comment_insert_mode(block_style)
-  local before_line = vim.api.nvim_get_current_line()
-  if before_line:match('^%s*$') then
-    if not block_style then return vim.bo.commentstring:gsub('%%s', '') end
-    return true
+  local new_line
+  if not first_neq_col then
+    new_line = indent .. line:sub(#commentstring:gsub('%%s', '') + 1)
+  else
+    new_line = indent .. commentstring:gsub('%%s', line)
   end
-  local _, before_col = unpack(vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()))
-  local at_end = before_col == #before_line
-  vim.schedule(function()
-    local current_line = vim.api.nvim_get_current_line()
-    if #current_line == 0 then return end
-    local delta = #current_line - #before_line
-    local first_neq_col
-    local min_len = math.min(#current_line, #before_line)
-    for i = 1, min_len do
-      if current_line:sub(i, i) ~= before_line:sub(i, i) then
-        first_neq_col = i
-        break
-      end
-    end
-    local left_delta = kmp_search(
-      delta > 0 and current_line:sub(first_neq_col) or before_line:sub(first_neq_col),
-      delta < 0 and current_line:sub(first_neq_col) or before_line:sub(first_neq_col)
-    ) - 1
-    local row, col = unpack(vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()))
-    if delta > 0 then
-      if col < first_neq_col - 1 then return end
-      col = col + left_delta
-      if at_end then col = col + 1 end
-    else
-      if col < first_neq_col - 1 then
-        return
-      elseif col < first_neq_col + left_delta - 1 then
-        col = col - (math.abs(left_delta - (first_neq_col + left_delta - 1 - col)))
-      else
-        col = col - (left_delta - math.abs(col - before_col))
-      end
-    end
-    -- HACK: this may affect the dot repeat
-    vim.api.nvim_win_set_cursor(0, { row, col })
-  end)
-  ensure_plugin('Comment')
-  return '<c-o>'
-    .. (block_style and '<plug>(comment_toggle_blockwise_current)' or '<plug>(comment_toggle_linewise_current)')
+  vim.api.nvim_set_current_line(new_line)
+  local delta = #new_line - #line - #indent
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  if delta > 0 then
+    if col >= #indent then return string.rep('<right>', delta) end
+  else
+    if col >= #indent then return string.rep('<left>', math.min(-delta, col - #indent)) end
+  end
+  return true
 end
 
 M.auto_indent = '<c-f>'
@@ -437,20 +401,10 @@ function M.next_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[2
 function M.previous_conflict() ensure_plugin('resolve') return ensure_repmove(previous_conflict, next_conflict)[1]() end
 function M.next_conflict() ensure_plugin('resolve') return ensure_repmove(previous_conflict, next_conflict)[2]() end
 
-function M.comment() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise)' end
-function M.comment_line() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_linewise_count)' or '<plug>(comment_toggle_linewise_current)' end
-function M.comment_line_insert() return toggle_comment_insert_mode(false) end
-function M.comment_selection() ensure_plugin('Comment') return '<plug>(comment_toggle_linewise_visual)' end
-function M.comment_block_style() ensure_plugin('Comment') return '<plug>(comment_toggle_blockwise)' end
-function M.comment_line_block_style() ensure_plugin('Comment') return vim.v.count > 0 and '<plug>(comment_toggle_blockwise_count)' or '<plug>(comment_toggle_blockwise_current)' end
-function M.comment_line_block_style_insert() return toggle_comment_insert_mode(true) end
-function M.comment_selection_block_style() ensure_plugin('Comment') return '<plug>(comment_toggle_blockwise_visual)' end
-function M.comment_above() require('Comment.api').insert.linewise.above() return true end
-function M.comment_below() require('Comment.api').insert.linewise.below() return true end
-function M.comment_eol() require('Comment.api').insert.linewise.eol()return true end
-function M.comment_above_block_style() require('Comment.api').insert.blockwise.above() return true end
-function M.comment_below_block_style() require('Comment.api').insert.blockwise.below() return true end
-function M.comment_eol_block_style() require('Comment.api').insert.blockwise.eol() return true end
+function M.comment() return require('vim._comment').operator() end
+function M.comment_line() return require('vim._comment').operator() .. '_' end
+function M.comment_line_insert() return toggle_comment_insert_mode() end
+function M.comment_selection() return M.comment() end
 -- stylua: ignore end
 -- HACK:
 -- This function can not be repeatable
