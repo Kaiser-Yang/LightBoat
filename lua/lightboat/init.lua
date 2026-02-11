@@ -77,18 +77,33 @@ local setup_autocmd = function()
   })
   --- @type table<string, boolean>
   local loaded = {}
+  --- @type table<string, boolean>
+  local done = {}
   vim.api.nvim_create_autocmd('User', {
     group = group,
     pattern = 'LazyLoad',
     callback = function(args)
       loaded[args.data] = true
-      if loaded['nvim-treesitter'] then
+      if loaded['nvim-treesitter'] and not done['nvim-treesitter'] then
+        done['nvim-treesitter'] = true
         local installed = require('nvim-treesitter').get_installed()
         local not_installed = vim.tbl_filter(
           function(lang) return not vim.tbl_contains(installed, lang) end,
           vim.g.lightboat_opt.treesitter_ensure_installed
         )
         if #not_installed > 0 then require('nvim-treesitter').install(not_installed) end
+      end
+      -- This plugin is not loaded by setup function, we must call init manually
+      if loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
+        done['nvim-treesitter-endwise'] = true
+        local endwise = require('nvim-treesitter-endwise')
+        endwise.init()
+        -- Attach manually, since the plugin is lazy loaded and won't be attached on InsertEnter
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+          if not endwise.is_supported(lang) then return end
+          require('nvim-treesitter.endwise').attach(buf)
+        end
       end
     end,
   })

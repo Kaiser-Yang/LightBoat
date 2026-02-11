@@ -4,7 +4,18 @@ return {
     cond = not vim.g.vscode,
     lazy = true,
     branch = 'v0.6',
-    opts = { tabout = { enable = true }, space2 = { enable = true }, fastwarp = { faster = true } },
+    opts = {
+      bs = { space = 'balance', indent_ignore = true, delete_from_end = false },
+      cr = { autoclose = true },
+      tabout = { enable = true, hopout = true },
+      space2 = { enable = true },
+      fastwarp = { faster = true, nocursormove = false },
+      config_internal_pairs = {
+        { '[', ']', dosuround = false },
+        { '(', ')', dosuround = false },
+        { '{', '}', dosuround = false },
+      },
+    },
     config = function(_, opts)
       -- NOTE:
       -- Do not map by default
@@ -33,4 +44,5 @@ return {
       },
     },
   },
+  { 'RRethy/nvim-treesitter-endwise', event = 'InsertEnter' },
 }
