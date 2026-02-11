@@ -493,5 +493,18 @@ M.nop = '<nop>'
 -- Those two may break the dot repeat
 M.cursor_to_eol_insert = '<c-g>U<end>'
 M.cursor_to_first_non_blank_insert = '<c-g>U<c-o>^'
-M.cursor_to_bol_command = '<home>'
+local format = { '^:', '^/', '^%?', '^:%s*!', '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*', '^:%s*he?l?p?%s+', '^=' }
+function M.cursor_to_bol_command()
+  local line = vim.fn.getcmdtype() .. vim.fn.getcmdline()
+  local matched = nil
+  for _, p in pairs(format) do
+    local cur_matched = line:match(p)
+    if not matched or cur_matched and #cur_matched > #matched then matched = cur_matched end
+  end
+  if matched then
+    return '<home>' .. string.rep('<right>', #matched - 1)
+  else
+    return '<home>'
+  end
+end
 return M

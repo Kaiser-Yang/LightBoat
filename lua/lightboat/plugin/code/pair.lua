@@ -17,11 +17,10 @@ return {
       },
     },
     config = function(_, opts)
-      -- NOTE:
-      -- Do not map by default
       -- HACK:
       -- Find a better way to do this, we should not use the config function
       -- because users may use it too, which will make our config function not be called
+      -- Do not map by default
       require('ultimate-autopair.core').modes = {}
       require('ultimate-autopair').setup(opts)
     end,
