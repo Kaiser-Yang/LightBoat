@@ -149,6 +149,14 @@ function Cond:snippet_active()
   return copy
 end
 
+---Add a snippet_not_active condition
+---@return Cond
+function Cond:snippet_not_active()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function() return not require('blink.cmp').snippet_active() end)
+  return copy
+end
+
 ---Add a documentation_visible condition
 ---@return Cond
 function Cond:documentation_visible()
