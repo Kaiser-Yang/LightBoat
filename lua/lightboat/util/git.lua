@@ -71,17 +71,12 @@ function M.detect()
   })
 end
 
---- @param buffer? integer
---- @param window? integer
-function M.is_git_repository(buffer, window)
-  return vim.fs.root(buffer or 0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(window), '.git')
+function M.is_git_repository()
+  return vim.fs.root(0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(), '.git')
 end
 
---- @param buffer? integer
---- @param window? integer
-function M.has_conflict(buffer, window)
-  if not M.is_git_repository(buffer, window) then return false end
-  buffer = buffer and buffer ~= 0 and buffer or vim.api.nvim_get_current_buf()
+function M.has_conflict()
+  if not M.is_git_repository() then return false end
   return vim.system(conflict_cmd, conflict_opts):wait().code == 1
 end
 
