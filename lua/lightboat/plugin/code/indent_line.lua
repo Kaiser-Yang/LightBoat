@@ -8,6 +8,7 @@ return {
       goto_bottom = '<plug>(goto-indent-bottom)',
     },
     static = {
+      whitespace_char = '·',
       char = '│',
     },
     scope = {
