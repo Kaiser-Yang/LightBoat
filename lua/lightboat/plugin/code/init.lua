@@ -11,4 +11,5 @@ return {
   require('lightboat.plugin.code.pair'),
   -- overseer = require('lightboat.plugin.code.overseer'),
   require('lightboat.plugin.code.todo'),
+  require('lightboat.plugin.code.treesitter'),
 }
