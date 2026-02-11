@@ -463,6 +463,21 @@ function M.toggle_expandtab()
   return true
 end
 
+local goto_indent_top = '<plug>(goto-indent-top)'
+local goto_indent_bottom = '<plug>(goto-indent-bottom)'
+M.inside_indent = '<plug>(inside-indent)'
+M.around_indent = '<plug>(around-indent)'
+
+function M.goto_indent_top() return ensure_repmove(goto_indent_top, goto_indent_bottom)[1]() end
+function M.goto_indent_bottom() return ensure_repmove(goto_indent_top, goto_indent_bottom)[2]() end
+function M.toggle_indent_line()
+  local indent = require('blink.indent')
+  local status = indent.is_enabled() == false
+  util.toggle_notify('Indent Line', status, { title = 'Blink Indent' })
+  indent.enable(status)
+  return true
+end
+
 M.system_cut = '"+d'
 M.split_above = '<cmd>set nosplitbelow|split<cr>'
 M.split_below = '<cmd>set splitbelow|split<cr>'
