@@ -2,7 +2,6 @@ return {
   'folke/todo-comments.nvim',
   cond = not vim.g.vscode,
   dependencies = { 'nvim-lua/plenary.nvim' },
-  event = 'VeryLazy',
   opts = {
     sign_priority = 1,
     highlight = { multiline = false },
@@ -18,5 +17,4 @@ return {
       pattern = [[\b(KEYWORDS):]],
     },
   },
-  keys = {},
 }
