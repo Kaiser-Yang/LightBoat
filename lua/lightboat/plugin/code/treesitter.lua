@@ -13,10 +13,5 @@ return {
     lazy = true,
     branch = 'main',
     opts = {},
-  },
-  {
-    'nvim-treesitter/nvim-treesitter-context',
-    cond = not vim.g.vscode,
-    opts = {},
-  },
+  }
 }
