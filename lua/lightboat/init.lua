@@ -84,7 +84,8 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       loaded[args.data] = true
-      if loaded['mason.nvim'] then
+      if loaded['mason.nvim'] and not done['nvim.mason'] and #vim.g.lightboat_opt.mason_ensure_installed > 0 then
+        done['nvim.mason'] = true
         local mason_registry = require('mason-registry')
         local installed = mason_registry.get_installed_package_names()
         local not_installed = vim.tbl_filter(
@@ -97,7 +98,11 @@ local setup_autocmd = function()
           end
         end
       end
-      if loaded['nvim-treesitter'] and not done['nvim-treesitter'] then
+      if
+        loaded['nvim-treesitter']
+        and not done['nvim-treesitter']
+        and #vim.g.lightboat_opt.treesitter_ensure_installed > 0
+      then
         done['nvim-treesitter'] = true
         local installed = require('nvim-treesitter').get_installed()
         local not_installed = vim.tbl_filter(
@@ -118,7 +123,8 @@ local setup_autocmd = function()
           require('nvim-treesitter.endwise').attach(buf)
         end
       end
-      if loaded['blink.cmp'] then
+      if loaded['blink.cmp'] and not done['blink.cmp'] then
+        done['blink.cmp'] = true
         local original = require('blink.cmp.completion.list').show
         require('blink.cmp.completion.list').show = function(ctx, items_by_source)
           local seen = {}
