@@ -1,6 +1,4 @@
 local M = {}
-local util = require('lightboat.util')
-local config = require('lightboat.config')
 
 local function load_list_to_arglist(is_quickfix)
   local cmd_type = is_quickfix and 'Quickfix' or 'Location'
@@ -38,15 +36,7 @@ local command_ = {
   },
 }
 
-M.clear = function()
-  for _, command in pairs(config.get().extra.command) do
-    pcall(vim.api.nvim_del_user_command, command.name)
-  end
+M.setup = function()
+  -- vim.api.nvim_create_user_command(command.name, command_[id].callback, command_[id].opt)
 end
-
-M.setup = util.setup_check_wrap('lightboat.extra.command', function()
-  for id, command in pairs(config.get().extra.command) do
-    if command.enabled then vim.api.nvim_create_user_command(command.name, command_[id].callback, command_[id].opt) end
-  end
-end, M.clear)
 return M
