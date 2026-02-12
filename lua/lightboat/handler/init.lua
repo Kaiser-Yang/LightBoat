@@ -357,9 +357,6 @@ function M.scroll_signature_down() return require('blink.cmp').scroll_signature_
 
 function M.async_format() return require('conform').format({ async = true }) end
 
-function M.next_todo() return ensure_repmove(previous_todo, next_todo)[2]() end
-function M.previous_todo() return ensure_repmove(previous_todo, next_todo)[1]() end
-
 function M.auto_pair_wrap(key) return function() return auto_pair(key) end end
 
 function M.surround_normal() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-normal)' end
@@ -463,20 +460,6 @@ function M.toggle_expandtab()
   return true
 end
 
-local goto_indent_top = '<plug>(goto-indent-top)'
-local goto_indent_bottom = '<plug>(goto-indent-bottom)'
-M.inside_indent = '<plug>(inside-indent)'
-M.around_indent = '<plug>(around-indent)'
-
-function M.goto_indent_top() return ensure_repmove(goto_indent_top, goto_indent_bottom)[1]() end
-function M.goto_indent_bottom() return ensure_repmove(goto_indent_top, goto_indent_bottom)[2]() end
-function M.toggle_indent_line()
-  local indent = require('blink.indent')
-  local status = indent.is_enabled() == false
-  util.toggle_notify('Indent Line', status, { title = 'Blink Indent' })
-  indent.enable(status)
-  return true
-end
 
 M.system_cut = '"+d'
 M.split_above = '<cmd>set nosplitbelow|split<cr>'
