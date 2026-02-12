@@ -507,4 +507,35 @@ function M.cursor_to_bol_command()
     return '<home>'
   end
 end
+
+vim.g.picker_filetype = 'TelescopePrompt'
+vim.g.picker_keymap_prefix = 'telescope|'
+local hacked_actions = {
+  smart_select_all = function(buffer)
+    local picker = require('telescope.actions.state').get_current_picker(buffer)
+    local all_selected = #picker:get_multi_selection() == picker.manager:num_results()
+    local actions = require('telescope.actions')
+    if all_selected then
+      actions.drop_all(buffer)
+    else
+      actions.select_all(buffer)
+    end
+  end
+}
+function M.picker_wrap(...)
+  local args = { ... }
+  return function()
+    local actions = require('telescope.actions')
+    for _, name in pairs(args) do
+      if hacked_actions[name] then
+        hacked_actions[name](vim.api.nvim_get_current_buf())
+      else
+        actions[name](vim.api.nvim_get_current_buf())
+      end
+    end
+    vim.api.nvim_exec_autocmds('User', { pattern = 'TelescopeKeymap' })
+    return true
+  end
+end
+
 return M
