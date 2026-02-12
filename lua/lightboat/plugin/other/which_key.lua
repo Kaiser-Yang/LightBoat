@@ -23,6 +23,6 @@ return {
       end
       return true
     end,
-    defer = function() return false end,
+    defer = function(ctx) return vim.tbl_contains({ 'v', 'V', '<C-V>' }, ctx.mode) end,
   },
 }

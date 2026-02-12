@@ -92,8 +92,8 @@ function M.in_config_dir()
       or path:find('LightBoat')
       or path:find('lightboat')
       or path:find('dotfile')
-      or path == M.lazy_path()
-      or path == vim.fn.stdpath('config')
+      or path:sub(1, #M.lazy_path()) == M.lazy_path()
+      or path:sub(1, #vim.fn.stdpath('config')) == vim.fn.stdpath('config')
     then
       return true
     end
@@ -147,7 +147,7 @@ function M.start_to_detect_color()
   vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
     group = color_group,
     callback = function(ev)
-      if require('lightboat.extra.big_file').is_big_file(ev.buf) then return end
+      if require('lightboat.extra.big_file').is_big_file() then return end
       local file = vim.api.nvim_buf_get_name(ev.buf)
       if file == '' then return end
       local current_mtime = vim.fn.getftime(file)

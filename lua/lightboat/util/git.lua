@@ -23,11 +23,7 @@ local conflict_cmd = {
   '--quiet',
   '--diff-filter=U',
 }
-local conflict_opts = {
-  stdout = false,
-  stderr = false,
-  cwd = vim.fn.getcwd(),
-}
+local conflict_opts = { stdout = false, stderr = false }
 local function start_git_conflict_detection()
   if not M.is_git_repository() then return end
   --- @param out vim.SystemCompleted
@@ -41,6 +37,7 @@ local function start_git_conflict_detection()
       end
     end)
   end
+  conflict_opts.cwd = vim.fn.getcwd()
   vim.system(conflict_cmd, conflict_opts, callback)
   -- Check for buffer's directory once more
   local buf_dir = vim.fn.expand('%:h')
@@ -77,6 +74,9 @@ end
 
 function M.has_conflict()
   if not M.is_git_repository() then return false end
+  conflict_opts.cwd = vim.fn.getcwd()
+  if vim.system(conflict_cmd, conflict_opts):wait().code == 1 then return true end
+  conflict_opts.cwd = vim.fn.expand('%:h')
   return vim.system(conflict_cmd, conflict_opts):wait().code == 1
 end
 

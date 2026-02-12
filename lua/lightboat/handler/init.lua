@@ -50,11 +50,6 @@ end
 
 M.auto_indent = '<c-f>'
 
--- HACK:
--- Those below do not support vim.v.count
-local function next_todo() return require('todo-comments').jump_next() end
-local function previous_todo() return require('todo-comments').jump_prev() end
-
 local previous_conflict = '<plug>(resolve-prev)'
 local next_conflict = '<plug>(resolve-next)'
 M.choose_current_conflict = '<plug>(resolve-ours)'
@@ -97,7 +92,7 @@ local function hack(suffix, key)
     -- We can not tell if now is in non line mode, which means "ySs" will behavior like "ySS"
     res = M['surround_normal_current' .. suffix]
   end
-  if not res then return key end
+  if not res then return false end
   if op ~= 'g@' then
     util.key.feedkeys('<esc>', 'n')
     vim.schedule(function() util.key.feedkeys(tostring(vim.v.count1) .. res(), 'n') end)
@@ -182,11 +177,12 @@ local repmove = {}
 --- @param comma? string|function
 --- @param semicolon? string|function
 --- @return table<function>
-local function ensure_repmove(previous, next, comma, semicolon)
-  if not repmove[previous] or not repmove[next] then
-    repmove[previous], repmove[next] = require('repmove').make(previous, next, comma, semicolon)
+local function ensure_repmove(previous, next, comma, semicolon, rp)
+  rp = rp or repmove
+  if not rp[previous] or not rp[next] then
+    rp[previous], rp[next] = require('repmove').make(previous, next, comma, semicolon)
   end
-  return { repmove[previous], repmove[next] }
+  return { rp[previous], rp[next] }
 end
 
 --- Copied from nvim-treesitter-textobjects.select
@@ -438,11 +434,7 @@ end
 function M.toggle_inlay_hint()
   local status = vim.lsp.inlay_hint.is_enabled() == false
   util.toggle_notify('Inlay Hint', status, { title = 'LSP' })
-  if status then
-    vim.lsp.inlay_hint.enable()
-  else
-    vim.lsp.inlay_hint.disable()
-  end
+  vim.lsp.inlay_hint.enable(status)
   return true
 end
 
@@ -458,6 +450,11 @@ function M.toggle_expandtab()
   util.toggle_notify('Expandtab', status, { title = 'Neovim' })
   vim.bo.expandtab = status
   return true
+end
+
+local urp = {}
+function M.repmove_wrap(previous, next, idx, comma, semicolon)
+  return function() return ensure_repmove(previous, next, comma, semicolon, urp)[idx]() end
 end
 
 
@@ -492,7 +489,7 @@ function M.cursor_to_bol_command()
 end
 
 vim.g.picker_filetype = 'TelescopePrompt'
-vim.g.picker_keymap_prefix = 'telescope|'
+vim.g.picker_keymap_desc_prefix = 'telescope|'
 local hacked_actions = {
   smart_select_all = function(buffer)
     local picker = require('telescope.actions.state').get_current_picker(buffer)
@@ -503,7 +500,7 @@ local hacked_actions = {
     else
       actions.select_all(buffer)
     end
-  end
+  end,
 }
 function M.picker_wrap(...)
   local args = { ... }
