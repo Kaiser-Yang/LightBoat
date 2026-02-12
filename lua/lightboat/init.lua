@@ -1,5 +1,51 @@
 local M = {}
 
+-- HACK:
+-- This should be checked when blink.cmp updates
+-- Copied from blink.cmp
+local capabilities = {
+  textDocument = {
+    completion = {
+      completionItem = {
+        snippetSupport = true,
+        commitCharactersSupport = false, -- todo:
+        documentationFormat = { 'markdown', 'plaintext' },
+        deprecatedSupport = true,
+        preselectSupport = false, -- todo:
+        tagSupport = { valueSet = { 1 } }, -- deprecated
+        insertReplaceSupport = true, -- todo:
+        resolveSupport = {
+          properties = {
+            'documentation',
+            'detail',
+            'additionalTextEdits',
+            'command',
+            'data',
+            -- todo: support more properties? should test if it improves latency
+          },
+        },
+        insertTextModeSupport = {
+          -- todo: support adjustIndentation
+          valueSet = { 1 }, -- asIs
+        },
+        labelDetailsSupport = true,
+      },
+      completionList = {
+        itemDefaults = {
+          'commitCharacters',
+          'editRange',
+          'insertTextFormat',
+          'insertTextMode',
+          'data',
+        },
+      },
+
+      contextSupport = true,
+      insertTextMode = 1, -- asIs
+    },
+  },
+}
+
 local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil and vim.g[name] == true end
 
 local setup_autocmd = function()
@@ -17,51 +63,6 @@ local setup_autocmd = function()
       end
     end,
   })
-  -- HACK:
-  -- This should be checked when blink.cmp updates
-  -- Copied from blink.cmp
-  local capabilities = {
-    textDocument = {
-      completion = {
-        completionItem = {
-          snippetSupport = true,
-          commitCharactersSupport = false, -- todo:
-          documentationFormat = { 'markdown', 'plaintext' },
-          deprecatedSupport = true,
-          preselectSupport = false, -- todo:
-          tagSupport = { valueSet = { 1 } }, -- deprecated
-          insertReplaceSupport = true, -- todo:
-          resolveSupport = {
-            properties = {
-              'documentation',
-              'detail',
-              'additionalTextEdits',
-              'command',
-              'data',
-              -- todo: support more properties? should test if it improves latency
-            },
-          },
-          insertTextModeSupport = {
-            -- todo: support adjustIndentation
-            valueSet = { 1 }, -- asIs
-          },
-          labelDetailsSupport = true,
-        },
-        completionList = {
-          itemDefaults = {
-            'commitCharacters',
-            'editRange',
-            'insertTextFormat',
-            'insertTextMode',
-            'data',
-          },
-        },
-
-        contextSupport = true,
-        insertTextMode = 1, -- asIs
-      },
-    },
-  }
   vim.api.nvim_create_autocmd('User', {
     pattern = 'VeryLazy',
     group = group,
