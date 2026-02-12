@@ -5,7 +5,6 @@ return {
   -- HACK:
   -- This plugin will make 'gr' not work
   'Kaiser-Yang/which-key.nvim',
-  dependencies = 'nvim-tree/nvim-web-devicons',
   cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
