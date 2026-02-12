@@ -28,11 +28,11 @@ return {
               table.insert(out, item2)
               local item3 = vim.deepcopy(item)
               item3.insertText, item3.label =
-                raw:sub(1, 1):upper() .. raw:sub(2):lower(), raw:sub(1, 1):upper() .. raw:sub(2):lower()
+                raw:sub(1, 1):upper() .. raw:sub(2), raw:sub(1, 1):upper() .. raw:sub(2)
               table.insert(out, item3)
               local item4 = vim.deepcopy(item)
               item4.insertText, item4.label =
-                raw:sub(1, 1):lower() .. raw:sub(2):upper(), raw:sub(1, 1):lower() .. raw:sub(2):upper()
+                raw:sub(1, 1):lower() .. raw:sub(2), raw:sub(1, 1):lower() .. raw:sub(2)
               table.insert(out, item4)
             end
             return out
