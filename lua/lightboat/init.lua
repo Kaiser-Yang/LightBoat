@@ -17,7 +17,8 @@ local setup_autocmd = function()
       end
     end,
   })
-  -- INFO: this should be checked when blink.cmp updates
+  -- HACK:
+  -- This should be checked when blink.cmp updates
   -- Copied from blink.cmp
   local capabilities = {
     textDocument = {
@@ -169,6 +170,10 @@ M.setup = function()
   util.git.detect()
   util.start_to_detect_color()
   setup_autocmd()
+  -- We use this code to make the fold sign at the end of the status column and clickable as usually
+  local function fold_clickable(lnum) return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) end
+  _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable(vim.v.lnum) and '%C' or ' ') end
+  vim.o.statuscolumn = '%!v:lua.get_statuscol()'
 end
 
 return M
