@@ -63,22 +63,4 @@ return {
     },
     signature = { enabled = true },
   },
-  config = function(_, opts)
-    require('blink.cmp').setup(opts)
-    local original = require('blink.cmp.completion.list').show
-    require('blink.cmp.completion.list').show = function(ctx, items_by_source)
-      local seen = {}
-      local function filter(item)
-        if seen[item.label] then return false end
-        seen[item.label] = true
-        return true
-      end
-      -- HACK:
-      -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
-      for id in vim.iter({ 'snippets', 'lsp', 'dictionary', 'buffer', 'ripgrep' }) do
-        items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
-      end
-      return original(ctx, items_by_source)
-    end
-  end,
 }
