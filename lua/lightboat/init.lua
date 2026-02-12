@@ -84,6 +84,19 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       loaded[args.data] = true
+      if loaded['mason.nvim'] then
+        local mason_registry = require('mason-registry')
+        local installed = mason_registry.get_installed_package_names()
+        local not_installed = vim.tbl_filter(
+          function(pack) return not vim.tbl_contains(installed, pack) end,
+          vim.g.lightboat_opt.mason_ensure_installed
+        )
+        if #not_installed > 0 then
+          for _, pack in ipairs(mason_registry.get_all_packages()) do
+            if vim.tbl_contains(not_installed, pack.name) then pack:install() end
+          end
+        end
+      end
       if loaded['nvim-treesitter'] and not done['nvim-treesitter'] then
         done['nvim-treesitter'] = true
         local installed = require('nvim-treesitter').get_installed()
