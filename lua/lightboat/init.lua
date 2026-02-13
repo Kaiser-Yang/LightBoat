@@ -144,13 +144,15 @@ local setup_autocmd = function()
     end,
   })
   local guessed = {}
+  local c = require('lightboat.condition')
+  local gc = c():plugin_available('guess-indent')
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
     callback = function(args)
       if not enabled('conform_on_save') then return end
       require('conform').format({ bufnr = args.buf }, function(err)
         if err then vim.schedule(function() vim.notify('Format failed: ' .. err, vim.log.levels.ERROR) end) end
-        if not err and not guessed[args.buf] and enabled('conform_on_save_reguess_indent') then
+        if not err and not guessed[args.buf] and enabled('conform_on_save_reguess_indent') and gc() then
           guessed[args.buf] = true
           require('guess-indent').set_from_buffer(args.buf, true, true)
         end
@@ -171,7 +173,6 @@ local setup_autocmd = function()
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
     callback = function()
-      local c = require('lightboat.condition')
       local tac = c():treesitter_available()
       if not tac() then return end
       local thac = c():treesitter_highlight_available()
