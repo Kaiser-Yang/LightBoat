@@ -5,6 +5,7 @@ local c = require('lightboat.condition')
 local loaded = {}
 --- @type table<string, boolean>
 local done = {}
+local util = require('lightboat.util')
 
 -- HACK:
 -- This should be checked when blink.cmp updates
@@ -200,14 +201,26 @@ local setup_autocmd = function()
       vim.bo.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
   })
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufRead', 'FileChangedShell' }, {
+    group = group,
+    callback = function(ev)
+      if vim.b.big_file_status == nil then vim.b.big_file_status = false end
+      local is_big = util.buffer.big()
+      if is_big ~= vim.b.big_file_status then
+        vim.b.big_file_status = is_big
+        vim.api.nvim_exec_autocmds('User', { pattern = 'BigFileStatusChanged' })
+        if type(vim.b.big_file_on_changed) == 'function' then
+          vim.schedule(function() vim.b.big_file_on_changed(ev.buf, is_big) end)
+        elseif type(vim.g.big_file_on_changed) == 'function' then
+          vim.schedule(function() vim.g.big_file_on_changed(ev.buf, is_big) end)
+        end
+      end
+    end,
+  })
 end
 
 M.setup = function()
-  require('lightboat.extra').setup()
-  local util = require('lightboat.util')
-  util.network.check()
   util.git.detect()
-  util.start_to_detect_color()
   setup_autocmd()
   -- We use this code to make the fold sign at the end of the status column and clickable as usually
   local function fold_clickable(lnum) return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) end
