@@ -1,5 +1,19 @@
 local util = require('lightboat.util')
 
+local plugin_cache = {}
+local function is_plugin_installed(name)
+  if plugin_cache[name] == nil then
+    plugin_cache[name] = false
+    for _, plugin in pairs(require('lazy').plugins()) do
+      if plugin.name == name then
+        plugin_cache[name] = true
+        break
+      end
+    end
+  end
+  return plugin_cache[name]
+end
+
 ---@class Cond
 ---@field private _conditions function[]
 local Cond = {}
@@ -87,6 +101,18 @@ function Cond:treesitter_available()
   return copy
 end
 
+function Cond:treesitter_textobject_available()
+  local copy = self:_copy()
+  table.insert(
+    copy._conditions,
+    function()
+      return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
+        and is_plugin_installed('nvim-treesitter-textobjects')
+    end
+  )
+  return copy
+end
+
 function Cond:treesitter_highlight_available()
   local copy = self:_copy()
   table.insert(
@@ -105,24 +131,21 @@ function Cond:treesitter_foldexpr_available()
   return copy
 end
 
-local nvim_treesitter_installed = nil
+function Cond:plugin_available(name)
+  local copy = self:_copy()
+  table.insert(copy._conditions, function() return is_plugin_installed(name) end)
+  return copy
+end
+
 function Cond:treesitter_indentexpr_available()
   local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    if vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') == nil then
-      return false
+  table.insert(
+    copy._conditions,
+    function()
+      return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') ~= nil
+        and is_plugin_installed('nvim-treesitter')
     end
-    if nvim_treesitter_installed == nil then
-      nvim_treesitter_installed = false
-      for _, plugin in pairs(require('lazy').plugins()) do
-        if plugin.name == 'nvim-treesitter' then
-          nvim_treesitter_installed = true
-          break
-        end
-      end
-    end
-    return nvim_treesitter_installed
-  end)
+  )
   return copy
 end
 
