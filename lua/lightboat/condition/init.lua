@@ -105,12 +105,24 @@ function Cond:treesitter_foldexpr_available()
   return copy
 end
 
+local nvim_treesitter_installed = nil
 function Cond:treesitter_indentexpr_available()
   local copy = self:_copy()
-  table.insert(
-    copy._conditions,
-    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') ~= nil end
-  )
+  table.insert(copy._conditions, function()
+    if vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') == nil then
+      return false
+    end
+    if nvim_treesitter_installed == nil then
+      nvim_treesitter_installed = false
+      for _, plugin in pairs(require('lazy').plugins()) do
+        if plugin.name == 'nvim-treesitter' then
+          nvim_treesitter_installed = true
+          break
+        end
+      end
+    end
+    return nvim_treesitter_installed
+  end)
   return copy
 end
 
