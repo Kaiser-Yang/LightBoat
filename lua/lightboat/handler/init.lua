@@ -75,9 +75,8 @@ local function previous_git_hunk()
 end
 
 local last_count = 1
-local function hack(suffix, key)
+local function hack(suffix)
   suffix = suffix or ''
-  key = key or (suffix == '' and 's' or 'S')
   local op = vim.v.operator
   if op ~= 'g@' then last_count = vim.v.count1 end
   local res
@@ -94,8 +93,7 @@ local function hack(suffix, key)
   end
   if not res then return false end
   if op ~= 'g@' then
-    util.key.feedkeys('<esc>', 'n')
-    vim.schedule(function() util.key.feedkeys(tostring(vim.v.count1) .. res(), 'n') end)
+    util.key.feedkeys('<esc>' .. tostring(vim.v.count1) .. res(), 'n')
   else
     util.key.feedkeys('<esc>' .. tostring(last_count) .. res(), 'n')
   end
@@ -367,7 +365,7 @@ function M.surround_change_line() ensure_plugin('nvim-surround') return '<plug>(
 function M.surround_visual() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual)' end
 function M.surround_visual_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual-line)' end
 
-function M.hack_wrap(suffix, key) return function() return hack(suffix, key) end end
+function M.hack_wrap(suffix) return function() return hack(suffix) end end
 
 function M.stage_hunk() require('gitsigns').stage_hunk() return true end
 function M.undo_stage_hunk() require('gitsigns').undo_stage_hunk() return true end
