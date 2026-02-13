@@ -513,7 +513,47 @@ local hacked_actions = {
     actions.which_key(buffer, { keybind_width = 14 })
   end,
 }
-function M.picker_wrap(...)
+local hacked_pickers = {
+  find_files = function()
+    if vim.fn.executable('rg') == 1 then
+      local find_command = { 'rg', '--files', '--color', 'never', '--glob', '!.git/*' }
+      if util.in_config_dir() then table.insert(find_command, '--hidden') end
+      require('telescope.builtin').find_files({ find_command = find_command })
+    else
+      require('telescope.builtin').find_files()
+    end
+  end,
+  live_grep = function()
+    require('telescope.builtin').live_grep({ additional_args = util.in_config_dir() and { '--hidden' } or nil })
+  end,
+  grep_string = function()
+    require('telescope.builtin').grep_string({ additional_args = util.in_config_dir() and { '--hidden' } or nil })
+  end,
+  ['todo-comments'] = {
+    todo = function() require('telescope').extensions['todo-comments'].todo({ additional_args = util.in_config_dir() and { '--hidden' } or nil }) end,
+  },
+}
+function M.picker_wrap(name, ...)
+  local args = { ... }
+  return function()
+    if type(name) == 'string' then
+      if #args == 0 and hacked_pickers[name] then
+        hacked_pickers[name]()
+      else
+        require('telescope.builtin')[name](unpack(args))
+      end
+    else
+      if #args == 0 and hacked_pickers[name[1]] and hacked_pickers[name[1]][name[2]] then
+        hacked_pickers[name[1]][name[2]]()
+      else
+        require('telescope').extensions[name[1]][name[2]](unpack(args))
+      end
+    end
+    return true
+  end
+end
+
+function M.picker_action_wrap(...)
   local args = { ... }
   return function()
     local actions = require('telescope.actions')
