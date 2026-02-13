@@ -222,11 +222,10 @@ local setup_autocmd = function()
       local is_big = util.buffer.big()
       if is_big ~= vim.b.big_file_status then
         vim.b.big_file_status = is_big
-        vim.api.nvim_exec_autocmds('User', { pattern = 'BigFileStatusChanged' })
         if type(vim.b.big_file_on_changed) == 'function' then
-          vim.schedule(function() vim.b.big_file_on_changed(ev.buf, is_big) end)
+          vim.b.big_file_on_changed(ev.buf, is_big)
         elseif type(vim.g.big_file_on_changed) == 'function' then
-          vim.schedule(function() vim.g.big_file_on_changed(ev.buf, is_big) end)
+          vim.g.big_file_on_changed(ev.buf, is_big)
         end
       end
     end,

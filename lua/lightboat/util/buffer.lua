@@ -7,8 +7,8 @@ function M.big()
     or type(vim.g.big_file_limit) == 'number' and vim.g.big_file_limit
   local average_every_line = type(vim.b.big_file_average_every_line) == 'number' and vim.b.big_file_average_every_line
     or type(vim.g.big_file_average_every_line) == 'number' and vim.g.big_file_average_every_line
-  return type(limit) == 'number' and _size > limit
-    or type(average_every_line) == 'number' and _size > average_every_line * line_count
+  return type(limit) == 'number' and _size >= limit
+    or type(average_every_line) == 'number' and _size >= average_every_line * line_count
 end
 
 --- Normalize the buffer number to its real buffer identity.
