@@ -252,8 +252,12 @@ local function previous_parameter_end() return go_to('previous', 'end', '@parame
 
 -- HACK:
 -- Those below do not support vim.v.count
-local function next_section() require('vim.treesitter._headings').jump({ count = 1 }) return true end
-local function previous_section() require('vim.treesitter._headings').jump({ count = -1 }) return true end
+local function next_section_start() require('vim.treesitter._headings').jump({ count = 1 }) return true end
+local function previous_section_start() require('vim.treesitter._headings').jump({ count = -1 }) return true end
+-- TODO:
+-- Find a better way to do this
+local previous_section_end = previous_section_start
+local next_section_end = next_section_start
 
 -- HACK:
 -- Those below do not support vim.v.count
@@ -329,8 +333,10 @@ function M.previous_return_end() return ensure_repmove(previous_return_end, next
 function M.previous_parameter_end() return ensure_repmove(previous_parameter_end, next_parameter_end)[1]() end
 function M.previous_conditional_end() return ensure_repmove(previous_conditional_end, next_conditional_end)[1]() end
 
-function M.next_section() return ensure_repmove(previous_section, next_section)[2]() end
-function M.previous_section() return ensure_repmove(previous_section, next_section)[1]() end
+function M.previous_section_start() return ensure_repmove(previous_section_start, next_section_start)[1]() end
+function M.next_section_start() return ensure_repmove(previous_section_start, next_section_start)[2]() end
+function M.previous_section_end() return ensure_repmove(previous_section_end, next_section_end)[1]() end
+function M.next_section_end() return ensure_repmove(previous_section_end, next_section_end)[2]() end
 
 function M.select_file() update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 
