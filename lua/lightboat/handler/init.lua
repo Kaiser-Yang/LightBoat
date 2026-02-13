@@ -505,6 +505,10 @@ local hacked_actions = {
       actions.select_all(buffer)
     end
   end,
+  which_key = function(buffer)
+    local actions = require('telescope.actions')
+    actions.which_key(buffer, { keybind_width = 14 })
+  end,
 }
 function M.picker_wrap(...)
   local args = { ... }
