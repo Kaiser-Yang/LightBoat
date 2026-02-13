@@ -1,6 +1,4 @@
-local function provider_enabled() return not require('lightboat.extra.big_file').is_big_file() end
 return {
-
   'saghen/blink.cmp',
   cond = not vim.g.vscode,
   version = '1.*',
@@ -10,7 +8,6 @@ return {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
       providers = {
         buffer = {
-          enabled = provider_enabled,
           name = 'Buff',
           transform_items = function(context, items)
             -- Do not convert case when searching
@@ -38,7 +35,7 @@ return {
             return out
           end,
         },
-        lsp = { enabled = provider_enabled, fallbacks = {} },
+        lsp = { fallbacks = {} },
         path = { opts = { show_hidden_files_by_default = true } },
         snippets = { name = 'Snip' },
       },
