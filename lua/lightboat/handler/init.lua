@@ -462,6 +462,11 @@ function M.repmove_wrap(previous, next, idx, comma, semicolon)
 end
 
 
+M.system_put_command = '<c-r>+'
+M.system_put_insert = '<cmd>set paste<cr><c-g>u<c-r><c-r>+<cmd>set nopaste<cr>'
+M.system_put = '"+p'
+M.system_put_before = '"+P'
+M.system_yank = '"+y'
 M.system_cut = '"+d'
 M.split_above = '<cmd>set nosplitbelow|split<cr>'
 M.split_below = '<cmd>set splitbelow|split<cr>'
