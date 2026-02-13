@@ -684,7 +684,11 @@ local hacked_pickers = {
     require('telescope.builtin').grep_string({ additional_args = util.in_config_dir() and { '--hidden' } or nil })
   end,
   ['todo-comments'] = {
-    todo = function() require('telescope').extensions['todo-comments'].todo({ additional_args = util.in_config_dir() and { '--hidden' } or nil }) end,
+    todo = function()
+      require('telescope').extensions['todo-comments'].todo({
+        additional_args = util.in_config_dir() and { '--hidden' } or nil,
+      })
+    end,
   },
 }
 function M.picker_wrap(name, ...)
