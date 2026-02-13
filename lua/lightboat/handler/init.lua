@@ -497,8 +497,6 @@ function M.cursor_to_bol_command()
   end
 end
 
-vim.g.picker_filetype = 'TelescopePrompt'
-vim.g.picker_keymap_desc_prefix = 'telescope|'
 local hacked_actions = {
   smart_select_all = function(buffer)
     local picker = require('telescope.actions.state').get_current_picker(buffer)
