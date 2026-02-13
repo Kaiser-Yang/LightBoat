@@ -80,8 +80,19 @@ local setup_autocmd = function()
       local lsp_path = vim.fn.stdpath('config')
       if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
       lsp_path = lsp_path .. 'after/lsp'
-      local lsp_files = vim.fn.glob(lsp_path .. '/*.lua', true, true)
-      vim.lsp.enable(vim.tbl_map(function(file) return vim.fn.fnamemodify(file, ':t:r') end, lsp_files))
+      vim.uv.fs_scandir(lsp_path, function(err, fd)
+        if err or not fd then
+          vim.notify('Failed to scan LSP dir: ' .. tostring(err), vim.log.levels.ERROR, { title = 'LightBoat' })
+          return
+        end
+        local servers = {}
+        while true do
+          local name, ftype = vim.uv.fs_scandir_next(fd)
+          if not name then break end
+          if ftype == 'file' and name:sub(-4) == '.lua' then table.insert(servers, name:sub(1, -5)) end
+        end
+        if #servers > 0 then vim.schedule(function() vim.lsp.enable(servers) end) end
+      end)
     end,
   })
   vim.api.nvim_create_autocmd('User', {
