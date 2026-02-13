@@ -1,5 +1,11 @@
 local M = {}
 
+local c = require('lightboat.condition')
+--- @type table<string, boolean>
+local loaded = {}
+--- @type table<string, boolean>
+local done = {}
+
 -- HACK:
 -- This should be checked when blink.cmp updates
 -- Copied from blink.cmp
@@ -63,11 +69,13 @@ local setup_autocmd = function()
       end
     end,
   })
+  local lc = c():plugin_available('nvim-lspconfig')
   vim.api.nvim_create_autocmd('User', {
     pattern = 'VeryLazy',
     group = group,
     callback = function()
       vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
+      if lc() and not loaded['nvim-lspconfig'] then require('lspconfig') end
       local lsp_path = vim.fn.stdpath('config')
       if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
       lsp_path = lsp_path .. 'after/lsp'
@@ -75,10 +83,6 @@ local setup_autocmd = function()
       vim.lsp.enable(vim.tbl_map(function(file) return vim.fn.fnamemodify(file, ':t:r') end, lsp_files))
     end,
   })
-  --- @type table<string, boolean>
-  local loaded = {}
-  --- @type table<string, boolean>
-  local done = {}
   vim.api.nvim_create_autocmd('User', {
     group = group,
     pattern = 'LazyLoad',
@@ -144,7 +148,6 @@ local setup_autocmd = function()
     end,
   })
   local guessed = {}
-  local c = require('lightboat.condition')
   local gc = c():plugin_available('guess-indent')
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
