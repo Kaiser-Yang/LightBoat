@@ -65,7 +65,7 @@ function M.ensure_list(value)
   elseif not value then
     return {}
   else
-    vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR)
+    vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR, { title = 'LightBoat' })
   end
 end
 
