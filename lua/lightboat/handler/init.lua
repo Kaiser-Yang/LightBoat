@@ -651,43 +651,45 @@ local hacked_actions = {
   end,
 }
 local hacked_pickers = {
-  find_files = function()
-    if vim.fn.executable('rg') == 1 then
-      local find_command = { 'rg', '--files', '--color', 'never', '--glob', '!.git/*' }
-      if util.in_config_dir() then table.insert(find_command, '--hidden') end
-      require('telescope.builtin').find_files({ find_command = find_command })
-    else
-      require('telescope.builtin').find_files()
+  find_files = function(opts)
+    opts = opts or {}
+    if vim.fn.executable('rg') == 1 and not opts.find_command then
+      opts.find_command = { 'rg', '--files', '--color', 'never', '--glob', '!.git/*' }
+      if util.in_config_dir() then table.insert(opts.find_command, '--hidden') end
     end
+    require('telescope.builtin').find_files(opts)
   end,
-  live_grep = function()
-    require('telescope.builtin').live_grep({ additional_args = util.in_config_dir() and { '--hidden' } or nil })
+  live_grep = function(opts)
+    opts = opts or {}
+    if not opts.additional_args and util.in_config_dir() then opts.additional_args = { '--hidden' } end
+    require('telescope.builtin').live_grep(opts)
   end,
-  grep_string = function()
-    require('telescope.builtin').grep_string({ additional_args = util.in_config_dir() and { '--hidden' } or nil })
+  grep_string = function(opts)
+    opts = opts or {}
+    if not opts.additional_args and util.in_config_dir() then opts.additional_args = { '--hidden' } end
+    require('telescope.builtin').grep_string(opts)
   end,
   ['todo-comments'] = {
-    todo = function()
-      require('telescope').extensions['todo-comments'].todo({
-        additional_args = util.in_config_dir() and { '--hidden' } or nil,
-      })
+    todo = function(opts)
+      opts = opts or {}
+      if not opts.additional_args and util.in_config_dir() then opts.additional_args = { '--hidden' } end
+      require('telescope').extensions['todo-comments'].todo(opts)
     end,
   },
 }
-function M.picker_wrap(name, ...)
-  local args = { ... }
+function M.picker_wrap(name, opts)
   return function()
     if type(name) == 'string' then
-      if #args == 0 and hacked_pickers[name] then
-        hacked_pickers[name]()
+      if hacked_pickers[name] then
+        hacked_pickers[name](opts)
       else
-        require('telescope.builtin')[name](unpack(args))
+        require('telescope.builtin')[name](opts)
       end
     else
-      if #args == 0 and hacked_pickers[name[1]] and hacked_pickers[name[1]][name[2]] then
-        hacked_pickers[name[1]][name[2]]()
+      if hacked_pickers[name[1]] and hacked_pickers[name[1]][name[2]] then
+        hacked_pickers[name[1]][name[2]](opts)
       else
-        require('telescope').extensions[name[1]][name[2]](unpack(args))
+        require('telescope').extensions[name[1]][name[2]](opts)
       end
     end
     return true
