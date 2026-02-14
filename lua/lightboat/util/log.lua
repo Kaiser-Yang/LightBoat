@@ -22,7 +22,15 @@ local function _write(level, msg)
   if level < M.current_level then return end
   local f, err = io.open(M.filepath, 'a')
   if not f then
-    vim.notify(string.format('Failed to open log file %s: %s', M.filepath, err), vim.log.levels.ERROR, { title = 'LightBoat' })
+    vim.schedule(
+      function()
+        vim.notify(
+          string.format('Failed to open log file %s: %s', M.filepath, err),
+          vim.log.levels.ERROR,
+          { title = 'LightBoat' }
+        )
+      end
+    )
     return
   end
   f:write(
@@ -53,7 +61,9 @@ function M.set_level(level) M.current_level = level end
 
 --- @param filepath string
 function M.set_file(filepath)
-  if filepath:match('^%s*$') then vim.notify('Empty filepath to log', vim.log.levels.ERROR, { title = 'LightBoat' }) end
+  if filepath:match('^%s*$') then
+    vim.schedule(function() vim.notify('Empty filepath to log', vim.log.levels.ERROR, { title = 'LightBoat' }) end)
+  end
   M.filepath = filepath
 end
 

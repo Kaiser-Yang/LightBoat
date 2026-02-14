@@ -12,12 +12,20 @@ local function load_list_to_arglist(is_quickfix)
   local filenames = vim.tbl_map(function(buf) return vim.fn.fnameescape(buf) end, vim.tbl_values(buffer_numbers))
 
   if #filenames == 0 then
-    vim.notify(cmd_type .. ' list is empty', vim.log.levels.WARN)
+    vim.schedule(function() vim.notify(cmd_type .. ' list is empty', vim.log.levels.WARN, { title = 'LightBoat' }) end)
     return
   end
 
   vim.cmd('args ' .. table.concat(filenames, ' '))
-  vim.notify('Successfully loaded ' .. cmd_type .. ' list into arglist', vim.log.levels.INFO)
+  vim.schedule(
+    function()
+      vim.notify(
+        'Successfully loaded ' .. cmd_type .. ' list into arglist',
+        vim.log.levels.INFO,
+        { title = 'LightBoat' }
+      )
+    end
+  )
 end
 local command_ = {
   Qargs = {

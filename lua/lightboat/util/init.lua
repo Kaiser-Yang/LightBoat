@@ -13,50 +13,6 @@ function M.get_light_boat_root() return M.lazy_path .. '/LightBoat' end
 
 function M.lazy_path() return (vim.env.LAZY_PATH or vim.fn.stdpath('data') .. '/lazy') end
 
---- Setup plugins for LightBoat.
---- @param plugins table A table of plugin configurations.
---- @param name string The name used for notifications
---- @return ... Returns the results of the setup functions for each plugin.
-function M.setup_plugins(plugins, name)
-  local res = {}
-  for _, plugin in pairs(plugins) do
-    if type(plugin) == 'table' and plugin.setup then
-      ---@type any[]
-      local result = { pcall(plugin.setup) }
-      local ok = result[1] --- @type boolean
-      if ok then
-        for i = 2, #result do
-          if type(result[i][1]) == 'string' then
-            M.log.debug(vim.inspect(result[i]))
-            table.insert(res, result[i])
-          else
-            for _, v in ipairs(result[i]) do
-              M.log.debug(vim.inspect(v))
-              table.insert(res, v)
-            end
-          end
-        end
-      else
-        local error = result[2]
-        vim.notify('[' .. name .. ']: ' .. vim.inspect(error), vim.log.levels.ERROR)
-      end
-    end
-  end
-  return unpack(res)
-end
-
---- Clear plugins for LightBoat.
---- @param plugins table A table of plugin configurations.
---- @param name string The name used for notifications
-function M.clear_plugins(plugins, name)
-  for _, plugin in pairs(plugins) do
-    if type(plugin) == 'table' and plugin.clear then
-      local ok, error = pcall(plugin.clear)
-      if not ok then vim.notify('[' .. name .. ']: ' .. vim.inspect(error), vim.log.levels.ERROR) end
-    end
-  end
-end
-
 function M.ensure_list(value)
   if type(value) == 'table' then
     return value
@@ -65,21 +21,11 @@ function M.ensure_list(value)
   elseif not value then
     return {}
   else
-    vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR, { title = 'LightBoat' })
-  end
-end
-
-local did_setup = {}
---- @generic TCallback: fun(...)
---- @param name string
---- @param setup TCallback
---- @param clear fun()
---- @return TCallback
-function M.setup_check_wrap(name, setup, clear)
-  return function(...)
-    if did_setup[name] then clear() end
-    did_setup[name] = true
-    return setup(...)
+    vim.schedule(
+      function()
+        vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR, { title = 'LightBoat' })
+      end
+    )
   end
 end
 
@@ -99,29 +45,6 @@ function M.in_config_dir()
     end
   end
   return false
-end
-
---- @generic R any
---- @param opt fun(...):R|R
---- @return R
-function M.get(opt, ...)
-  if type(opt) == 'function' then
-    return opt(...)
-  else
-    return opt
-  end
-end
-
-function M.resolve_opts(opts, inclusive_keys)
-  opts = M.ensure_list(opts)
-  local res = vim.deepcopy(opts)
-  for k, v in pairs(opts) do
-    if not inclusive_keys or inclusive_keys[k] then
-      res[k] = M.get(v)
-      if type(res[k]) == 'table' then res[k] = M.resolve_opts(res[k], inclusive_keys and inclusive_keys[k] or nil) end
-    end
-  end
-  return res
 end
 
 local cache = {}
@@ -221,18 +144,6 @@ function M.clear_color_detection()
   end
 end
 
-function M.set_hls(hls)
-  for _, hl in ipairs(hls) do
-    vim.api.nvim_set_hl(unpack(hl))
-  end
-end
-
-function M.define_signs(signs)
-  for _, sign in ipairs(signs) do
-    vim.fn.sign_define(unpack(sign))
-  end
-end
-
 function M.reverse_list(list)
   if not list or #list == 0 then return list end
   local reversed = {}
@@ -243,11 +154,13 @@ function M.reverse_list(list)
 end
 
 function M.toggle_notify(name, state, opts)
-  if state then
-    vim.notify('[' .. name .. ']: Enabled', vim.log.levels.INFO, opts)
-  else
-    vim.notify('[' .. name .. ']: Disabled', vim.log.levels.INFO, opts)
-  end
+  vim.schedule(function()
+    if state then
+      vim.notify('[' .. name .. ']: Enabled', vim.log.levels.INFO, opts)
+    else
+      vim.notify('[' .. name .. ']: Disabled', vim.log.levels.INFO, opts)
+    end
+  end)
 end
 
 return M
