@@ -53,6 +53,18 @@ local capabilities = {
   },
 }
 
+local function auto_start_lsp()
+  local lc = c():plugin_available('nvim-lspconfig')
+  vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
+  if lc() and not loaded['nvim-lspconfig'] then require('lspconfig') end
+  local lsp_path = vim.fn.stdpath('config')
+  if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
+  lsp_path = lsp_path .. 'after/lsp'
+  local servers = vim.fn.glob(lsp_path .. '/**/*.lua', true, true)
+  servers = vim.tbl_map(function(path) return vim.fn.fnamemodify(path, ':t:r') end, servers)
+  if #servers > 0 then vim.lsp.enable(servers) end
+end
+
 local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil and vim.g[name] == true end
 
 local setup_autocmd = function()
@@ -83,31 +95,6 @@ local setup_autocmd = function()
       then
         vim.schedule(function() vim.cmd('nohlsearch') end)
       end
-    end,
-  })
-  local lc = c():plugin_available('nvim-lspconfig')
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'VeryLazy',
-    group = group,
-    callback = function()
-      vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
-      if lc() and not loaded['nvim-lspconfig'] then require('lspconfig') end
-      local lsp_path = vim.fn.stdpath('config')
-      if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
-      lsp_path = lsp_path .. 'after/lsp'
-      vim.uv.fs_scandir(lsp_path, function(err, fd)
-        if err or not fd then
-          vim.notify('Failed to scan LSP dir: ' .. tostring(err), vim.log.levels.ERROR, { title = 'LightBoat' })
-          return
-        end
-        local servers = {}
-        while true do
-          local name, ftype = vim.uv.fs_scandir_next(fd)
-          if not name then break end
-          if ftype == 'file' and name:sub(-4) == '.lua' then table.insert(servers, name:sub(1, -5)) end
-        end
-        if #servers > 0 then vim.schedule(function() vim.lsp.enable(servers) end) end
-      end)
     end,
   })
   vim.api.nvim_create_autocmd('User', {
@@ -227,6 +214,7 @@ M.setup = function()
   local function fold_clickable(lnum) return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) end
   _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable(vim.v.lnum) and '%C' or ' ') .. ' ' end
   vim.o.statuscolumn = '%!v:lua.get_statuscol()'
+  auto_start_lsp()
 end
 
 return M
