@@ -6,7 +6,8 @@ function M.big(buffer, event)
   local line_count = vim.api.nvim_buf_line_count(0)
   local limit = type(vim.b[buffer].big_file_limit) == 'number' and vim.b[buffer].big_file_limit
     or type(vim.g.big_file_limit) == 'number' and vim.g.big_file_limit
-  local average_every_line = type(vim.b[buffer].big_file_average_every_line) == 'number' and vim.b[buffer].big_file_average_every_line
+  local average_every_line = type(vim.b[buffer].big_file_average_every_line) == 'number'
+      and vim.b[buffer].big_file_average_every_line
     or type(vim.g.big_file_average_every_line) == 'number' and vim.g.big_file_average_every_line
   -- We can not get the right line count before the buffer is loaded,
   -- so we can only check the file size in that case.
@@ -29,12 +30,13 @@ function M.buffer_size(buffer)
   buffer = M.normalize_buf(buffer)
   local file_name = vim.api.nvim_buf_get_name(buffer)
   local res
-  if not vim.bo[buffer].modified and M.is_file(file_name) then
+  if not vim.bo[buffer].modified then
     res = vim.fn.getfsize(file_name)
+    if res < 0 then res = 0 end
   else
     res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
     -- Add size of the last line
-    res = res + #vim.api.nvim_buf_get_lines(buffer, -2, -1, false)[1]
+    res = res + #(vim.api.nvim_buf_get_lines(buffer, -2, -1, false)[1] or '')
   end
   return res
 end
