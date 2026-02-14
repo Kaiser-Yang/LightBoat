@@ -397,7 +397,7 @@ local function in_pair()
     local char_after = col ~= #line and line:sub(col + 1, col + 1) or (row < vim.api.nvim_buf_line_count(0) and vim.api.nvim_buf_get_lines(0, row, row + 1, true)[1]:sub(1, 1) or '')
     local matched = ''
     local ok = function(a, b)
-      matched = a .. b
+      if a and b then matched = a .. b end
       return a and b and
         ((a == '(' and b == ')')
         or (a == '[' and b == ']')
@@ -468,7 +468,7 @@ local hack_auot_pair_for_big = {
   ['`'] = quotation_wrap('`'),
   [util.key.termcodes('<bs>')] = function()
     if in_pair() then
-      return '<del><left><del>'
+      return '<del><bs>'
     end
     return '<bs>'
   end,
