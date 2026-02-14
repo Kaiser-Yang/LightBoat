@@ -9,7 +9,7 @@ return {
       cr = { autoclose = true },
       tabout = { enable = true, hopout = true },
       space2 = { enable = true },
-      fastwarp = { faster = true, nocursormove = false },
+      fastwarp = { faster = false, nocursormove = false },
       config_internal_pairs = {
         { '[', ']', dosuround = false },
         { '(', ')', dosuround = false },
