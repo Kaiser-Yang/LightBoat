@@ -57,11 +57,11 @@ local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil 
 
 local setup_autocmd = function()
   local group = vim.api.nvim_create_augroup('LightBoatAutoCmd', { clear = true })
-  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufReadPre', 'FileChangedShell' }, {
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufReadPost', 'BufReadPre' }, {
     group = group,
     callback = function(ev)
       if vim.b.big_file_status == nil then vim.b.big_file_status = false end
-      local is_big = util.buffer.big()
+      local is_big = util.buffer.big(ev.buf, ev.event)
       if is_big ~= vim.b.big_file_status then
         vim.b.big_file_status = is_big
         if type(vim.b.big_file_on_changed) == 'function' then
@@ -203,6 +203,10 @@ local setup_autocmd = function()
         vim.wo[0][0].foldenable = true
         vim.wo[0][0].foldmethod = 'expr'
         vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      end
+      local tiac = c():treesitter_indentexpr_available()
+      if tiac() and enabled('treesitter_indentexpr_auto_set') then
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end
     end,
   })
