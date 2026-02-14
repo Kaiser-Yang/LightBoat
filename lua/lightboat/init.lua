@@ -139,7 +139,9 @@ local setup_autocmd = function()
           end
           -- HACK:
           -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
-          for id in vim.iter({ 'snippets', 'lsp', 'dictionary', 'buffer', 'ripgrep' }) do
+          local priority = { 'snippets', 'lsp', 'dictionary', 'buffer', 'ripgrep' }
+          if ctx.mode == 'cmdline' then priority = { 'cmdline', 'path', 'buffer', 'rg', 'dict' } end
+          for id in vim.iter(priority) do
             items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
           end
           return original(ctx, items_by_source)

@@ -55,6 +55,7 @@ return {
       documentation = { auto_show = true },
     },
     cmdline = {
+      sources = { default = { 'cmdline', 'path', 'buffer', 'rg', 'dict' } },
       keymap = { preset = 'none' },
       completion = { menu = { auto_show = true }, ghost_text = { enabled = false } },
     },
