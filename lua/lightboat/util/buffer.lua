@@ -31,7 +31,7 @@ function M.buffer_size(buffer)
   else
     res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
     -- Add size of the last line
-    res = res + #vim.api.nvim_buf_get_lines(buffer, -1, -1, false)
+    res = res + #vim.api.nvim_buf_get_lines(buffer, -1, -1, false)[1]
   end
   return res
 end
