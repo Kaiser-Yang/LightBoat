@@ -28,16 +28,9 @@ end
 --- @return integer
 function M.buffer_size(buffer)
   buffer = M.normalize_buf(buffer)
-  local file_name = vim.api.nvim_buf_get_name(buffer)
-  local res
-  if not vim.bo[buffer].modified then
-    res = vim.fn.getfsize(file_name)
-    if res < 0 then res = 0 end
-  else
-    res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
-    -- Add size of the last line
-    res = res + #(vim.api.nvim_buf_get_lines(buffer, -2, -1, false)[1] or '')
-  end
+  local res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
+  -- Add size of the last line
+  res = res + #(vim.api.nvim_buf_get_lines(buffer, -2, -1, false)[1] or '')
   return res
 end
 
