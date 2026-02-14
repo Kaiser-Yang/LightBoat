@@ -56,7 +56,7 @@ function M.detect()
   -- Detect once for the current directory
   start_git_repo_detection()
   git_repo_detector = vim.api.nvim_create_augroup('LightBoatGitRepoDetector', {})
-  vim.api.nvim_create_autocmd({ 'BufReadPre', 'DirChanged' }, {
+  vim.api.nvim_create_autocmd({ 'BufReadPre', 'DirChanged', 'FileChangedShell' }, {
     group = group,
     callback = start_git_repo_detection,
   })

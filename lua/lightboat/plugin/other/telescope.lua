@@ -15,6 +15,7 @@ return {
         width = { padding = 0 },
         height = { padding = 0 },
       },
+      cache_picker = { ignore_empty_prompt = true },
     },
   },
 }

@@ -57,6 +57,21 @@ local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil 
 
 local setup_autocmd = function()
   local group = vim.api.nvim_create_augroup('LightBoatAutoCmd', { clear = true })
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufReadPre', 'FileChangedShell' }, {
+    group = group,
+    callback = function(ev)
+      if vim.b.big_file_status == nil then vim.b.big_file_status = false end
+      local is_big = util.buffer.big()
+      if is_big ~= vim.b.big_file_status then
+        vim.b.big_file_status = is_big
+        if type(vim.b.big_file_on_changed) == 'function' then
+          vim.b.big_file_on_changed(ev.buf, is_big)
+        elseif type(vim.g.big_file_on_changed) == 'function' then
+          vim.g.big_file_on_changed(ev.buf, is_big)
+        end
+      end
+    end,
+  })
   vim.api.nvim_create_autocmd('ModeChanged', {
     group = group,
     callback = function()
@@ -127,18 +142,6 @@ local setup_autocmd = function()
         )
         if #not_installed > 0 then require('nvim-treesitter').install(not_installed) end
       end
-      -- This plugin is not loaded by setup function, we must call init manually
-      if loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
-        done['nvim-treesitter-endwise'] = true
-        local endwise = require('nvim-treesitter-endwise')
-        endwise.init()
-        -- Attach manually, since the plugin is lazy loaded and won't be attached on InsertEnter
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
-          if not endwise.is_supported(lang) then return end
-          require('nvim-treesitter.endwise').attach(buf)
-        end
-      end
       if loaded['blink.cmp'] and not done['blink.cmp'] then
         done['blink.cmp'] = true
         local original = require('blink.cmp.completion.list').show
@@ -201,10 +204,6 @@ local setup_autocmd = function()
         vim.wo[0][0].foldmethod = 'expr'
         vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       end
-      local tiac = c():treesitter_indentexpr_available()
-      if tiac() and enabled('treesitter_indentexpr_auto_set') then
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-      end
     end,
   })
   if enabled('conform_formatexpr_auto_set') then vim.o.formatexpr = "v:lua.require'conform'.formatexpr()" end
@@ -213,21 +212,6 @@ local setup_autocmd = function()
     callback = function()
       if not enabled('conform_formatexpr_auto_set') then return end
       vim.bo.formatexpr = "v:lua.require'conform'.formatexpr()"
-    end,
-  })
-  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufRead', 'FileChangedShell' }, {
-    group = group,
-    callback = function(ev)
-      if vim.b.big_file_status == nil then vim.b.big_file_status = false end
-      local is_big = util.buffer.big()
-      if is_big ~= vim.b.big_file_status then
-        vim.b.big_file_status = is_big
-        if type(vim.b.big_file_on_changed) == 'function' then
-          vim.b.big_file_on_changed(ev.buf, is_big)
-        elseif type(vim.g.big_file_on_changed) == 'function' then
-          vim.g.big_file_on_changed(ev.buf, is_big)
-        end
-      end
     end,
   })
 end
