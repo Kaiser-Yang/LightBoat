@@ -75,7 +75,7 @@ function M.clear()
   spec.keys = {}
 end
 
-M.setup = util.setup_check_wrap('lightboat.plugin.code.overseer', function()
+M.setup = util.setup_check_wrap('lightboat.plugin.edit.overseer', function()
   if vim.g.vscode then return spec end
   c = config.get().overseer
   spec.enabled = c.enabled

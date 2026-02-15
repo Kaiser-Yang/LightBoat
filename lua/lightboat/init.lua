@@ -100,6 +100,10 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       loaded[args.data] = true
+      if loaded['telescope.nvim'] and not done['telescope.nvim'] then
+        done['telescope.nvim'] = true
+        if c():plugin_available('telescope-fzf-native.nvim')() then require('telescope').load_extension('fzf') end
+      end
       if loaded['mason.nvim'] and not done['nvim.mason'] and #vim.g.lightboat_opt.mason_ensure_installed > 0 then
         done['nvim.mason'] = true
         local mason_registry = require('mason-registry')
@@ -211,7 +215,7 @@ M.setup = function()
   util.git.detect()
   setup_autocmd()
   -- We use this code to make the fold sign at the end of the status column and clickable as usually
-  local function fold_clickable(lnum) return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) end
+  local function fold_clickable(lnum) return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) and vim.v.virtnum <= 0 end
   _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable(vim.v.lnum) and '%C' or ' ') .. ' ' end
   vim.o.statuscolumn = '%!v:lua.get_statuscol()'
   auto_start_lsp()

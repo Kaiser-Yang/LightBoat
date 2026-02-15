@@ -1,4 +1,5 @@
 local M = {}
+local c = require('lightboat.condition')
 
 local util = require('lightboat.util')
 --- @type table<string, boolean>
@@ -51,15 +52,6 @@ end
 M.auto_indent = function()
   if vim.bo.indentexpr == '' and vim.o.indentexpr == '' then return false end
   return '<c-f>'
-end
-
-local function next_git_hunk()
-  require('gitsigns').nav_hunk('next')
-  return true
-end
-local function previous_git_hunk()
-  require('gitsigns').nav_hunk('prev')
-  return true
 end
 
 local last_count = 1
@@ -511,29 +503,6 @@ function M.surround_visual() ensure_plugin('nvim-surround') return '<plug>(nvim-
 function M.surround_visual_line() ensure_plugin('nvim-surround') return '<plug>(nvim-surround-visual-line)' end
 
 function M.hack_wrap(suffix) return function() return hack(suffix) end end
-
-function M.stage_hunk() require('gitsigns').stage_hunk() return true end
-function M.undo_stage_hunk() require('gitsigns').undo_stage_hunk() return true end
-function M.stage_buffer() require('gitsigns').stage_buffer() return true end
-function M.unstage_buffer() require('gitsigns').reset_buffer_index() return true end
-function M.stage_selection() require('gitsigns').stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) return true end
-function M.reset_hunk() require('gitsigns').reset_hunk() return true end
-function M.reset_buffer() require('gitsigns').reset_buffer() return true end
-function M.reset_selection() require('gitsigns').reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) return true end
-function M.preview_hunk() require('gitsigns').preview_hunk() return true end
-function M.preview_hunk_inline() require('gitsigns').preview_hunk_inline() return true end
-function M.blame_line() require('gitsigns').blame_line({ full = true }) return true end
-function M.diff_this() require('gitsigns').diffthis('~') return true end
-function M.quickfix_all_hunk() require('gitsigns').setqflist('all') return true end
-function M.toggle_current_line_blame()
-  util.toggle_notify('Current Line Blame', require('gitsigns').toggle_current_line_blame(), { title = 'Git Signs'})
-  return true end
-function M.toggle_word_diff()
-  util.toggle_notify('Word Diff', require('gitsigns').toggle_word_diff(), { title = 'Git Signs' })
-  return true end
-function M.select_hunk() require('gitsigns').select_hunk() return true end
-function M.previous_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[1]() end
-function M.next_hunk() return ensure_repmove(previous_git_hunk, next_git_hunk)[2]() end
 
 function M.comment() return require('vim._comment').operator() end
 function M.comment_line() return require('vim._comment').operator() .. '_' end

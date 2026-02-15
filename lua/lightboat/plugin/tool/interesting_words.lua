@@ -29,7 +29,7 @@ function M.clear()
   c = nil
 end
 
-M.setup = util.setup_check_wrap('lightboat.plugin.code.interesting_words', function()
+M.setup = util.setup_check_wrap('lightboat.plugin.edit.interesting_words', function()
   if vim.g.vscode then return spec end
   c = config.get().interesting_words
   spec.enabled = c.enabled

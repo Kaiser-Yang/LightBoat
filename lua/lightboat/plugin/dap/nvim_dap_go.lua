@@ -13,6 +13,6 @@ function M.clear() end
 
 function M.spec() return spec end
 
-M.setup = util.setup_check_wrap('lightboat.plugin.code.nvim_dap_go', function() return spec end, M.clear)
+M.setup = util.setup_check_wrap('lightboat.plugin.edit.nvim_dap_go', function() return spec end, M.clear)
 
 return M

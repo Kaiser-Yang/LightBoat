@@ -183,7 +183,7 @@ function M.clear()
   c = nil
 end
 
-M.setup = util.setup_check_wrap('lightboat.plugin.code.dap', function()
+M.setup = util.setup_check_wrap('lightboat.plugin.edit.dap', function()
   if vim.g.vscode then return spec end
   c = config.get().dap
   for _, s in ipairs(spec) do
