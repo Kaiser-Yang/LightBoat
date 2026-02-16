@@ -56,6 +56,7 @@ local capabilities = {
 local function auto_start_lsp()
   local lc = c():plugin_available('nvim-lspconfig')
   vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
+  -- Make sure the lspconfig is loaded
   if lc() and not loaded['nvim-lspconfig'] then require('lspconfig') end
   local lsp_path = vim.fn.stdpath('config')
   if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
@@ -143,8 +144,12 @@ local setup_autocmd = function()
           end
           -- HACK:
           -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
-          local priority = { 'snippets', 'lsp', 'dictionary', 'buffer', 'ripgrep' }
-          if ctx.mode == 'cmdline' then priority = { 'cmdline', 'path', 'buffer', 'rg', 'dict' } end
+          local priority = {}
+          if vim.b.blink_cmp_unique_priority then
+            priority = util.get(vim.b.blink_cmp_unique_priority, ctx)
+          elseif vim.g.blink_cmp_unique_priority then
+            priority = util.get(vim.g.blink_cmp_unique_priority, ctx)
+          end
           for id in vim.iter(priority) do
             items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
           end
@@ -154,11 +159,12 @@ local setup_autocmd = function()
     end,
   })
   local guessed = {}
+  local cc = c():plugin_available('conform.nvim')
   local gc = c():plugin_available('guess-indent.nvim')
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
     callback = function(args)
-      if not enabled('conform_on_save') then return end
+      if not enabled('conform_on_save') or not cc() then return end
       local buffer = args.buf
       require('conform').format({ bufnr = buffer }, function(err)
         if err then

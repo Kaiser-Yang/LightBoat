@@ -9,9 +9,9 @@ local M = {
 
 -- HACK:
 -- Better way to do this?
-function M.get_light_boat_root() return M.lazy_path .. '/LightBoat' end
+function M.get_light_boat_root() return M.lazy_path() .. '/LightBoat' end
 
-function M.lazy_path() return (vim.env.LAZY_PATH or vim.fn.stdpath('data') .. '/lazy') end
+function M.lazy_path() return vim.fn.stdpath('data') .. '/lazy' end
 
 function M.ensure_list(value)
   if type(value) == 'table' then
@@ -159,6 +159,11 @@ function M.toggle_notify(name, state, opts)
   else
     vim.notify('[' .. name .. ']: Disabled', vim.log.levels.INFO, opts)
   end
+end
+
+function M.get(v, ...)
+  if type(v) == 'function' then return v(...) end
+  return v
 end
 
 return M
