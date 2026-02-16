@@ -100,6 +100,8 @@ local setup_autocmd = function()
       if _G.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
         done['telescope.nvim'] = true
         if fzf_available then require('telescope').load_extension('fzf') end
+        -- INFO:
+        -- We can load more extensions here
       end
       if
         _G.plugin_loaded['mason.nvim']
@@ -133,7 +135,6 @@ local setup_autocmd = function()
         if #not_installed > 0 then require('nvim-treesitter').install(not_installed) end
       end
       if _G.plugin_loaded['blink.cmp'] and not done['blink.cmp'] then
-        vim.notify(args.data)
         done['blink.cmp'] = true
         local original = require('blink.cmp.completion.list').show
         -- HACK:
@@ -161,7 +162,7 @@ local setup_autocmd = function()
   })
   local guessed = {}
   local conform_available = util.plugin_available('conform.nvim')
-  local guess_indent_avalable = util.plugin_available('guess-indent.nvim')
+  local guess_indent_available = util.plugin_available('guess-indent.nvim')
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
     callback = function(args)
@@ -171,7 +172,7 @@ local setup_autocmd = function()
         if err then
           vim.schedule(function() vim.notify('Format failed: ' .. err, vim.log.levels.ERROR, { title = 'Conform' }) end)
         end
-        if not err and not guessed[buffer] and enabled('conform_on_save_reguess_indent') and guess_indent_avalable then
+        if not err and not guessed[buffer] and enabled('conform_on_save_reguess_indent') and guess_indent_available then
           guessed[buffer] = true
           require('guess-indent').set_from_buffer(buffer, true, false)
         end
