@@ -189,6 +189,16 @@ function M.system_cut()
   end
 end
 
+function M.auto_indent()
+  if vim.bo.indentexpr == '' then return false end
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  local cur_indent = vim.fn.indent(row)
+  vim.v.lnum = row
+  local ok, correct_indent = pcall(vim.fn.eval, vim.bo.indentexpr)
+  if not ok or cur_indent == correct_indent then return false end
+  return '<c-f>'
+end
+
 -- stylua: ignore start
 function M.select_file() u.update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 function M.comment() return require('vim._comment').operator() end
@@ -201,6 +211,13 @@ M.system_put = '"+p'
 M.system_put_before = '"+P'
 M.system_yank_eol = '"+y$'
 M.system_cut_eol = '"+d$'
+function M.toggle_inlay_hint()
+  local status = vim.lsp.inlay_hint.is_enabled() == false
+  u.toggle_notify('Inlay Hint', status, { title = 'LSP' })
+  vim.lsp.inlay_hint.enable(status)
+  return true
+end
+
 function M.toggle_spell()
   local status = vim.wo.spell == false
   u.toggle_notify('Spell', status, { title = 'Neovim' })
