@@ -4,12 +4,14 @@ local c = require('lightboat.condition')
 local repmove_available = c():plugin_available('repmove.nvim')
 
 function M.cursor_to_eol_insert()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   local line = vim.api.nvim_get_current_line()
   if col == #line then return false end
   local last_non_blank = #(line:match('^(.-)%s*$') or '')
   if col >= last_non_blank then last_non_blank = #line end
-  return string.rep('<c-g>U<right>', last_non_blank - col)
+  vim.bo.undolevels = vim.bo.undolevels
+  vim.api.nvim_win_set_cursor(0, { row, last_non_blank })
+  return true
 end
 
 function M.cursor_to_eol_command()
@@ -54,11 +56,13 @@ end
 
 function M.cursor_to_bol_insert()
   local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   if col == 0 then return false end
   local first_non_blank = #(line:match('^%s*') or '')
   if col <= first_non_blank then first_non_blank = 0 end
-  return string.rep('<c-g>U<left>', col - first_non_blank)
+  vim.bo.undolevels = vim.bo.undolevels
+  vim.api.nvim_win_set_cursor(0, { row, first_non_blank })
+  return true
 end
 
 local format = { '^:', '^/', '^%?', '^:%s*!', '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*', '^:%s*he?l?p?%s+', '^=' }
@@ -99,7 +103,12 @@ function M.delete_to_eol_insert()
   local last_non_blank = #(line:match('^(.-)%s*$') or '')
   if col >= last_non_blank then last_non_blank = #line end
   vim.bo.undolevels = vim.bo.undolevels
-  return string.rep('<del>', last_non_blank - col)
+  if last_non_blank == #line then
+    vim.cmd('normal! d$')
+  else
+    vim.cmd('normal! dg_')
+  end
+  return true
 end
 
 return M
