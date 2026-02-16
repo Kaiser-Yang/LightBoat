@@ -251,4 +251,10 @@ function M.ensure_plugin(name)
   if not _G.plugin_loaded[name] then require(name) end
 end
 
+function M.in_macro_recording() return vim.fn.reg_recording() ~= '' end
+
+function M.in_macro_executing() return vim.fn.reg_executing() ~= '' end
+
+function M.in_macro() return M.in_macro_recording() or M.in_macro_executing() end
+
 return M

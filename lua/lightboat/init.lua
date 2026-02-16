@@ -84,7 +84,7 @@ local setup_autocmd = function()
   vim.api.nvim_create_autocmd('ModeChanged', {
     group = group,
     callback = function()
-      if not enabled('nohlsearch_auto_run') then return end
+      if not enabled('nohlsearch_auto_run') or util.in_macro_executing() then return end
       if vim.tbl_contains({ 'i', 'ic', 'ix', 'R', 'Rc', 'Rx', 'Rv', 'Rvc', 'Rvx' }, vim.api.nvim_get_mode().mode) then
         -- We must schedule here
         vim.schedule(function() vim.cmd('nohlsearch') end)
