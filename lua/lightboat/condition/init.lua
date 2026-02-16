@@ -1,16 +1,16 @@
 local util = require('lightboat.util')
 
-local plugin_cache = {}
+local plugin_cache = nil
+--- @param name string
+--- @return boolean
 local function is_plugin_installed(name)
-  if plugin_cache[name] == nil then
-    plugin_cache[name] = false
+  if plugin_cache == nil then
+    plugin_cache = {}
     for _, plugin in pairs(require('lazy').plugins()) do
-      if plugin.name == name then
-        plugin_cache[name] = true
-        break
-      end
+      plugin_cache[plugin.name] = true
     end
   end
+  if not plugin_cache[name] then plugin_cache[name] = false end
   return plugin_cache[name]
 end
 
