@@ -3,6 +3,65 @@ local u = require('lightboat.util')
 local c = require('lightboat.condition')
 local repmove_available = c():plugin_available('repmove.nvim')
 
+local function toggle_comment_insert_mode()
+  local commentstring = vim.bo.commentstring
+  if not commentstring or commentstring:match('^%s*$') or commentstring:find('%%s') == nil then return false end
+
+  local indent, line = vim.api.nvim_get_current_line():match('^(%s*)(.*)$')
+  -- split commentstring into left and right around "%s"
+  local left, right = commentstring:match('^(.-)%%s(.-)$')
+  left = left or ''
+  right = right or ''
+
+  -- cursor col BEFORE change (0-indexed)
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local col = cursor[2]
+
+  -- detect if the line (after indent) is already wrapped by left and right
+  local has_left = (#left == 0) or (line:sub(1, #left) == left)
+  local has_right = (#right == 0) or (line:sub(-#right) == right)
+
+  local new_line
+  local shift = 0 -- desired change in column relative to original col
+
+  if has_left and has_right then
+    -- remove the surrounding left/right (toggle off)
+    local content_start = #left + 1
+    local content_end = #line - #right
+    if content_end < content_start then
+      new_line = indent
+    else
+      new_line = indent .. line:sub(content_start, content_end)
+    end
+    shift = -#left
+  else
+    -- add left and right around the existing content (toggle on)
+    new_line = indent .. left .. line .. right
+    shift = #left
+  end
+
+  -- apply the new line (this may move the cursor automatically)
+  vim.api.nvim_set_current_line(new_line)
+
+  -- compute desired column after the change, clamped to the new line length and not before indent
+  local new_content_len = #new_line - #indent
+  if new_content_len < 0 then new_content_len = 0 end
+  local min_col = #indent
+  local max_col = #indent + math.max(0, new_content_len)
+  local desired_col = col
+  if col >= #indent then
+    desired_col = col + shift
+    if desired_col < min_col then desired_col = min_col end
+    if desired_col > max_col then desired_col = max_col end
+  end
+
+  -- read actual column after set_current_line
+  local actual_col = vim.api.nvim_win_get_cursor(0)[2]
+
+  local delta = desired_col - actual_col
+  return string.rep(delta > 0 and '<right>' or '<left>', math.abs(delta))
+end
+
 function M.cursor_to_eol_insert()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   local line = vim.api.nvim_get_current_line()
@@ -132,65 +191,7 @@ function M.system_cut()
   end
 end
 
-local function toggle_comment_insert_mode()
-  local commentstring = vim.bo.commentstring
-  if not commentstring or commentstring:match('^%s*$') or commentstring:find('%%s') == nil then return false end
-
-  local indent, line = vim.api.nvim_get_current_line():match('^(%s*)(.*)$')
-  -- split commentstring into left and right around "%s"
-  local left, right = commentstring:match('^(.-)%%s(.-)$')
-  left = left or ''
-  right = right or ''
-
-  -- cursor col BEFORE change (0-indexed)
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local col = cursor[2]
-
-  -- detect if the line (after indent) is already wrapped by left and right
-  local has_left = (#left == 0) or (line:sub(1, #left) == left)
-  local has_right = (#right == 0) or (line:sub(-#right) == right)
-
-  local new_line
-  local shift = 0 -- desired change in column relative to original col
-
-  if has_left and has_right then
-    -- remove the surrounding left/right (toggle off)
-    local content_start = #left + 1
-    local content_end = #line - #right
-    if content_end < content_start then
-      new_line = indent
-    else
-      new_line = indent .. line:sub(content_start, content_end)
-    end
-    shift = -#left
-  else
-    -- add left and right around the existing content (toggle on)
-    new_line = indent .. left .. line .. right
-    shift = #left
-  end
-
-  -- apply the new line (this may move the cursor automatically)
-  vim.api.nvim_set_current_line(new_line)
-
-  -- compute desired column after the change, clamped to the new line length and not before indent
-  local new_content_len = #new_line - #indent
-  if new_content_len < 0 then new_content_len = 0 end
-  local min_col = #indent
-  local max_col = #indent + math.max(0, new_content_len)
-  local desired_col = col
-  if col >= #indent then
-    desired_col = col + shift
-    if desired_col < min_col then desired_col = min_col end
-    if desired_col > max_col then desired_col = max_col end
-  end
-
-  -- read actual column after set_current_line
-  local actual_col = vim.api.nvim_win_get_cursor(0)[2]
-
-  local delta = desired_col - actual_col
-  return string.rep(delta > 0 and '<right>' or '<left>', math.abs(delta))
-end
-
+-- stylua: ignore start
 function M.select_file() u.update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 function M.comment() return require('vim._comment').operator() end
 function M.comment_line() return require('vim._comment').operator() .. '_' end
