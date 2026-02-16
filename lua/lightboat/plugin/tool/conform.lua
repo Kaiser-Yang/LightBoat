@@ -2,14 +2,8 @@ return {
   'stevearc/conform.nvim',
   cond = not vim.g.vscode,
   opts = {
-    formatters_by_ft = {
-      lua = { 'stylua' },
-      c = { 'clang-format' },
-      cpp = { 'clang-format' },
-      go = { 'goimports', 'gofmt' },
-      python = { 'black' },
-      bash = { 'shellharden' },
-    },
+    notify_no_formatters = false,
+    formatters_by_ft = { lua = { 'stylua' } },
     default_format_opts = { lsp_format = 'fallback', stop_after_first = true },
   },
   cmd = { 'ConformInfo' },
