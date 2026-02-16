@@ -64,10 +64,8 @@ end
 ---@return Cond
 function Cond:not_filetype(filetype)
   local copy = self:_copy()
-  table.insert(
-    copy._conditions,
-    function() return not vim.tbl_contains(util.ensure_list(filetype), vim.bo.filetype) end
-  )
+  local fc = Cond():filetype(filetype)
+  table.insert(copy._conditions, function() return not fc() end)
   return copy
 end
 
@@ -103,13 +101,10 @@ end
 
 function Cond:treesitter_textobject_available()
   local copy = self:_copy()
-  table.insert(
-    copy._conditions,
-    function()
-      return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
-        and is_plugin_installed('nvim-treesitter-textobjects')
-    end
-  )
+  local treesitter_available = Cond():treesitter_available()
+  local textobjects_installed = Cond():plugin_available('nvim-treesitter-textobjects')
+  copy:add(treesitter_available)
+  copy:add(textobjects_installed)
   return copy
 end
 
@@ -139,12 +134,11 @@ end
 
 function Cond:treesitter_indentexpr_available()
   local copy = self:_copy()
+  local treesitter_installed = Cond():plugin_available('nvim-treesitter')
+  copy:add(treesitter_installed)
   table.insert(
     copy._conditions,
-    function()
-      return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') ~= nil
-        and is_plugin_installed('nvim-treesitter')
-    end
+    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') ~= nil end
   )
   return copy
 end
@@ -153,7 +147,8 @@ end
 ---@return Cond
 function Cond:completion_menu_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').is_menu_visible() end)
   return copy
 end
@@ -162,7 +157,8 @@ end
 ---@return Cond
 function Cond:completion_menu_not_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return not require('blink.cmp').is_menu_visible() end)
   return copy
 end
@@ -171,7 +167,8 @@ end
 ---@return Cond
 function Cond:completion_item_selected()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function()
     local blink = require('blink.cmp')
     return blink.is_menu_visible() and blink.get_selected_item() ~= nil
@@ -183,7 +180,8 @@ end
 ---@return Cond
 function Cond:snippet_active()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').snippet_active() end)
   return copy
 end
@@ -192,7 +190,8 @@ end
 ---@return Cond
 function Cond:snippet_not_active()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return not require('blink.cmp').snippet_active() end)
   return copy
 end
@@ -201,7 +200,8 @@ end
 ---@return Cond
 function Cond:documentation_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').is_documentation_visible() end)
   return copy
 end
@@ -210,7 +210,8 @@ end
 ---@return Cond
 function Cond:signature_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').is_signature_visible() end)
   return copy
 end
@@ -219,7 +220,8 @@ end
 ---@return Cond
 function Cond:signature_not_visible()
   local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed('blink.cmp') end)
+  local cmp_installed = Cond():plugin_available('blink.cmp')
+  copy:add(cmp_installed)
   table.insert(copy._conditions, function() return not require('blink.cmp').is_signature_visible() end)
   return copy
 end
