@@ -55,24 +55,6 @@ function Cond:not_filetype(filetype)
   return copy
 end
 
----Add a last_key condition
----@param key string|string[]
----@return Cond
-function Cond:last_key(key)
-  local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    local last_key = util.key.last_key()
-    if last_key == nil then return false end
-    last_key = util.key.termcodes(last_key)
-    for _, k in ipairs(util.ensure_list(key)) do
-      k = util.key.termcodes(k)
-      if last_key:match(k .. '$') then return true end
-    end
-    return false
-  end)
-  return copy
-end
-
 ---Add a completion_menu_visible condition
 ---@return Cond
 function Cond:completion_menu_visible()
@@ -255,14 +237,6 @@ end
 function Cond:lsp_attached()
   local copy = self:_copy()
   table.insert(copy._conditions, function() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 end)
-  return copy
-end
-
---- Add an in-macro condition
---- @return Cond
-function Cond:in_macro()
-  local copy = self:_copy()
-  table.insert(copy._conditions, function() return vim.fn.reg_recording() ~= '' or vim.fn.reg_executing() ~= '' end)
   return copy
 end
 
