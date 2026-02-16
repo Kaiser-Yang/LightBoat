@@ -3,7 +3,24 @@ local u = require('lightboat.util')
 local c = require('lightboat.condition')
 local repmove_available = c():plugin_available('repmove.nvim')
 
--- HACK:
+function M.cursor_to_eol_insert()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local line = vim.api.nvim_get_current_line()
+  if col == #line then return false end
+  local last_non_blank = #(line:match('^(.-)%s*$') or '')
+  if col >= last_non_blank then last_non_blank = #line end
+  return string.rep('<c-g>U<right>', last_non_blank - col)
+end
+
+function M.cursor_to_eol_command()
+  local line = vim.fn.getcmdline()
+  local col0 = vim.fn.getcmdpos() - 1 -- 0-based
+  if col0 == #line then return false end
+  local last_non_blank = #(line:match('^(.-)%s*$') or '')
+  if col0 >= last_non_blank then last_non_blank = #line end
+  return vim.fn.setcmdline(line, last_non_blank + 1) == 0
+end
+
 function M.delete_to_eow_insert()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   local line = vim.api.nvim_get_current_line()
@@ -17,7 +34,7 @@ end
 function M.delete_to_eow_command()
   local line = vim.fn.getcmdline()
   local col0 = vim.fn.getcmdpos() - 1 -- 0-based
-  if col0 >= #line then return false end
+  if col0 == #line then return false end
 
   local word_pattern = '\\k\\+' -- Vim regex: keyword sequence
   local after = line:sub(col0 + 1)
@@ -65,3 +82,24 @@ function M.cursor_to_bol_command()
   return true
 end
 
+function M.delete_to_eol_command()
+  local line = vim.fn.getcmdline()
+  local col0 = vim.fn.getcmdpos() - 1 -- 0-based
+  if col0 == #line then return false end
+  local last_non_blank = #(line:match('^(.-)%s*$') or '')
+  if col0 >= last_non_blank then last_non_blank = #line end
+  local new_line = line:sub(1, col0) .. line:sub(last_non_blank + 1)
+  return vim.fn.setcmdline(new_line, col0 + 1) == 0
+end
+
+function M.delete_to_eol_insert()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  if col == #line then return false end
+  local last_non_blank = #(line:match('^(.-)%s*$') or '')
+  if col >= last_non_blank then last_non_blank = #line end
+  vim.bo.undolevels = vim.bo.undolevels
+  return string.rep('<del>', last_non_blank - col)
+end
+
+return M
