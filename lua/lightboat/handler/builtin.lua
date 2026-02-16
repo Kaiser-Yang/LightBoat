@@ -98,7 +98,7 @@ end
 
 function M.delete_to_eol_insert()
   local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   if col == #line then return false end
   local last_non_blank = #(line:match('^(.-)%s*$') or '')
   if col >= last_non_blank then last_non_blank = #line end
@@ -108,6 +108,7 @@ function M.delete_to_eol_insert()
   else
     vim.cmd('normal! dg_')
   end
+  vim.api.nvim_win_set_cursor(0, { row, col })
   return true
 end
 
