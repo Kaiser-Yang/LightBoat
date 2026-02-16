@@ -16,6 +16,16 @@ local previous_section_end = previous_section_start
 local next_section_end = next_section_start
 local go_to = require('lightboat.handler.treesitter').go_to
 
+local urp = {}
+function M.repmove_wrap(previous, next, idx, comma, semicolon)
+  local res = u.ensure_repmove(previous, next, comma, semicolon, urp)
+  if idx == 1 or idx == 2 then
+    return res[idx]
+  else
+    return res
+  end
+end
+
 -- HACK:
 -- Those below can not cycle
 local function next_loop_start() return go_to('next', 'start', '@loop.outer') end

@@ -45,14 +45,4 @@ function M.async_format()
   return true
 end
 
-local urp = {}
-function M.repmove_wrap(previous, next, idx, comma, semicolon)
-  local res = u.ensure_repmove(previous, next, comma, semicolon, urp)
-  if idx == 1 or idx == 2 then
-    return res[idx]
-  else
-    return res
-  end
-end
-
 return M
