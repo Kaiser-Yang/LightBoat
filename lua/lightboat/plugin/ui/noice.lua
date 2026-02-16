@@ -107,13 +107,11 @@ M.setup = util.setup_check_wrap('lightboat.plugin.ui.noice', function()
     callback = function()
       local msg = string.format('Recording @%s', vim.fn.reg_recording())
       macro_recording_status = true
-      vim.schedule(function()
-        vim.notify(msg, nil, {
-          title = 'Macro Recording',
-          keep = function() return macro_recording_status end,
-          timeout = 0,
-        })
-      end)
+      vim.notify(msg, nil, {
+        title = 'Macro Recording',
+        keep = function() return macro_recording_status end,
+        timeout = 0,
+      })
     end,
   })
   vim.api.nvim_create_autocmd('RecordingLeave', {
