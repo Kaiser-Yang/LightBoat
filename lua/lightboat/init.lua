@@ -2,7 +2,7 @@ local M = {}
 
 local c = require('lightboat.condition')
 --- @type table<string, boolean>
-local loaded = {}
+vim.g.plugin_loaded = {}
 --- @type table<string, boolean>
 local done = {}
 local util = require('lightboat.util')
@@ -57,7 +57,7 @@ local function auto_start_lsp()
   local lc = c():plugin_available('nvim-lspconfig')
   vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
   -- Make sure the lspconfig is loaded
-  if lc() and not loaded['nvim-lspconfig'] then require('lspconfig') end
+  if lc() and not vim.g.plugin_loaded['nvim-lspconfig'] then require('lspconfig') end
   local lsp_path = vim.fn.stdpath('config')
   if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
   lsp_path = lsp_path .. 'after/lsp'
@@ -100,12 +100,16 @@ local setup_autocmd = function()
     group = group,
     pattern = 'LazyLoad',
     callback = function(args)
-      loaded[args.data] = true
-      if loaded['telescope.nvim'] and not done['telescope.nvim'] then
+      vim.g.plugin_loaded[args.data] = true
+      if vim.g.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
         done['telescope.nvim'] = true
         if c():plugin_available('telescope-fzf-native.nvim')() then require('telescope').load_extension('fzf') end
       end
-      if loaded['mason.nvim'] and not done['nvim.mason'] and #vim.g.lightboat_opt.mason_ensure_installed > 0 then
+      if
+        vim.g.plugin_loaded['mason.nvim']
+        and not done['nvim.mason']
+        and #vim.g.lightboat_opt.mason_ensure_installed > 0
+      then
         done['nvim.mason'] = true
         local mason_registry = require('mason-registry')
         local installed = mason_registry.get_installed_package_names()
@@ -120,7 +124,7 @@ local setup_autocmd = function()
         end
       end
       if
-        loaded['nvim-treesitter']
+        vim.g.plugin_loaded['nvim-treesitter']
         and not done['nvim-treesitter']
         and #vim.g.lightboat_opt.treesitter_ensure_installed > 0
       then
@@ -132,7 +136,7 @@ local setup_autocmd = function()
         )
         if #not_installed > 0 then require('nvim-treesitter').install(not_installed) end
       end
-      if loaded['blink.cmp'] and not done['blink.cmp'] then
+      if vim.g.plugin_loaded['blink.cmp'] and not done['blink.cmp'] then
         done['blink.cmp'] = true
         local original = require('blink.cmp.completion.list').show
         require('blink.cmp.completion.list').show = function(ctx, items_by_source)

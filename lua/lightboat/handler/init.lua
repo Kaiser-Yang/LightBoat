@@ -2,13 +2,10 @@ local M = {}
 local c = require('lightboat.condition')
 
 local util = require('lightboat.util')
---- @type table<string, boolean>
-local plugin_loaded = {}
 local function ensure_plugin(name)
-  if not plugin_loaded[name] then
-    require(name)
-    plugin_loaded[name] = true
-  end
+  if not vim.g.plugin_loaded[name] then require(name) end
+end
+
 end
 
 -- HACK:
