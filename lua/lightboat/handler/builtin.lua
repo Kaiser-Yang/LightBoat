@@ -35,12 +35,13 @@ function M.delete_to_eow_command()
   return vim.fn.setcmdline(new_line, col0 + 1) == 0
 end
 
-function M.cursor_to_first_non_blank_insert()
+function M.cursor_to_bol_insert()
   local line = vim.api.nvim_get_current_line()
-  local first_non_blank = line:match('^%s*') or ''
   local col = vim.api.nvim_win_get_cursor(0)[2]
-  if col == #first_non_blank then return false end
-  return string.rep('<c-g>U' .. (col < #first_non_blank and '<right>' or '<left>'), math.abs(col - #first_non_blank))
+  if col == 0 then return false end
+  local first_non_blank = #(line:match('^%s*') or '')
+  if col <= first_non_blank then first_non_blank = 0 end
+  return string.rep('<c-g>U<left>', col - first_non_blank)
 end
 
 local format = { '^:', '^/', '^%?', '^:%s*!', '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*', '^:%s*he?l?p?%s+', '^=' }
