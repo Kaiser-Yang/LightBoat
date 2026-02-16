@@ -111,4 +111,9 @@ function M.delete_to_eol_insert()
   return true
 end
 
+function M.select_file() u.update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
+M.system_put_command = '<c-r><c-r>+'
+M.system_put_insert = '<cmd>set paste<cr><c-g>u<c-r><c-r>+<cmd>set nopaste<cr>'
+M.system_put = '"+p'
+M.system_put_before = '"+P'
 return M
