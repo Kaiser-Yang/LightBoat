@@ -9,6 +9,7 @@ M = vim.tbl_deep_extend('error', M, require('lightboat.handler.pair'))
 M = vim.tbl_deep_extend('error', M, require('lightboat.handler.picker'))
 M = vim.tbl_deep_extend('error', M, require('lightboat.handler.surround'))
 M = vim.tbl_deep_extend('error', M, require('lightboat.handler.treesitter'))
+M = vim.tbl_deep_extend('error', M, require('lightboat.handler.repmove'))
 
 local todo_comment_available = c():plugin_available('todo-comments.nvim')
 -- HACK: Those two do not support vim.v.count

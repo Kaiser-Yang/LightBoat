@@ -1,7 +1,5 @@
 local M = {}
 local u = require('lightboat.util')
-local c = require('lightboat.condition')
-local repmove_available = c():plugin_available('repmove.nvim')
 
 local function toggle_comment_insert_mode()
   local commentstring = vim.bo.commentstring
@@ -203,4 +201,10 @@ M.system_put = '"+p'
 M.system_put_before = '"+P'
 M.system_yank_eol = '"+y$'
 M.system_cut_eol = '"+d$'
+function M.toggle_spell()
+  local status = vim.wo.spell == false
+  u.toggle_notify('Spell', status, { title = 'Neovim' })
+  vim.wo.spell = status
+  return true
+end
 return M
