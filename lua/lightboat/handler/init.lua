@@ -6,8 +6,6 @@ local function ensure_plugin(name)
   if not vim.g.plugin_loaded[name] then require(name) end
 end
 
-end
-
 -- HACK:
 -- This will break the dot repeat
 local function toggle_comment_insert_mode()
@@ -67,6 +65,16 @@ local function toggle_comment_insert_mode()
 
   local delta = desired_col - actual_col
   return string.rep(delta > 0 and '<right>' or '<left>', math.abs(delta))
+end
+
+local blink_indent_available = c():plugin_available('blink.indent')
+M.toggle_blink_indent = function()
+  if not blink_indent_available() then return false end
+  local indent = require('blink.indent')
+  local status = indent.is_enabled() == false
+  util.toggle_notify('Indent Line', status, { title = 'Blink Indent' })
+  indent.enable(status)
+  return true
 end
 
 M.auto_indent = function()
