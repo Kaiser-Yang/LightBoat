@@ -112,9 +112,31 @@ function M.delete_to_eol_insert()
   return true
 end
 
+function M.system_yank()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 2) == 'no' then
+    if vim.v.operator ~= 'y' or vim.v.register ~= '+' then return false end
+    return 'y'
+  else
+    return '"+y'
+  end
+end
+
+function M.system_cut()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 2) == 'no' then
+    if vim.v.operator ~= 'd' or vim.v.register ~= '+' then return false end
+    return 'd'
+  else
+    return '"+d'
+  end
+end
+
 function M.select_file() u.update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
 M.system_put_command = '<c-r><c-r>+'
 M.system_put_insert = '<cmd>set paste<cr><c-g>u<c-r><c-r>+<cmd>set nopaste<cr>'
 M.system_put = '"+p'
 M.system_put_before = '"+P'
+M.system_yank_eol = '"+y$'
+M.system_cut_eol = '"+d$'
 return M
