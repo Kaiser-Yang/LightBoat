@@ -61,7 +61,12 @@ local function hack(suffix)
   if op ~= 'g@' then last_count = vim.v.count1 end
   local res
   if op == 'y' then
-    res = M['surround_normal' .. suffix]
+    if is_S then
+      -- suffix is ignored when is_S this will make "yS" behaviour like "ys$"
+      res = M['surround_normal']
+    else
+      res = M['surround_normal' .. suffix]
+    end
   elseif op == 'd' then
     res = M['surround_delete' .. suffix]
   elseif op == 'c' then
@@ -73,7 +78,7 @@ local function hack(suffix)
   end
   if not res then return false end
   if op ~= 'g@' then
-    util.key.feedkeys('<esc>' .. tostring(vim.v.count1) .. res(), 'n')
+    util.key.feedkeys('<esc>' .. tostring(vim.v.count1) .. res() .. (is_S and '$' or ''), 'n')
   else
     util.key.feedkeys('<esc>' .. tostring(last_count) .. res(), 'n')
   end
