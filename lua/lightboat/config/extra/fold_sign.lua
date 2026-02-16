@@ -1,5 +1,5 @@
 return {
-  enabled = false,
+  enabled = true,
   keys = {
     za = { key = 'za', expr = true, desc = 'Toggle fold under cursor' },
     zc = { key = 'zc', expr = true, desc = 'Close fold under cursor' },
