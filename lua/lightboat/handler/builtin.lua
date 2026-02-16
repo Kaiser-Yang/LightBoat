@@ -211,6 +211,8 @@ M.system_put = '"+p'
 M.system_put_before = '"+P'
 M.system_yank_eol = '"+y$'
 M.system_cut_eol = '"+d$'
+-- stylua: ignore end
+
 function M.toggle_inlay_hint()
   local status = vim.lsp.inlay_hint.is_enabled() == false
   u.toggle_notify('Inlay Hint', status, { title = 'LSP' })

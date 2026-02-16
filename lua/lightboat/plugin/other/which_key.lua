@@ -1,9 +1,4 @@
--- PERF:
--- When enabling the registers plugin, (default on, opts.plugins.registers = true)
--- it will cause a performance problem when the content is large.
 return {
-  -- HACK:
-  -- This plugin will make 'gr' not work
   'Kaiser-Yang/which-key.nvim',
   cond = not vim.g.vscode,
   event = 'VeryLazy',

@@ -1,6 +1,4 @@
 local u = require('lightboat.util')
-local blink_cmp_dictionary_available = u.plugin_available('blink-cmp-dictionary')
-local blink_ripgrep_available = u.plugin_available('blink-ripgrep.nvim')
 return {
   'saghen/blink.cmp',
   cond = not vim.g.vscode,
@@ -18,8 +16,8 @@ return {
     sources = {
       default = function()
         local res = { 'snippets', 'lsp', 'path', 'buffer' }
-        if blink_ripgrep_available() then table.insert(res, 'ripgrep') end
-        if blink_cmp_dictionary_available() then table.insert(res, 'dictionary') end
+        if u.plugin_available('blink-ripgrep.nvim') then table.insert(res, 'ripgrep') end
+        if u.plugin_available('blink-cmp-dictionary') then table.insert(res, 'dictionary') end
         return res
       end,
       providers = {
@@ -49,20 +47,29 @@ return {
             return out
           end,
         },
-        lsp = { fallbacks = {} },
+        lsp = {
+          fallbacks = {},
+          transform_items = function(_, items)
+            -- Remove snippets
+            return vim.tbl_filter(
+              function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Snippet end,
+              items
+            )
+          end,
+        },
         path = { opts = { show_hidden_files_by_default = true } },
         snippets = { name = 'Snip' },
         dictionary = {
           name = 'Dict',
           module = 'blink-cmp-dictionary',
-          enabled = function() return blink_cmp_dictionary_available() end,
+          enabled = function() return u.plugin_available('blink-cmp-dictionary') end,
           min_keyword_length = 1,
           opts = { dictionary_files = { u.get_light_boat_root() .. '/dict/en_dict.txt' } },
         },
         ripgrep = {
           name = 'RG',
           module = 'blink-ripgrep',
-          enabled = function() return blink_ripgrep_available() and u.git.is_git_repository() end,
+          enabled = function() return u.plugin_available('blink-ripgrep.nvim') and u.git.is_git_repository() end,
           opts = {
             fallback_to_regex_highlighting = true,
             backend = {

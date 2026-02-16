@@ -1,7 +1,7 @@
 local M = {}
 
 --- @type table<string, boolean>
-vim.g.plugin_loaded = {}
+_G.plugin_loaded = {}
 --- @type table<string, boolean>
 local done = {}
 local util = require('lightboat.util')
@@ -55,7 +55,7 @@ local capabilities = {
 local function auto_start_lsp()
   vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
   -- Make sure the lspconfig is loaded
-  if util.plugin_available('nvim-lspconfig') and not vim.g.plugin_loaded['nvim-lspconfig'] then require('lspconfig') end
+  if util.plugin_available('nvim-lspconfig') and not _G.plugin_loaded['nvim-lspconfig'] then require('lspconfig') end
   local lsp_path = vim.fn.stdpath('config')
   if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
   lsp_path = lsp_path .. 'after/lsp'
@@ -96,13 +96,13 @@ local setup_autocmd = function()
     group = group,
     pattern = 'LazyLoad',
     callback = function(args)
-      vim.g.plugin_loaded[args.data] = true
-      if vim.g.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
+      _G.plugin_loaded[args.data] = true
+      if _G.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
         done['telescope.nvim'] = true
         if fzf_available then require('telescope').load_extension('fzf') end
       end
       if
-        vim.g.plugin_loaded['mason.nvim']
+        _G.plugin_loaded['mason.nvim']
         and not done['nvim.mason']
         and #vim.g.lightboat_opt.mason_ensure_installed > 0
       then
@@ -120,7 +120,7 @@ local setup_autocmd = function()
         end
       end
       if
-        vim.g.plugin_loaded['nvim-treesitter']
+        _G.plugin_loaded['nvim-treesitter']
         and not done['nvim-treesitter']
         and #vim.g.lightboat_opt.treesitter_ensure_installed > 0
       then
@@ -132,9 +132,12 @@ local setup_autocmd = function()
         )
         if #not_installed > 0 then require('nvim-treesitter').install(not_installed) end
       end
-      if vim.g.plugin_loaded['blink.cmp'] and not done['blink.cmp'] then
+      if _G.plugin_loaded['blink.cmp'] and not done['blink.cmp'] then
+        vim.notify(args.data)
         done['blink.cmp'] = true
         local original = require('blink.cmp.completion.list').show
+        -- HACK:
+        -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
         require('blink.cmp.completion.list').show = function(ctx, items_by_source)
           local seen = {}
           local function filter(item)
@@ -142,8 +145,6 @@ local setup_autocmd = function()
             seen[item.label] = true
             return true
           end
-          -- HACK:
-          -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
           local priority = {}
           if vim.b.blink_cmp_unique_priority then
             priority = util.get(vim.b.blink_cmp_unique_priority, ctx)

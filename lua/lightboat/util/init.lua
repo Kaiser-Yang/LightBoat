@@ -248,7 +248,7 @@ function M.treesitter_available(name)
 end
 
 function M.ensure_plugin(name)
-  if not vim.g.plugin_loaded[name] then require(name) end
+  if not _G.plugin_loaded[name] then require(name) end
 end
 
 return M
