@@ -1,5 +1,30 @@
 local M = {}
 local u = require('lightboat.util')
+
+local todo_comment_available = u.plugin_available('todo-comments.nvim')
+-- HACK: Those two do not support vim.v.count
+-- HACK: Those two will always return true
+local function previous_todo()
+  if not todo_comment_available then return false end
+  vim.schedule(function()
+    vim.cmd("normal! m'")
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == 'no' then vim.cmd('normal! V') end
+    require('todo-comments').jump_prev()
+  end)
+  return true
+end
+local function next_todo()
+  if not todo_comment_available then return false end
+  vim.schedule(function()
+    vim.cmd("normal! m'")
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == 'no' then vim.cmd('normal! V') end
+    require('todo-comments').jump_next()
+  end)
+  return true
+end
+
 -- HACK:
 -- Those below do not support vim.v.count
 local function next_section_start()
@@ -73,6 +98,7 @@ function M.F() return u.ensure_repmove('F', 'f', ',', ';')[1]() end
 function M.f() return u.ensure_repmove('F', 'f', ',', ';')[2]() end
 function M.T() return u.ensure_repmove('T', 't', ',', ';')[1]() end
 function M.t() return u.ensure_repmove('T', 't', ',', ';')[2]() end
+function M.next_todo() return u.ensure_repmove(previous_todo, next_todo)[2]() end
 function M.next_misspelled() return u.ensure_repmove('[s', ']s')[2]() end
 function M.next_section_start() return u.ensure_repmove(previous_section_start, next_section_start)[2]() end
 function M.next_section_end() return u.ensure_repmove(previous_section_end, next_section_end)[2]() end
@@ -94,6 +120,7 @@ function M.next_statement_start() return u.ensure_repmove(previous_statement_sta
 function M.next_statement_end() return u.ensure_repmove(previous_statement_end, next_statement_end)[2]() end
 function M.next_call_start() return u.ensure_repmove(previous_call_start, next_call_start)[2]() end
 function M.next_call_end() return u.ensure_repmove(previous_call_end, next_call_end)[2]() end
+function M.previous_todo() return u.ensure_repmove(previous_todo, next_todo)[1]() end
 function M.previous_misspelled() return u.ensure_repmove('[s', ']s')[1]() end
 function M.previous_section_start() return u.ensure_repmove(previous_section_start, next_section_start)[1]() end
 function M.previous_section_end() return u.ensure_repmove(previous_section_end, next_section_end)[1]() end
