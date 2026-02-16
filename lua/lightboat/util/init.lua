@@ -205,4 +205,50 @@ function M.update_selection(start_row, start_col, end_row, end_col, selection_mo
   vim.api.nvim_win_set_cursor(0, { end_row + 1, end_col })
 end
 
+local plugin_cache = nil
+--- @param name string
+--- @return boolean
+function M.plugin_available(name)
+  if plugin_cache == nil then
+    plugin_cache = {}
+    for _, plugin in pairs(require('lazy').plugins()) do
+      plugin_cache[plugin.name] = true
+    end
+  end
+  if not plugin_cache[name] then plugin_cache[name] = false end
+  return plugin_cache[name]
+end
+
+--- @type table<string, function>
+local repmove = {}
+--- @param previous string|function
+--- @param next string|function
+--- @param comma? string|function
+--- @param semicolon? string|function
+--- @return table<function>
+function M.ensure_repmove(previous, next, comma, semicolon, rp)
+  rp = rp or repmove
+  if not rp[previous] or not rp[next] then
+    if not M.plugin_available('repmove.nvim') then
+      rp[previous], rp[next] = M.ensure_function(previous), M.ensure_function(next)
+    else
+      rp[previous], rp[next] = require('repmove').make(previous, next, comma, semicolon)
+    end
+  end
+  return { rp[previous], rp[next] }
+end
+
+function M.treesitter_available(name)
+  if not name then
+    -- HACK:
+    -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
+    return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
+  end
+  return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), name) ~= nil
+end
+
+function M.ensure_plugin(name)
+  if not vim.g.plugin_loaded[name] then require(name) end
+end
+
 return M

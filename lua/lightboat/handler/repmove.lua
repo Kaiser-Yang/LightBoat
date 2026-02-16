@@ -1,5 +1,5 @@
 local u = require('lightboat.util')
-local repmove_available = u.is_plugin_installed('repmove')
+local repmove_available = u.plugin_available('repmove')
 
 local M = {}
 

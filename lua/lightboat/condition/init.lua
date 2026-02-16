@@ -1,19 +1,5 @@
 local util = require('lightboat.util')
 
-local plugin_cache = nil
---- @param name string
---- @return boolean
-local function is_plugin_installed(name)
-  if plugin_cache == nil then
-    plugin_cache = {}
-    for _, plugin in pairs(require('lazy').plugins()) do
-      plugin_cache[plugin.name] = true
-    end
-  end
-  if not plugin_cache[name] then plugin_cache[name] = false end
-  return plugin_cache[name]
-end
-
 ---@class Cond
 ---@field private _conditions function[]
 local Cond = {}
@@ -87,67 +73,11 @@ function Cond:last_key(key)
   return copy
 end
 
----Add a treesitter_available condition
----@return Cond
-function Cond:treesitter_available()
-  local copy = self:_copy()
-  table.insert(copy._conditions, function()
-    -- HACK:
-    -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
-    return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
-  end)
-  return copy
-end
-
-function Cond:treesitter_textobject_available()
-  local copy = self:_copy()
-  local treesitter_available = Cond():treesitter_available()
-  local textobjects_installed = Cond():plugin_available('nvim-treesitter-textobjects')
-  copy:add(treesitter_available)
-  copy:add(textobjects_installed)
-  return copy
-end
-
-function Cond:treesitter_highlight_available()
-  local copy = self:_copy()
-  table.insert(
-    copy._conditions,
-    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'highlights') ~= nil end
-  )
-  return copy
-end
-
-function Cond:treesitter_foldexpr_available()
-  local copy = self:_copy()
-  table.insert(
-    copy._conditions,
-    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'folds') ~= nil end
-  )
-  return copy
-end
-
-function Cond:plugin_available(name)
-  local copy = self:_copy()
-  table.insert(copy._conditions, function() return is_plugin_installed(name) end)
-  return copy
-end
-
-function Cond:treesitter_indentexpr_available()
-  local copy = self:_copy()
-  local treesitter_installed = Cond():plugin_available('nvim-treesitter')
-  copy:add(treesitter_installed)
-  table.insert(
-    copy._conditions,
-    function() return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), 'indents') ~= nil end
-  )
-  return copy
-end
-
 ---Add a completion_menu_visible condition
 ---@return Cond
 function Cond:completion_menu_visible()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').is_menu_visible() end)
   return copy
@@ -157,7 +87,7 @@ end
 ---@return Cond
 function Cond:completion_menu_not_visible()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return not require('blink.cmp').is_menu_visible() end)
   return copy
@@ -167,7 +97,7 @@ end
 ---@return Cond
 function Cond:completion_item_selected()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function()
     local blink = require('blink.cmp')
@@ -180,7 +110,7 @@ end
 ---@return Cond
 function Cond:snippet_active()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').snippet_active() end)
   return copy
@@ -190,7 +120,7 @@ end
 ---@return Cond
 function Cond:snippet_not_active()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return not require('blink.cmp').snippet_active() end)
   return copy
@@ -200,7 +130,7 @@ end
 ---@return Cond
 function Cond:documentation_visible()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').is_documentation_visible() end)
   return copy
@@ -210,7 +140,7 @@ end
 ---@return Cond
 function Cond:signature_visible()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return require('blink.cmp').is_signature_visible() end)
   return copy
@@ -220,7 +150,7 @@ end
 ---@return Cond
 function Cond:signature_not_visible()
   local copy = self:_copy()
-  local cmp_installed = Cond():plugin_available('blink.cmp')
+  local cmp_installed = util.plugin_available('blink.cmp')
   copy:add(cmp_installed)
   table.insert(copy._conditions, function() return not require('blink.cmp').is_signature_visible() end)
   return copy
@@ -325,6 +255,14 @@ end
 function Cond:lsp_attached()
   local copy = self:_copy()
   table.insert(copy._conditions, function() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 end)
+  return copy
+end
+
+--- Add an in-macro condition
+--- @return Cond
+function Cond:in_macro()
+  local copy = self:_copy()
+  table.insert(copy._conditions, function() return vim.fn.reg_recording() ~= '' or vim.fn.reg_executing() ~= '' end)
   return copy
 end
 

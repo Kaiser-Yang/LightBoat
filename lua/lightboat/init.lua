@@ -1,6 +1,5 @@
 local M = {}
 
-local c = require('lightboat.condition')
 --- @type table<string, boolean>
 vim.g.plugin_loaded = {}
 --- @type table<string, boolean>
@@ -54,10 +53,9 @@ local capabilities = {
 }
 
 local function auto_start_lsp()
-  local lc = c():plugin_available('nvim-lspconfig')
   vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
   -- Make sure the lspconfig is loaded
-  if lc() and not vim.g.plugin_loaded['nvim-lspconfig'] then require('lspconfig') end
+  if util.plugin_available('nvim-lspconfig') and not vim.g.plugin_loaded['nvim-lspconfig'] then require('lspconfig') end
   local lsp_path = vim.fn.stdpath('config')
   if lsp_path:sub(-1) ~= '/' then lsp_path = lsp_path .. '/' end
   lsp_path = lsp_path .. 'after/lsp'
@@ -87,15 +85,13 @@ local setup_autocmd = function()
     group = group,
     callback = function()
       if not enabled('nohlsearch_auto_run') then return end
-      local cmdtype = vim.fn.getcmdtype()
-      if
-        vim.tbl_contains({ 'i', 'ic', 'ix', 'R', 'Rc', 'Rx', 'Rv', 'Rvc', 'Rvx' }, vim.api.nvim_get_mode().mode)
-        or cmdtype ~= '' and cmdtype ~= '/' and cmdtype ~= '?'
-      then
+      if vim.tbl_contains({ 'i', 'ic', 'ix', 'R', 'Rc', 'Rx', 'Rv', 'Rvc', 'Rvx' }, vim.api.nvim_get_mode().mode) then
+        -- We must schedule here
         vim.schedule(function() vim.cmd('nohlsearch') end)
       end
     end,
   })
+  local fzf_available = util.plugin_available('telescope-fzf-native.nvim')
   vim.api.nvim_create_autocmd('User', {
     group = group,
     pattern = 'LazyLoad',
@@ -103,7 +99,7 @@ local setup_autocmd = function()
       vim.g.plugin_loaded[args.data] = true
       if vim.g.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
         done['telescope.nvim'] = true
-        if c():plugin_available('telescope-fzf-native.nvim')() then require('telescope').load_extension('fzf') end
+        if fzf_available then require('telescope').load_extension('fzf') end
       end
       if
         vim.g.plugin_loaded['mason.nvim']
@@ -163,18 +159,18 @@ local setup_autocmd = function()
     end,
   })
   local guessed = {}
-  local cc = c():plugin_available('conform.nvim')
-  local gc = c():plugin_available('guess-indent.nvim')
+  local conform_available = util.plugin_available('conform.nvim')
+  local guess_indent_avalable = util.plugin_available('guess-indent.nvim')
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
     callback = function(args)
-      if not enabled('conform_on_save') or not cc() then return end
+      if not enabled('conform_on_save') or not conform_available then return end
       local buffer = args.buf
       require('conform').format({ bufnr = buffer }, function(err)
         if err then
           vim.schedule(function() vim.notify('Format failed: ' .. err, vim.log.levels.ERROR, { title = 'Conform' }) end)
         end
-        if not err and not guessed[buffer] and enabled('conform_on_save_reguess_indent') and gc() then
+        if not err and not guessed[buffer] and enabled('conform_on_save_reguess_indent') and guess_indent_avalable then
           guessed[buffer] = true
           require('guess-indent').set_from_buffer(buffer, true, false)
         end
@@ -195,18 +191,22 @@ local setup_autocmd = function()
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
     callback = function()
-      local tac = c():treesitter_available()
-      if not tac() then return end
-      local thac = c():treesitter_highlight_available()
-      if thac() and enabled('treesitter_highlight_auto_start') then vim.treesitter.start() end
-      local tfac = c():treesitter_foldexpr_available()
-      if tfac() and enabled('treesitter_foldexpr_auto_set') then
-        vim.wo[0][0].foldenable = true
+      if not util.treesitter_available() then return end
+      -- PERF:
+      if util.treesitter_available('highlights') and enabled('treesitter_highlight_auto_start') then
+        vim.treesitter.start()
+      end
+      if util.treesitter_available('folds') and enabled('treesitter_foldexpr_auto_set') then
+        -- vim.wo[0][0].foldlevel = 9999
         vim.wo[0][0].foldmethod = 'expr'
         vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       end
-      local tiac = c():treesitter_indentexpr_available()
-      if tiac() and enabled('treesitter_indentexpr_auto_set') then
+      if
+        util.treesitter_available('indents')
+        and util.plugin_available('nvim-treesitter')
+        and enabled('treesitter_indentexpr_auto_set')
+      then
+        -- WEIRD: can not work
         vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end
     end,

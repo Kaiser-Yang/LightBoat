@@ -1,7 +1,6 @@
 local u = require('lightboat.util')
-local c = require('lightboat.condition')
-local blink_cmp_dictionary_available = c():plugin_available('blink-cmp-dictionary')
-local blink_ripgrep_available = c():plugin_available('blink-ripgrep.nvim')
+local blink_cmp_dictionary_available = u.plugin_available('blink-cmp-dictionary')
+local blink_ripgrep_available = u.plugin_available('blink-ripgrep.nvim')
 return {
   'saghen/blink.cmp',
   cond = not vim.g.vscode,
@@ -12,7 +11,6 @@ return {
     {
       'mikavilpas/blink-ripgrep.nvim',
       enabled = vim.fn.executable('rg') == 1,
-      cond = not vim.g.vscode,
     },
   },
   event = { 'InsertEnter', 'CmdlineEnter' },
