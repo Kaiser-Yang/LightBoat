@@ -92,18 +92,11 @@ local setup_autocmd = function()
       end
     end,
   })
-  local fzf_available = util.plugin_available('telescope-fzf-native.nvim')
   vim.api.nvim_create_autocmd('User', {
     group = group,
     pattern = 'LazyLoad',
     callback = function(args)
       _G.plugin_loaded[args.data] = true
-      if _G.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
-        done['telescope.nvim'] = true
-        if fzf_available then require('telescope').load_extension('fzf') end
-        -- INFO:
-        -- We can load more extensions here
-      end
       if
         _G.plugin_loaded['mason.nvim']
         and not done['nvim.mason']
