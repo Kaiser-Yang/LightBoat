@@ -231,12 +231,16 @@ end
 function M.toggle_treesitter()
   local buf = vim.api.nvim_get_current_buf()
   local status = vim.treesitter.highlighter.active[buf] == nil
-  u.toggle_notify('Treesitter Highlight', status, { title = 'Treesitter' })
   if status then
-    vim.treesitter.start(buf)
+    local ok, error = pcall(vim.treesitter.start, buf)
+    if not ok then
+      vim.notify(error, vim.log.levels.ERROR, { title = 'Treesitter' })
+      return false
+    end
   else
     vim.treesitter.stop(buf)
   end
+  u.toggle_notify('Treesitter Highlight', status, { title = 'Treesitter' })
   return true
 end
 

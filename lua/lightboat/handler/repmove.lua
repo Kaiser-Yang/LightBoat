@@ -2,10 +2,17 @@ local M = {}
 local u = require('lightboat.util')
 
 local todo_comment_available = u.plugin_available('todo-comments.nvim')
+local function check()
+  if not todo_comment_available then
+    vim.notify('todo-comments.nvim is not available', vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+  return true
+end
 -- HACK: Those two do not support vim.v.count
 -- HACK: Those two will always return true
 local function previous_todo()
-  if not todo_comment_available then return false end
+  if not check() then return false end
   vim.schedule(function()
     vim.cmd("normal! m'")
     require('todo-comments').jump_prev()
@@ -13,7 +20,7 @@ local function previous_todo()
   return true
 end
 local function next_todo()
-  if not todo_comment_available then return false end
+  if not check() then return false end
   vim.schedule(function()
     vim.cmd("normal! m'")
     require('todo-comments').jump_next()
@@ -108,11 +115,11 @@ local function previous_call_end() return go_to('previous', 'end', '@call.outer'
 local function indent_top() return indent_goto('top') end
 local function indent_bottom() return indent_goto('bottom') end
 
+local repmove_available = u.plugin_available('repmove.nvim')
 function M.indent_top() return u.ensure_repmove(indent_top, indent_bottom)[1]() end
 function M.indent_bottom() return u.ensure_repmove(indent_top, indent_bottom)[2]() end
 
 -- stylua: ignore start
-local repmove_available = u.plugin_available('repmove.nvim')
 function M.comma() if not repmove_available then return ',' end return require('repmove').comma() end
 function M.semicolon() if not repmove_available then return ';' end return require('repmove').semicolon() end
 function M.F() return u.ensure_repmove('F', 'f', ',', ';')[1]() end

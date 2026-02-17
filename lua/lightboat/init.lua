@@ -160,15 +160,30 @@ local setup_autocmd = function()
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
     callback = function(args)
-      if not enabled('conform_on_save') or not conform_available then return end
+      if not enabled('conform_on_save') then return end
+      if not conform_available then
+        vim.notify(
+          'conform.nvim is not available, please disable conform_on_save',
+          vim.log.levels.WARN,
+          { title = 'Light Boat' }
+        )
+      end
       local buffer = args.buf
       require('conform').format({ bufnr = buffer }, function(err)
         if err then
-          vim.schedule(function() vim.notify('Format failed: ' .. err, vim.log.levels.ERROR, { title = 'Conform' }) end)
+          vim.schedule(function() vim.notify(err, vim.log.levels.ERROR, { title = 'Conform' }) end)
         end
-        if not err and not guessed[buffer] and enabled('conform_on_save_reguess_indent') and guess_indent_available then
-          guessed[buffer] = true
-          require('guess-indent').set_from_buffer(buffer, true, false)
+        if enabled('conform_on_save_reguess_indent') then
+          if not guess_indent_available then
+            vim.notify(
+              'guess-indent.nvim is not available, please disable conform_on_save_reguess_indent',
+              vim.log.levels.WARN,
+              { title = 'Light Boat' }
+            )
+          elseif not err and not guessed[buffer] then
+            guessed[buffer] = true
+            require('guess-indent').set_from_buffer(buffer, true, false)
+          end
         end
       end)
     end,
@@ -193,17 +208,19 @@ local setup_autocmd = function()
         vim.treesitter.start()
       end
       if util.treesitter_available('folds') and enabled('treesitter_foldexpr_auto_set') then
-        -- vim.wo[0][0].foldlevel = 9999
         vim.wo[0][0].foldmethod = 'expr'
         vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       end
-      if
-        util.treesitter_available('indents')
-        and util.plugin_available('nvim-treesitter')
-        and enabled('treesitter_indentexpr_auto_set')
-      then
-        -- WEIRD: can not work
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      if enabled('treesitter_indentexpr_auto_set') then
+        if not util.plugin_available('nvim-treesitter') then
+          vim.notify(
+            'nvim-treesitter is not available, please disable treesitter_indentexpr_auto_set',
+            vim.log.levels.WARN,
+            { title = 'Light Boat' }
+          )
+        elseif util.treesitter_available('indents') then
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
       end
     end,
   })

@@ -2,8 +2,22 @@ local u = require('lightboat.util')
 local M = {}
 
 local textobject_available = u.plugin_available('nvim-treesitter-textobjects')
+local function check()
+  if not textobject_available then
+    vim.notify('nvim-treesitter-textobjects is not available', vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+  return true
+end
+local function check_big()
+  if u.buffer.big() then
+    vim.notify('Buffer is too big for nvim-treesitter-textobjects', vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+  return true
+end
 local function select(query_string, query_group)
-  if not textobject_available or u.buffer.big() then return false end
+  if not check() or not check_big() then return false end
   require('nvim-treesitter-textobjects.select').select_textobject(query_string, query_group)
   -- HACK:
   -- We do not know if the operation is successful or not, so just return true
@@ -12,7 +26,7 @@ end
 
 --- @param direction 'next'|'previous'
 local function swap(direction, query_string)
-  if not textobject_available or u.buffer.big() then return false end
+  if not check() or not check_big() then return false end
   require('nvim-treesitter-textobjects.swap')['swap_' .. direction](query_string)
   -- HACK:
   -- We do not know if the operation is successful or not, so just return true
@@ -22,7 +36,7 @@ end
 --- @param direction 'next'|'previous'
 --- @param position 'start'|'end'
 function M.go_to(direction, position, query_string, query_group)
-  if not textobject_available or u.buffer.big() then return false end
+  if not check() or not check_big() then return false end
   require('nvim-treesitter-textobjects.move')['goto_' .. direction .. '_' .. position](query_string, query_group)
   -- HACK:
   -- We do not know if the operation is successful or not, so just return true

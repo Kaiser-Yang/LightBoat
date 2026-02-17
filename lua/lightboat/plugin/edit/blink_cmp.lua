@@ -16,7 +16,11 @@ return {
     sources = {
       default = function()
         local res = { 'snippets', 'lsp', 'path', 'buffer' }
-        if u.plugin_available('blink-ripgrep.nvim') then table.insert(res, 'ripgrep') end
+        local big = false
+        for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.b[buffer].big_file_status then big = true end
+        end
+        if u.plugin_available('blink-ripgrep.nvim') and not big then table.insert(res, 'ripgrep') end
         if u.plugin_available('blink-cmp-dictionary') then table.insert(res, 'dictionary') end
         return res
       end,
@@ -71,9 +75,9 @@ return {
           module = 'blink-ripgrep',
           enabled = function() return u.plugin_available('blink-ripgrep.nvim') and u.git.is_git_repository() end,
           opts = {
+            prefix_min_len = 1,
             fallback_to_regex_highlighting = true,
             backend = {
-              prefix_min_len = 1,
               context_size = 5,
               project_root_fallback = false,
               ripgrep = {
