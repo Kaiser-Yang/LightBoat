@@ -21,11 +21,7 @@ function M.ensure_list(value)
   elseif not value then
     return {}
   else
-    vim.schedule(
-      function()
-        vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR, { title = 'LightBoat' })
-      end
-    )
+    vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR, { title = 'LightBoat' })
   end
 end
 
