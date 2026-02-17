@@ -3,10 +3,10 @@ return {
   lazy = false,
   opts = {
     mappings = {
-      object_scope = '<plug>(blink-indent-inside)',
-      object_scope_with_border = '<plug>(blink-indent-around)',
-      goto_top = '<plug>(blink-indent-top)',
-      goto_bottom = '<plug>(blink-indent-bottom)',
+      object_scope = '',
+      object_scope_with_border = '',
+      goto_top = '',
+      goto_bottom = '',
     },
     static = {
       whitespace_char = '·',

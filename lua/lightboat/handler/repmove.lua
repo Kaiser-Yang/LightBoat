@@ -36,6 +36,7 @@ end
 local previous_section_end = previous_section_start
 local next_section_end = next_section_start
 local go_to = require('lightboat.handler.treesitter').go_to
+local indent_goto = require('lightboat.handler.blink_indent').indent_goto
 
 local urp = {}
 function M.repmove_wrap(previous, next, idx, comma, semicolon)
@@ -103,6 +104,12 @@ local function previous_statement_start() return go_to('previous', 'start', '@st
 local function previous_statement_end() return go_to('previous', 'end', '@statement.outer') end
 local function previous_call_start() return go_to('previous', 'start', '@call.outer') end
 local function previous_call_end() return go_to('previous', 'end', '@call.outer') end
+
+local function indent_top() return indent_goto('top') end
+local function indent_bottom() return indent_goto('bottom') end
+
+function M.indent_top() return u.ensure_repmove(indent_top, indent_bottom)[1]() end
+function M.indent_bottom() return u.ensure_repmove(indent_top, indent_bottom)[2]() end
 
 -- stylua: ignore start
 local repmove_available = u.plugin_available('repmove.nvim')
