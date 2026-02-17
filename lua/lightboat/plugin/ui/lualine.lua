@@ -1,4 +1,3 @@
-local big_file = require('lightboat.extra.big_file')
 local M = {}
 
 --- @param ft_list string|string[]
