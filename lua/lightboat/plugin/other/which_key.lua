@@ -4,7 +4,7 @@ return {
   event = 'VeryLazy',
   opts = {
     delay = function() return vim.o.timeoutlen end,
-    sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
+    sort = { 'order', 'group', 'case', 'mod' },
     keys = { scroll_down = '', scroll_up = '' },
     triggers = { { '<auto>', mode = 'icnxo' }, { 'a', mode = 'x' }, { 'i', mode = 'x' } },
     icons = { rules = false },
