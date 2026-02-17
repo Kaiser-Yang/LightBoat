@@ -202,7 +202,6 @@ local setup_autocmd = function()
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
     callback = function()
-      if not util.treesitter_available() then return end
       -- PERF:
       if util.treesitter_available('highlights') and enabled('treesitter_highlight_auto_start') then
         vim.treesitter.start()

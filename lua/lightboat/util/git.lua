@@ -68,9 +68,7 @@ function M.detect()
   })
 end
 
-function M.is_git_repository()
-  return vim.fs.root(0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(), '.git')
-end
+function M.is_git_repository() return vim.fs.root(0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(), '.git') end
 
 function M.has_conflict()
   if not M.is_git_repository() then return false end

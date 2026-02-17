@@ -235,11 +235,6 @@ function M.ensure_repmove(previous, next, comma, semicolon, rp)
 end
 
 function M.treesitter_available(name)
-  if not name then
-    -- HACK:
-    -- As to nvim 0.12 { error = false } is not needed, remove this when nvim 0.12 is released
-    return vim.treesitter.get_parser(nil, nil, { error = false }) ~= nil
-  end
   return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), name) ~= nil
 end
 
