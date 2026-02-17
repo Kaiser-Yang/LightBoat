@@ -211,6 +211,7 @@ M.system_put = '"+p'
 M.system_put_before = '"+P'
 M.system_yank_eol = '"+y$'
 M.system_cut_eol = '"+d$'
+M.nop = '<nop>'
 -- stylua: ignore end
 
 function M.toggle_inlay_hint()
