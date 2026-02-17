@@ -28,7 +28,15 @@ end
 --- @return integer
 function M.buffer_size(buffer)
   buffer = M.normalize_buf(buffer)
-  local res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
+  local file_name = vim.api.nvim_buf_get_name(buffer)
+  local res
+  -- We should always try the file size first,
+  -- because when in "BufReadPre" event, we can not get the offset correctly
+  if not vim.bo[buffer].modified then
+    res = vim.fn.getfsize(file_name)
+    if res >= 0 then return res end
+  end
+  res = vim.api.nvim_buf_get_offset(buffer, vim.api.nvim_buf_line_count(buffer) - 1)
   -- Add size of the last line
   res = res + #(vim.api.nvim_buf_get_lines(buffer, -2, -1, false)[1] or '')
   return res

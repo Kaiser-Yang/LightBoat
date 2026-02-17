@@ -73,12 +73,13 @@ local setup_autocmd = function()
     callback = function(ev)
       if vim.b.big_file_status == nil then vim.b.big_file_status = false end
       local is_big = util.buffer.big(ev.buf, ev.event)
-      if type(vim.b.big_file_callback) == 'function' then
-        vim.b.big_file_callback({ buffer = ev.buf, old_status = vim.b.big_file_status, new_status = is_big })
-      elseif type(vim.g.big_file_callback) == 'function' then
-        vim.g.big_file_callback({ buffer = ev.buf, old_status = vim.b.big_file_status, new_status = is_big })
-      end
+      local old_status = vim.b.big_file_status
       vim.b.big_file_status = is_big
+      if type(vim.b.big_file_callback) == 'function' then
+        vim.b.big_file_callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
+      elseif type(vim.g.big_file_callback) == 'function' then
+        vim.g.big_file_callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
+      end
     end,
   })
   vim.api.nvim_create_autocmd('ModeChanged', {
