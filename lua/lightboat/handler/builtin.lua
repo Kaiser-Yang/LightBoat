@@ -124,7 +124,7 @@ local function toggle_comment_insert_mode()
   return string.rep(delta > 0 and '<right>' or '<left>', math.abs(delta))
 end
 
-function M.cursor_to_eol_insert()
+local function cursor_to_eol_insert()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   local line = vim.api.nvim_get_current_line()
   if col == #line then return false end
@@ -135,13 +135,63 @@ function M.cursor_to_eol_insert()
   return true
 end
 
-function M.cursor_to_eol_command()
+local function cursor_to_eol_command()
   local line = vim.fn.getcmdline()
   local col0 = vim.fn.getcmdpos() - 1 -- 0-based
   if col0 == #line then return false end
   local last_non_blank = #(line:match('^(.-)%s*$') or '')
   if col0 >= last_non_blank then last_non_blank = #line end
   return vim.fn.setcmdline(line, last_non_blank + 1) == 0
+end
+
+local function delete_to_eol_command()
+  local line = vim.fn.getcmdline()
+  local col0 = vim.fn.getcmdpos() - 1 -- 0-based
+  if col0 == #line then return false end
+  local last_non_blank = #(line:match('^(.-)%s*$') or '')
+  if col0 >= last_non_blank then last_non_blank = #line end
+  local new_line = line:sub(1, col0) .. line:sub(last_non_blank + 1)
+  return vim.fn.setcmdline(new_line, col0 + 1) == 0
+end
+
+local function delete_to_eol_insert()
+  local line = vim.api.nvim_get_current_line()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  if col == #line then return false end
+  local last_non_blank = #(line:match('^(.-)%s*$') or '')
+  if col >= last_non_blank then last_non_blank = #line end
+  vim.bo.undolevels = vim.bo.undolevels
+  if last_non_blank == #line then
+    vim.cmd('normal! d$')
+  else
+    vim.cmd('normal! dg_')
+  end
+  vim.api.nvim_win_set_cursor(0, { row, col })
+  return true
+end
+
+function M.delete_to_eol()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 1) == 'i' then
+    return delete_to_eol_insert()
+  elseif mode:sub(1, 1) == 'c' then
+    return delete_to_eol_command()
+  else
+    vim.notify('Unsupported mode for delete_to_eol: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+end
+
+function M.cursor_to_eol()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 1) == 'i' then
+    return cursor_to_eol_insert()
+  elseif mode:sub(1, 1) == 'c' then
+    return cursor_to_eol_command()
+  else
+    vim.notify('Unsupported mode for cursor_to_eol: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
 end
 
 function M.delete_to_eow()
@@ -166,32 +216,6 @@ function M.cursor_to_bol()
     vim.notify('Unsupported mode for cursor_to_bol: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
     return false
   end
-end
-
-function M.delete_to_eol_command()
-  local line = vim.fn.getcmdline()
-  local col0 = vim.fn.getcmdpos() - 1 -- 0-based
-  if col0 == #line then return false end
-  local last_non_blank = #(line:match('^(.-)%s*$') or '')
-  if col0 >= last_non_blank then last_non_blank = #line end
-  local new_line = line:sub(1, col0) .. line:sub(last_non_blank + 1)
-  return vim.fn.setcmdline(new_line, col0 + 1) == 0
-end
-
-function M.delete_to_eol_insert()
-  local line = vim.api.nvim_get_current_line()
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  if col == #line then return false end
-  local last_non_blank = #(line:match('^(.-)%s*$') or '')
-  if col >= last_non_blank then last_non_blank = #line end
-  vim.bo.undolevels = vim.bo.undolevels
-  if last_non_blank == #line then
-    vim.cmd('normal! d$')
-  else
-    vim.cmd('normal! dg_')
-  end
-  vim.api.nvim_win_set_cursor(0, { row, col })
-  return true
 end
 
 function M.system_yank()

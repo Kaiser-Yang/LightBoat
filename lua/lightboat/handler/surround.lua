@@ -56,19 +56,14 @@ function l.surround_change_line()
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-change-line)'
 end
-local function hack(suffix, is_S)
+local function hack(suffix)
   if not check() then return false end
   suffix = suffix or ''
   local op = vim.v.operator
   if op ~= 'g@' then last_count = vim.v.count1 end
   local res
   if op == 'y' then
-    if is_S then
-      -- suffix is ignored when is_S this will make "yS" behaviour like "ys$"
-      res = l['surround_normal']
-    else
-      res = l['surround_normal' .. suffix]
-    end
+    res = l['surround_normal' .. suffix]
   elseif op == 'd' then
     res = l['surround_delete' .. suffix]
   elseif op == 'c' then
@@ -78,7 +73,7 @@ local function hack(suffix, is_S)
   end
   if not res then return false end
   if op ~= 'g@' then
-    return '<esc>' .. tostring(vim.v.count1) .. res() .. (is_S and '$' or '')
+    return '<esc>' .. tostring(vim.v.count1) .. res()
   else
     return '<esc>' .. tostring(last_count) .. res()
   end
@@ -94,8 +89,8 @@ function M.surround_visual_line()
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-visual-line)'
 end
-function M.hack_wrap(suffix, is_S)
-  return function() return hack(suffix, is_S) end
+function M.hack_wrap(suffix)
+  return function() return hack(suffix) end
 end
 
 return M
