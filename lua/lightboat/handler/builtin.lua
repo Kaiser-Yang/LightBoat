@@ -1,6 +1,70 @@
 local M = {}
 local u = require('lightboat.util')
 
+-- FIX: when cursor is at the end of the word
+local function delete_to_eow_insert()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local line = vim.api.nvim_get_current_line()
+  local line_number = vim.api.nvim_buf_line_count(0)
+  if row == line_number and col == #line then return false end
+  vim.bo.undolevels = vim.bo.undolevels
+  vim.cmd('normal! de')
+  return true
+end
+
+local function delete_to_eow_command()
+  local line = vim.fn.getcmdline()
+  local col0 = vim.fn.getcmdpos() - 1 -- 0-based
+  if col0 == #line then return false end
+
+  local word_pattern = '\\k\\+' -- Vim regex: keyword sequence
+  local after = line:sub(col0 + 1)
+  local m = vim.fn.matchstrpos(after, word_pattern)
+  local start_idx = m[2]
+  local end_idx = m[3]
+
+  local new_after
+  if start_idx == -1 then
+    new_after = ''
+  else
+    new_after = after:sub(end_idx + 1) or ''
+  end
+  local new_line = (line:sub(1, col0) or '') .. new_after
+  return vim.fn.setcmdline(new_line, col0 + 1) == 0
+end
+
+local function cursor_to_bol_insert()
+  local line = vim.api.nvim_get_current_line()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  if col == 0 then return false end
+  local first_non_blank = #(line:match('^%s*') or '')
+  if col <= first_non_blank then first_non_blank = 0 end
+  vim.bo.undolevels = vim.bo.undolevels
+  vim.api.nvim_win_set_cursor(0, { row, first_non_blank })
+  return true
+end
+
+local format = { '^:', '^/', '^%?', '^:%s*!', '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*', '^:%s*he?l?p?%s+', '^=' }
+local function cursor_to_bol_command()
+  local line = vim.fn.getcmdtype() .. vim.fn.getcmdline()
+  local matched = nil
+  for _, p in pairs(format) do
+    local cur_matched = line:match(p)
+    if not matched or cur_matched and #cur_matched > #matched then matched = cur_matched end
+  end
+  local col = vim.fn.getcmdpos()
+  if col <= 1 then
+    return false
+  else
+    if not matched or col <= #matched then
+      vim.fn.setcmdline(line:sub(2), 1)
+    else
+      vim.fn.setcmdline(line:sub(2), #matched)
+    end
+  end
+  return true
+end
+
 local function toggle_comment_insert_mode()
   local commentstring = vim.bo.commentstring
   if not commentstring or commentstring:match('^%s*$') or commentstring:find('%%s') == nil then return false end
@@ -80,67 +144,28 @@ function M.cursor_to_eol_command()
   return vim.fn.setcmdline(line, last_non_blank + 1) == 0
 end
 
-function M.delete_to_eow_insert()
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  local line = vim.api.nvim_get_current_line()
-  local line_number = vim.api.nvim_buf_line_count(0)
-  if row == line_number and col == #line then return false end
-  vim.bo.undolevels = vim.bo.undolevels
-  vim.cmd('normal! de')
-  return true
-end
-
-function M.delete_to_eow_command()
-  local line = vim.fn.getcmdline()
-  local col0 = vim.fn.getcmdpos() - 1 -- 0-based
-  if col0 == #line then return false end
-
-  local word_pattern = '\\k\\+' -- Vim regex: keyword sequence
-  local after = line:sub(col0 + 1)
-  local m = vim.fn.matchstrpos(after, word_pattern)
-  local start_idx = m[2]
-  local end_idx = m[3]
-
-  local new_after
-  if start_idx == -1 then
-    new_after = ''
+function M.delete_to_eow()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 1) == 'i' then
+    return delete_to_eow_insert()
+  elseif mode:sub(1, 1) == 'c' then
+    return delete_to_eow_command()
   else
-    new_after = after:sub(end_idx + 1) or ''
-  end
-  local new_line = (line:sub(1, col0) or '') .. new_after
-  return vim.fn.setcmdline(new_line, col0 + 1) == 0
-end
-
-function M.cursor_to_bol_insert()
-  local line = vim.api.nvim_get_current_line()
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  if col == 0 then return false end
-  local first_non_blank = #(line:match('^%s*') or '')
-  if col <= first_non_blank then first_non_blank = 0 end
-  vim.bo.undolevels = vim.bo.undolevels
-  vim.api.nvim_win_set_cursor(0, { row, first_non_blank })
-  return true
-end
-
-local format = { '^:', '^/', '^%?', '^:%s*!', '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*', '^:%s*he?l?p?%s+', '^=' }
-function M.cursor_to_bol_command()
-  local line = vim.fn.getcmdtype() .. vim.fn.getcmdline()
-  local matched = nil
-  for _, p in pairs(format) do
-    local cur_matched = line:match(p)
-    if not matched or cur_matched and #cur_matched > #matched then matched = cur_matched end
-  end
-  local col = vim.fn.getcmdpos()
-  if col <= 1 then
+    vim.notify('Unsupported mode for delete_to_eow: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
     return false
-  else
-    if not matched or col <= #matched then
-      vim.fn.setcmdline(line:sub(2), 1)
-    else
-      vim.fn.setcmdline(line:sub(2), #matched)
-    end
   end
-  return true
+end
+
+function M.cursor_to_bol()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 1) == 'i' then
+    return cursor_to_bol_insert()
+  elseif mode:sub(1, 1) == 'c' then
+    return cursor_to_bol_command()
+  else
+    vim.notify('Unsupported mode for cursor_to_bol: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
 end
 
 function M.delete_to_eol_command()
@@ -174,8 +199,11 @@ function M.system_yank()
   if mode:sub(1, 2) == 'no' then
     if vim.v.operator ~= 'y' or vim.v.register ~= '+' then return false end
     return 'y'
-  else
+  elseif vim.tbl_contains({ 'n', 'v', 'V', '' }, mode:sub(1, 1)) then
     return '"+y'
+  else
+    vim.notify('Unsupported mode for system_yank: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
   end
 end
 
@@ -184,8 +212,11 @@ function M.system_cut()
   if mode:sub(1, 2) == 'no' then
     if vim.v.operator ~= 'd' or vim.v.register ~= '+' then return false end
     return 'd'
-  else
+  elseif vim.tbl_contains({ 'n', 'v', 'V', '' }, mode:sub(1, 1)) then
     return '"+d'
+  else
+    vim.notify('Unsupported mode for system_cut: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
   end
 end
 
@@ -199,18 +230,49 @@ function M.auto_indent()
   return '<c-f>'
 end
 
+local system_put_command = '<c-r><c-r>+'
+local system_put_insert = '<cmd>set paste<cr><c-g>u<c-r><c-r>+<cmd>set nopaste<cr>'
+local system_put = '"+p'
+function M.system_put()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 1) == 'c' then
+    return system_put_command
+  elseif mode:sub(1, 1) == 'i' then
+    return system_put_insert
+  elseif vim.tbl_contains({ 'n', 'v', 'V', '' }, mode:sub(1, 1)) then
+    return system_put
+  else
+    vim.notify('Unsupported mode for system_put: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+end
+
+local function comment() return require('vim._comment').operator() end
+local function comment_line() return require('vim._comment').operator() .. '_' end
+local function comment_line_insert() return toggle_comment_insert_mode() end
+local function comment_selection() return comment() end
+function M.toggle_comment()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:sub(1, 1) == 'i' then
+    return comment_line_insert()
+  elseif mode:sub(1, 1) == 'n' then
+    return comment_line()
+  elseif vim.tbl_contains({ 'v', 'V', '' }, mode:sub(1, 1)) then
+    return comment_selection()
+  else
+    vim.notify('Unsupported mode for toggle_comment: ' .. mode, vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+end
 -- stylua: ignore start
 function M.select_file() u.update_selection(0, 0, vim.api.nvim_buf_line_count(0), 0, 'V') return true end
-function M.comment() return require('vim._comment').operator() end
-function M.comment_line() return require('vim._comment').operator() .. '_' end
-function M.comment_line_insert() return toggle_comment_insert_mode() end
-function M.comment_selection() return M.comment() end
-M.system_put_command = '<c-r><c-r>+'
-M.system_put_insert = '<cmd>set paste<cr><c-g>u<c-r><c-r>+<cmd>set nopaste<cr>'
-M.system_put = '"+p'
 M.system_put_before = '"+P'
 M.system_yank_eol = '"+y$'
 M.system_cut_eol = '"+d$'
+M.to_left = '<c-w><c-h>'
+M.to_bottom = '<c-w><c-j>'
+M.to_above = '<c-w><c-k>'
+M.to_right = '<c-w><c-l>'
 M.nop = ''
 -- stylua: ignore end
 
