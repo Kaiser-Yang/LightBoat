@@ -180,9 +180,7 @@ local setup_autocmd = function()
       end
       local buffer = args.buf
       require('conform').format({ bufnr = buffer }, function(err)
-        if err then
-          vim.schedule_wrap(vim.notify)(err, vim.log.levels.ERROR, { title = 'Conform' })
-        end
+        if err then vim.schedule_wrap(vim.notify)(err, vim.log.levels.ERROR, { title = 'Conform' }) end
         if enabled('conform_on_save_reguess_indent') then
           if not guess_indent_available then
             vim.schedule_wrap(vim.notify)(
