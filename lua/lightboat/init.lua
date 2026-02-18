@@ -88,7 +88,7 @@ local setup_autocmd = function()
       if not enabled('nohlsearch_auto_run') or util.in_macro_executing() then return end
       if vim.tbl_contains({ 'i', 'ic', 'ix', 'R', 'Rc', 'Rx', 'Rv', 'Rvc', 'Rvx' }, vim.api.nvim_get_mode().mode) then
         -- We must schedule here
-        vim.schedule(function() vim.cmd('nohlsearch') end)
+        vim.schedule_wrap(vim.cmd)('nohlsearch')
       end
     end,
   })
@@ -171,11 +171,11 @@ local setup_autocmd = function()
       local buffer = args.buf
       require('conform').format({ bufnr = buffer }, function(err)
         if err then
-          vim.schedule(function() vim.notify(err, vim.log.levels.ERROR, { title = 'Conform' }) end)
+          vim.schedule_wrap(vim.notify)(err, vim.log.levels.ERROR, { title = 'Conform' })
         end
         if enabled('conform_on_save_reguess_indent') then
           if not guess_indent_available then
-            vim.notify(
+            vim.schedule_wrap(vim.notify)(
               'guess-indent.nvim is not available, please disable conform_on_save_reguess_indent',
               vim.log.levels.WARN,
               { title = 'Light Boat' }

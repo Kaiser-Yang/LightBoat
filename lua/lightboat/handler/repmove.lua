@@ -13,18 +13,14 @@ end
 -- HACK: Those two will always return true
 local function previous_todo()
   if not check() then return false end
-  vim.schedule(function()
-    vim.cmd("normal! m'")
-    require('todo-comments').jump_prev()
-  end)
+  if vim.fn.mode('1') == 'n' then vim.cmd("normal! m'") end
+  require('todo-comments').jump_prev()
   return true
 end
 local function next_todo()
   if not check() then return false end
-  vim.schedule(function()
-    vim.cmd("normal! m'")
-    require('todo-comments').jump_next()
-  end)
+  if vim.fn.mode('1') == 'n' then vim.cmd("normal! m'") end
+  require('todo-comments').jump_next()
   return true
 end
 
