@@ -3,11 +3,16 @@ return {
   cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
+    preset = 'helix',
     delay = function() return vim.o.timeoutlen end,
-    sort = { 'order', 'group', 'case', 'mod' },
+    sort = { 'order', 'group', 'desc', 'mod' },
     keys = { scroll_down = '', scroll_up = '' },
-    triggers = { { '<auto>', mode = 'icnxo' }, { 'a', mode = 'x' }, { 'i', mode = 'x' } },
     icons = { rules = false },
+    plugins = {
+      registers = {
+        format = function(value) return value:gsub('^%s+', ''):gsub('%s+$', ''):sub(1, 10) end,
+      },
+    },
     -- BUG:
     -- See https://github.com/folke/which-key.nvim/issues/1033
     filter = function(mapping)
