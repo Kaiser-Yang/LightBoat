@@ -97,6 +97,16 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       _G.plugin_loaded[args.data] = true
+      if _G.plugin_loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
+        done['nvim-treesitter-endwise'] = true
+        require('nvim-treesitter-endwise').init()
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+          if require('nvim-treesitter-endwise').is_supported(lang) then
+            require('nvim-treesitter.endwise').attach(buf)
+          end
+        end
+      end
       if
         _G.plugin_loaded['mason.nvim']
         and not done['nvim.mason']
