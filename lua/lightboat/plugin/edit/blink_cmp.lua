@@ -16,17 +16,26 @@ return {
     sources = {
       default = function()
         local res = { 'snippets', 'lsp', 'path', 'buffer' }
-        local big = false
-        for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
-          if vim.b[buffer].big_file_status then big = true end
-        end
-        if u.plugin_available('blink-ripgrep.nvim') and not big then table.insert(res, 'ripgrep') end
+        if u.plugin_available('blink-ripgrep.nvim') then table.insert(res, 'ripgrep') end
         if u.plugin_available('blink-cmp-dictionary') then table.insert(res, 'dictionary') end
         return res
       end,
       providers = {
+        lsp = {
+          fallbacks = {},
+          transform_items = function(_, items)
+            -- Remove snippets
+            return vim.tbl_filter(
+              function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Snippet end,
+              items
+            )
+          end,
+        },
+        path = { opts = { show_hidden_files_by_default = true } },
+        snippets = { name = 'Snip' },
         buffer = {
           name = 'Buff',
+          score_offset = -5,
           transform_items = function(context, items)
             -- Do not convert case when searching
             if context.mode == 'cmdline' then return items end
@@ -51,20 +60,9 @@ return {
             return out
           end,
         },
-        lsp = {
-          fallbacks = {},
-          transform_items = function(_, items)
-            -- Remove snippets
-            return vim.tbl_filter(
-              function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Snippet end,
-              items
-            )
-          end,
-        },
-        path = { opts = { show_hidden_files_by_default = true } },
-        snippets = { name = 'Snip' },
         dictionary = {
           name = 'Dict',
+          score_offset = -5,
           module = 'blink-cmp-dictionary',
           enabled = function() return u.plugin_available('blink-cmp-dictionary') end,
           min_keyword_length = 1,
@@ -72,6 +70,7 @@ return {
         },
         ripgrep = {
           name = 'RG',
+          score_offset = -5,
           module = 'blink-ripgrep',
           enabled = function() return u.plugin_available('blink-ripgrep.nvim') and u.git.is_git_repository() end,
           opts = {
