@@ -97,6 +97,16 @@ local repmove_available = u.plugin_available('repmove.nvim')
 function M.indent_top() return u.ensure_repmove(indent_top, indent_bottom)[1]() end
 function M.indent_bottom() return u.ensure_repmove(indent_top, indent_bottom)[2]() end
 
+local next_conflict = require('lightboat.handler.git')._next_conflict
+local previous_conflict = require('lightboat.handler.git')._previous_conflict
+local next_hunk = require('lightboat.handler.git')._next_hunk
+local previous_hunk = require('lightboat.handler.git')._previous_hunk
+
+function M.next_conflict() return u.ensure_repmove(previous_conflict, next_conflict)[2]() end
+function M.previous_conflict() return u.ensure_repmove(previous_conflict, next_conflict)[1]() end
+function M.next_hunk() return u.ensure_repmove(previous_hunk, next_hunk)[2]() end
+function M.previous_hunk() return u.ensure_repmove(previous_hunk, next_hunk)[1]() end
+
 -- stylua: ignore start
 function M.comma() if not repmove_available then return ',' end return require('repmove').comma() end
 function M.semicolon() if not repmove_available then return ';' end return require('repmove').semicolon() end
