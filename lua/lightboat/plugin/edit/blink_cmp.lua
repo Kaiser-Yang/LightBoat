@@ -35,7 +35,7 @@ return {
         snippets = { name = 'Snip' },
         buffer = {
           name = 'Buff',
-          score_offset = -5,
+          score_offset = -10,
           transform_items = function(context, items)
             -- Do not convert case when searching
             if context.mode == 'cmdline' then return items end
@@ -62,7 +62,7 @@ return {
         },
         dictionary = {
           name = 'Dict',
-          score_offset = -5,
+          score_offset = -10,
           module = 'blink-cmp-dictionary',
           enabled = function() return u.plugin_available('blink-cmp-dictionary') end,
           min_keyword_length = 1,
@@ -70,7 +70,7 @@ return {
         },
         ripgrep = {
           name = 'RG',
-          score_offset = -5,
+          score_offset = -10,
           module = 'blink-ripgrep',
           enabled = function() return u.plugin_available('blink-ripgrep.nvim') and u.git.is_git_repository() end,
           opts = {
