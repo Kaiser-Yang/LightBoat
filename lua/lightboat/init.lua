@@ -99,6 +99,14 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       _G.plugin_loaded[args.data] = true
+      if _G.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
+        done['telescope.nvim'] = true
+        if util.plugin_available('telescope-fzf-native.nvim') then require('telescope').load_extension('fzf') end
+        if util.plugin_available('telescope-frecency.nvim') then require('telescope').load_extension('frecency') end
+        if util.plugin_available('telescope-live-grep-args.nvim') then
+          require('telescope').load_extension('live_grep_args')
+        end
+      end
       if _G.plugin_loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
         done['nvim-treesitter-endwise'] = true
         require('nvim-treesitter-endwise').init()

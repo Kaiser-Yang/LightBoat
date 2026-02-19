@@ -54,52 +54,34 @@ end
 -- HACK:
 -- Those below can not cycle
 local function next_loop_start() return go_to('next', 'start', '@loop.outer') end
-local function next_loop_end()
-  if vim.fn.mode('1'):sub(1, 2) == 'no' then return go_to('next', 'end', '@loop.inner') end
-  return go_to('next', 'end', '@loop.outer')
-end
+local function next_loop_end() return go_to('next', 'end', '@loop.outer') end
 local function next_class_start() return go_to('next', 'start', '@class.outer') end
 local function next_class_end() return go_to('next', 'end', '@class.outer') end
 local function next_block_start() return go_to('next', 'start', '@block.outer') end
-local function next_block_end()
-  if vim.fn.mode('1'):sub(1, 2) == 'no' then return go_to('next', 'end', '@block.inner') end
-  return go_to('next', 'end', '@block.outer')
-end
+local function next_block_end() return go_to('next', 'end', '@block.outer') end
 local function next_return_start() return go_to('next', 'start', '@return.outer') end
 local function next_return_end() return go_to('next', 'end', '@return.outer') end
 local function next_conditional_start() return go_to('next', 'start', '@conditional.outer') end
 local function next_conditional_end() return go_to('next', 'end', '@conditional.outer') end
 local function next_function_start() return go_to('next', 'start', '@function.outer') end
-local function next_function_end()
-  if vim.fn.mode('1'):sub(1, 2) == 'no' then return go_to('next', 'end', '@function.inner') end
-  return go_to('next', 'end', '@function.outer')
-end
+local function next_function_end() return go_to('next', 'end', '@function.outer') end
 local function next_parameter_start() return go_to('next', 'start', '@parameter.outer') end
 local function next_parameter_end() return go_to('next', 'end', '@parameter.outer') end
 local function next_statement_start() return go_to('next', 'start', '@statement.outer') end
 local function next_statement_end() return go_to('next', 'end', '@statement.outer') end
 local function next_call_start() return go_to('next', 'start', '@call.outer') end
 local function next_call_end() return go_to('next', 'end', '@call.outer') end
-local function previous_loop_start()
-  if vim.fn.mode('1'):sub(1, 2) == 'no' then return go_to('previous', 'start', '@loop.inner') end
-  return go_to('previous', 'start', '@loop.outer')
-end
+local function previous_loop_start() return go_to('previous', 'start', '@loop.outer') end
 local function previous_loop_end() return go_to('previous', 'end', '@loop.outer') end
 local function previous_class_start() return go_to('previous', 'start', '@class.outer') end
 local function previous_class_end() return go_to('previous', 'end', '@class.outer') end
-local function previous_block_start()
-  if vim.fn.mode('1'):sub(1, 2) == 'no' then return go_to('previous', 'start', '@block.inner') end
-  return go_to('previous', 'start', '@block.outer')
-end
+local function previous_block_start() return go_to('previous', 'start', '@block.outer') end
 local function previous_block_end() return go_to('previous', 'end', '@block.outer') end
 local function previous_return_start() return go_to('previous', 'start', '@return.outer') end
 local function previous_return_end() return go_to('previous', 'end', '@return.outer') end
 local function previous_conditional_start() return go_to('previous', 'start', '@conditional.outer') end
 local function previous_conditional_end() return go_to('previous', 'end', '@conditional.outer') end
-local function previous_function_start()
-  if vim.fn.mode('1'):sub(1, 2) == 'no' then return go_to('previous', 'start', '@function.inner') end
-  return go_to('previous', 'start', '@function.outer')
-end
+local function previous_function_start() return go_to('previous', 'start', '@function.outer') end
 local function previous_function_end() return go_to('previous', 'end', '@function.outer') end
 local function previous_parameter_start() return go_to('previous', 'start', '@parameter.outer') end
 local function previous_parameter_end() return go_to('previous', 'end', '@parameter.outer') end
