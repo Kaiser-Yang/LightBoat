@@ -9,6 +9,18 @@ local additional_args = function()
   if u.in_config_dir() then table.insert(res, '--hidden') end
   return res
 end
+local function cursor(opts)
+  return vim.tbl_deep_extend('force', {
+    theme = 'cursor',
+    layout_config = { width = 0.2, height = 0.4 },
+  }, opts or {})
+end
+local function ivy(opts)
+  return vim.tbl_deep_extend('force', {
+    theme = 'ivy',
+    layout_config = { height = 0.4 },
+  }, opts or {})
+end
 return {
   'nvim-telescope/telescope.nvim',
   dependencies = {
@@ -35,22 +47,19 @@ return {
       cache_picker = { ignore_empty_prompt = true },
     },
     pickers = {
-      registers = {
-        initial_mode = 'normal',
-        theme = 'cursor',
-      },
-      gpre_string = { theme = 'ivy', layout_config = { height = 0.4 } },
+      lsp_references = cursor(),
+      lsp_implementations = cursor(),
+      lsp_incoming_calls = cursor(),
+      lsp_outgoing_calls = cursor(),
+      lsp_type_definitions = cursor(),
+      lsp_documentation_symbols = ivy(),
+      registers = cursor({ initial_mode = 'normal' }),
+      grep_string = ivy({ additional_args = additional_args }),
       find_files = { prompt_title = 'Find File', find_command = find_command },
-      live_grep = {
-        additional_args = additional_args,
-      },
-      grep_string = { additional_args = additional_args },
+      live_grep = { additional_args = additional_args },
     },
     extensions = {
-      live_grep_args = {
-        additional_args = additional_args,
-        prompt_title = 'Live Grep',
-      },
+      live_grep_args = { additional_args = additional_args, prompt_title = 'Live Grep' },
       frecency = {
         -- BUG:
         -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/316
@@ -61,9 +70,6 @@ return {
         -- HACK:
         -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/335
         workspace_scan_cmd = find_command(),
-        -- BUG:
-        -- https://github.com/nvim-telescope/telescope-frecency.nvim/pull/334
-        matcher = 'fuzzy',
         db_version = 'v2',
         preceding = 'opened',
         hide_current_buffer = true,
