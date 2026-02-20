@@ -1,7 +1,5 @@
 local util = require('lightboat.util')
 local network = util.network
-local config = require('lightboat.config')
-local c
 local M = {}
 
 --- Auto confirm when:
@@ -43,18 +41,6 @@ function M.default_sources()
   end
   return res
 end
-
-local operation = {
-  ['<c-s>'] = { 'show_signature', 'hide_signature', 'fallback' },
-  ['<cr>'] = { 'accept', 'fallback' },
-  ['<tab>'] = { 'snippet_forward', 'fallback' },
-  ['<s-tab>'] = { 'snippet_backward', 'fallback' },
-  ['<c-u>'] = { 'scroll_documentation_up', 'fallback' },
-  ['<c-d>'] = { 'scroll_documentation_down', 'fallback' },
-  ['<c-j>'] = { 'select_next', 'fallback' },
-  ['<c-k>'] = { 'select_prev', 'fallback' },
-  ['<c-c>'] = { 'cancel', 'fallback' },
-}
 
 local function pr_or_issue_configure_score_offset(items)
   -- Bonus to make sure items sorted as below:
@@ -151,150 +137,20 @@ local blink_cmp_git_opts = {
 local spec = {
   { 'Kaiser-Yang/blink-cmp-git', cond = not vim.g.vscode, lazy = true },
   { 'Kaiser-Yang/blink-cmp-avante', cond = not vim.g.vscode, lazy = true, enabled = vim.fn.executable('node') == 1 },
-  { 'Kaiser-Yang/blink-cmp-dictionary', cond = not vim.g.vscode, dependencies = 'nvim-lua/plenary.nvim', lazy = true },
-  { 'mikavilpas/blink-ripgrep.nvim', cond = not vim.g.vscode, lazy = true, enabled = vim.fn.executable('rg') == 1 },
   {
     'saghen/blink.cmp',
-    cond = not vim.g.vscode,
-    dependencies = { { 'rafamadriz/friendly-snippets', cond = not vim.g.vscode } },
-    version = '*',
-    event = { 'InsertEnter', 'CmdlineEnter' },
     opts = {
-      fuzzy = { frecency = { enabled = false } },
-      completion = {
-        accept = { auto_brackets = { enabled = true } },
-        keyword = { range = 'prefix' },
-        list = { selection = { preselect = false, auto_insert = true } },
-        trigger = { show_on_insert_on_trigger_character = false },
-        menu = {
-          border = 'rounded',
-          max_height = 15,
-          scrolloff = 0,
-          draw = {
-            align_to = 'cursor',
-            padding = 0,
-            columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 }, { 'source_name' } },
-            components = { source_name = { text = function(ctx) return '[' .. ctx.source_name .. ']' end } },
-          },
-        },
-        documentation = { auto_show = true, window = { border = 'rounded' } },
-      },
-      signature = { enabled = true, window = { border = 'rounded', show_documentation = false } },
-      --- @type table<string, string|table>
-      keymap = { preset = 'none' },
-      cmdline = {
-        --- @type table<string, string|table>
-        keymap = { preset = 'none' },
-        completion = {
-          menu = { auto_show = true },
-          ghost_text = { enabled = false },
-          list = { selection = { preselect = false, auto_insert = true } },
-        },
-      },
       sources = {
-        default = M.default_sources,
         providers = {
-          buffer = {
-            enabled = function() return not require('lightboat.extra.big_file').is_big_file() end,
-            -- keep case of first char
-            -- or make all upper case
-            transform_items = function(context, items)
-              -- Do not convert case when searching
-              if context.mode == 'cmdline' then return items end
-              --- @type string
-              local keyword = context.get_keyword()
-              local case
-              if keyword:match('^%l') then
-                case = string.lower
-              -- TODO:
-              -- this does not work, because the length of keyword will always be 1 for buffer source
-              elseif keyword:match('^%u%u') then
-                case = string.upper
-              elseif not keyword:match('^%u') then
-                return items
-              end
-              local out = {}
-              for _, item in ipairs(items) do
-                local raw = item.insertText
-                local text = (case ~= nil and case(raw) or (string.upper(raw:sub(1, 1)) .. string.lower(raw:sub(2))))
-                -- We only adjust the case of the first char when there is no capital letters.
-                if raw:match('[A-Z]') then text = raw end
-                item.insertText = text
-                item.label = text
-                table.insert(out, item)
-              end
-              return out
-            end,
-          },
           git = { name = 'Git', module = 'blink-cmp-git', opts = blink_cmp_git_opts },
-          dictionary = {
-            name = 'Dict',
-            module = 'blink-cmp-dictionary',
-            min_keyword_length = 3,
-            opts = { dictionary_files = { util.get_light_boat_root() .. '/dict/en_dict.txt' } },
-          },
-          lsp = {
-            fallbacks = {},
-            transform_items = function(_, items)
-              local TYPE_ALIAS = require('blink.cmp.types').CompletionItemKind
-              return vim.tbl_filter(function(item)
-                -- Remove snippets, texts and some keywords from completion list
-                return item.kind ~= TYPE_ALIAS.Snippet
-                  and item.kind ~= TYPE_ALIAS.Text
-                  and not (
-                    c.enabled
-                    and item.kind == TYPE_ALIAS.Keyword
-                    and c.ignored_keyword
-                    and c.ignored_keyword[vim.bo.filetype]
-                    and vim.tbl_contains(c.ignored_keyword[vim.bo.filetype], item.label)
-                  )
-              end, items)
-            end,
-          },
-          snippets = { name = 'Snip' },
-          path = { opts = { trailing_slash = false, show_hidden_files_by_default = util.in_config_dir() } },
         },
       },
     },
-    config = function(_, opts)
-      require('blink.cmp').setup(opts)
-      local original = require('blink.cmp.completion.list').show
-      require('blink.cmp.completion.list').show = function(ctx, items_by_source)
-        local seen = {}
-        local function filter(item)
-          if seen[item.label] then return false end
-          seen[item.label] = true
-          return true
-        end
-        -- HACK:
-        -- This is a hack, see https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
-        for id in vim.iter({ 'lsp', 'dictionary', 'buffer', 'ripgrep' }) do
-          items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
-        end
-        return original(ctx, items_by_source)
-      end
-    end,
-    opts_extend = { 'sources.default' },
   },
 }
 
--- HACK:
--- This is not a good way to expose spec, need to find a better way
-function M.spec() return vim.deepcopy(spec) end
-
-function M.clear()
-  assert(spec[#spec][1] == 'saghen/blink.cmp')
-  spec[#spec].opts.sources.providers.avante = nil
-  spec[#spec].opts.sources.providers.ripgrep = nil
-  c = nil
-end
-
 M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
   if vim.g.vscode then return vim.deepcopy(spec) end
-  c = config.get().blink_cmp
-  for _, s in ipairs(spec) do
-    s.enabled = c.enabled
-  end
   util.set_hls({
     { 0, 'BlinkCmpGitKindIconCommit', { fg = '#a6e3a1' } },
     { 0, 'BlinkCmpGitKindIconopenPR', { fg = '#a6e3a1' } },
@@ -328,41 +184,9 @@ M.setup = util.setup_check_wrap('lightboat.extra.blink_cmp', function()
     { 0, 'BlinkCmpGitKindLabellockedIssueId', { fg = '#f5c2e7' } },
     { 0, 'BlinkCmpKindDict', { fg = '#a6e3a1' } },
   })
-  assert(spec[#spec][1] == 'saghen/blink.cmp')
   if vim.fn.executable('node') == 1 then
     spec[#spec].opts.sources.providers.avante = { name = 'Avante', module = 'blink-cmp-avante' }
   end
-  if vim.fn.executable('rg') == 1 then
-    local extra_c = config.get().extra
-    spec[#spec].opts.sources.providers.ripgrep = {
-      name = 'RG',
-      module = 'blink-ripgrep',
-      opts = {
-        prefix_min_len = 3,
-        project_root_marker = extra_c.root_markers or nil,
-        fallback_to_regex_highlighting = true,
-        backend = {
-          context_size = 5,
-          project_root_fallback = false,
-          ripgrep = {
-            max_filesize = extra_c.big_file.enabled and extra_c.big_file.big_file_total or nil,
-            search_casing = '--smart-case',
-            additional_rg_options = { '--max-count', '5' },
-          },
-        },
-      },
-    }
-  end
-  for k, v in pairs(c.keys) do
-    if not v or not operation[k] then goto continue end
-    spec[#spec].opts.keymap[v.key] = operation[k]
-    if vim.tbl_contains({ '<cr>', '<c-j>', '<c-k>' }, k) then spec[#spec].opts.cmdline.keymap[v.key] = operation[k] end
-    if k == '<tab>' then
-      spec[#spec].opts.cmdline.keymap[v.key] = { function(cmp) return cmp.accept({ index = 1 }) end }
-    end
-    ::continue::
-  end
-  return vim.deepcopy(spec)
 end, M.clear)
 
 return M

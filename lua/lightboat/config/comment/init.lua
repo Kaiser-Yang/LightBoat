@@ -6,13 +6,6 @@ return {
     ['<leader>o'] = { key = '<leader>o', desc = 'Comment insert below' },
     ['<leader>c'] = { key = '<leader>c', desc = 'Comment toggle linewise' },
     ['<leader>C'] = { key = '<leader>C', desc = 'Comment toggle blockwise' },
-    ['<m-/>'] = {
-      key = '<m-/>',
-      mode = { 'n', 'x', 'i' },
-      expr = true,
-      remap = true,
-      desc = 'Toggle comment for current line',
-    },
     ['<m-?>'] = {
       key = '<m-?>',
       mode = { 'n', 'x', 'i' },

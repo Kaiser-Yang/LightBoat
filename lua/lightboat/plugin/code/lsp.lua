@@ -36,7 +36,6 @@ local operation = {
   ['[d'] = prev_diagnostic,
 }
 local spec = {
-  { 'neovim/nvim-lspconfig', cond = not vim.g.vscode },
   {
     'nvimdev/lspsaga.nvim',
     cond = not vim.g.vscode,
@@ -100,44 +99,6 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
   })
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
-    callback = function(args)
-      local bufnr = args.buf
-      -- PERF:
-      -- Large files can cause performance issues with LSP.
-      -- Therefore we disable LSP for large files.
-      if big_file.is_big_file(bufnr) then
-        vim.notify('LSP is disabled for this file due to its size.', vim.log.levels.WARN, { title = 'LSP' })
-        return
-      end
-      if vim.bo[bufnr].buftype ~= '' then return end
-      for name in pairs(vim.lsp._enabled_configs) do
-        local lsp_config = vim.lsp.config[name]
-        if
-          lsp_config and (not lsp_config.filetypes or vim.tbl_contains(lsp_config.filetypes, vim.bo[bufnr].filetype))
-        then
-          -- Deepcopy config so chagnes done in the client
-          -- do not propagate to the enabled config
-          lsp_config = vim.deepcopy(lsp_config)
-          lsp_config.capabilities = require('blink.cmp').get_lsp_capabilities(lsp_config.capabilities)
-          if c.extra.root_markers and #c.extra.root_markers ~= 0 then
-            lsp_config.root_markers = util.ensure_list(lsp_config)
-            table.insert(lsp_config.root_markers, c.extra.root_markers)
-          end
-          if type(lsp_config.root_dir) == 'function' then
-            ---@param root_dir string
-            lsp_config.root_dir(bufnr, function(root_dir)
-              lsp_config.root_dir = root_dir
-              vim.schedule(function() start_config(bufnr, lsp_config) end)
-            end)
-          else
-            start_config(bufnr, lsp_config)
-          end
-        end
-      end
-    end,
-  })
-  vim.api.nvim_create_autocmd('FileType', {
-    group = group,
     pattern = 'sagarename',
     callback = function()
       map({ 'i', 'n' }, '<esc>', function()
@@ -152,34 +113,6 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.lsp', function()
   -- PERF:
   -- https://github.com/neovim/neovim/issues/35361
   -- Memory did not goes down for large files???
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'BigFileDetector',
-    group = group,
-    callback = function(ev)
-      if not ev.data then return end
-      local clients = vim.lsp.get_clients({ bufnr = ev.buf })
-      local notice = false
-      for _, client in ipairs(clients) do
-        if client.attached_buffers[ev.buf] then
-          vim.lsp.buf_detach_client(ev.buf, client.id)
-          notice = true
-        end
-      end
-      -- HACK:
-      -- https://github.com/zbirenbaum/copilot.lua/issues/536
-      if notice then
-        vim.schedule(
-          function()
-            vim.notify(
-              'LSP client for this file has been detached due to its size.',
-              vim.log.levels.WARN,
-              { title = 'LSP' }
-            )
-          end
-        )
-      end
-    end,
-  })
   return spec
 end, M.clear)
 

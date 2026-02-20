@@ -5,13 +5,6 @@ local group = vim.api.nvim_create_augroup('LightBoatBuiltin', {})
 local util = require('lightboat.util')
 local search = util.search
 if c.auto_disable_hlsearch then
-  vim.api.nvim_create_autocmd('ModeChanged', {
-    group = group,
-    pattern = 'n:[^n]',
-    callback = function()
-      vim.schedule(function() vim.cmd('nohlsearch') end)
-    end,
-  })
   vim.api.nvim_create_autocmd({ 'CursorMoved' }, {
     group = group,
     callback = function()
@@ -22,14 +15,6 @@ if c.auto_disable_hlsearch then
   })
 end
 if vim.g.vscode then return end
-if c.gitcommit_colorcolumn then
-  -- Update the colorcolumn when entering a gitcommit buffer
-  vim.api.nvim_create_autocmd('FileType', {
-    group = group,
-    pattern = 'gitcommit',
-    callback = function() vim.wo.colorcolumn = c.gitcommit_colorcolumn end,
-  })
-end
 
 vim.api.nvim_create_autocmd('BufEnter', {
   callback = function()

@@ -1,22 +1,6 @@
 --- @class LightBoat.Opts.Lsp
 local M = {
   enabled = true,
-  config = {
-    bashls = {},
-    gopls = {},
-    clangd = {},
-    eslint = {},
-    jsonls = {},
-    lemminx = {},
-    lua_ls = require('lightboat.config.lsp.lua_ls'),
-    neocmake = {},
-    pyright = {},
-    tailwindcss = {},
-    ts_ls = require('lightboat.config.lsp.ts_ls'),
-    vue_ls = require('lightboat.config.lsp.vue_ls'),
-    yamlls = {},
-    markdown_oxide = {},
-  },
   keys = {
     ['gd'] = { key = 'gd', desc = 'Go to definition', buffer = true },
     ['grI'] = { key = 'grI', desc = 'Go to implementations', buffer = true },

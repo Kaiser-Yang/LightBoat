@@ -1,3 +1,4 @@
+-- TODO: make this be a new plugin
 -- Some markdown support for markdown files
 -- Author: KaiserYang
 
@@ -128,75 +129,8 @@ local function add_a_list_item_next_line(item)
   util.key.feedkeys(item, 'n')
 end
 
---- @type string?
-local last_key_in_insert = nil
-
---- @return boolean
-local function last_key_match_local_leader()
-  if last_key_in_insert == nil then return false end
-  local content_before_cursor = vim.api.nvim_get_current_line():sub(1, vim.api.nvim_win_get_cursor(0)[2])
-  local local_leader = vim.api.nvim_replace_termcodes(vim.g.maplocalleader, true, true, true)
-  local last_key = vim.api.nvim_replace_termcodes(last_key_in_insert, true, true, true)
-  return last_key:match(local_leader .. '$') and content_before_cursor:match(last_key .. '$')
-end
-
---- @param origin string
---- @param new string
-local function local_leader_check_wrap(origin, new)
-  return function()
-    if last_key_match_local_leader() then
-      last_key_in_insert = nil
-      return new
-    else
-      return origin
-    end
-  end
-end
 -- TODO: Those below not working in vscode-nvim
 local operation = {
-  ['f'] = function()
-    if not last_key_match_local_leader() then return 'f' end
-    local pattern = '<++>'
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local cur_buf = vim.api.nvim_get_current_buf()
-    local row_end = math.min(row + c.markdown.max_search_lines - 1, vim.api.nvim_buf_line_count(cur_buf))
-    local match = vim.fn.matchbufline(cur_buf, pattern, row, row_end)[1]
-    if match then
-      if match.lnum == row then
-        return '<bs>'
-          .. string.rep('<c-g>U<right>', vim.fn.strchars(vim.api.nvim_get_current_line():sub(col + 1, match.byteidx)))
-          .. string.rep('<del>', #pattern)
-      else
-        vim.schedule(function()
-          vim.api.nvim_win_set_cursor(0, { match.lnum, match.byteidx })
-          util.key.feedkeys(string.rep('<del>', #pattern), 'n')
-        end)
-        return '<c-g>u<bs>'
-      end
-    else
-      return 'f'
-    end
-  end,
-  ['1'] = local_leader_check_wrap('1', '<c-g>u<bs># '),
-  ['2'] = local_leader_check_wrap('2', '<c-g>u<bs>## '),
-  ['3'] = local_leader_check_wrap('3', '<c-g>u<bs>### '),
-  ['4'] = local_leader_check_wrap('4', '<c-g>u<bs>#### '),
-  ['a'] = local_leader_check_wrap('a', '<c-g>u<bs>[](<++>)<++>' .. string.rep('<c-g>U<left>', 11)),
-  ['b'] = local_leader_check_wrap('b', '<c-g>u<bs>****<++>' .. string.rep('<c-g>U<left>', 6)),
-  ['c'] = local_leader_check_wrap(
-    'c',
-    '<c-g>u<bs>```<cr>```<cr><cr><++>' .. string.rep('<up>', 3) .. string.rep('<right>', 3)
-  ),
-  ['d'] = local_leader_check_wrap('d', '<c-g>u<bs>~~~~<++>' .. string.rep('<c-g>U<left>', 6)),
-  ['i'] = local_leader_check_wrap('i', '<c-g>u<bs>**<++>' .. string.rep('<c-g>U<left>', 5)),
-  ['m'] = local_leader_check_wrap('m', '<c-g>u<bs>$$  $$<++>' .. string.rep('<c-g>U<left>', 7)),
-  ['M'] = local_leader_check_wrap(
-    'M',
-    '<c-g>u<bs>$$<cr><cr>$$<cr><cr><++>' .. string.rep('<up>', 3) .. string.rep('<right>', 2)
-  ),
-  ['s'] = local_leader_check_wrap('s', '<c-g>u<bs>---<cr><cr>'),
-  ['t'] = local_leader_check_wrap('t', '<c-g>u<bs>``<++>' .. string.rep('<c-g>U<left>', 5)),
-  ['T'] = local_leader_check_wrap('T', '<c-g>u<bs>- [ ] '),
   ['o'] = 'A<cr>',
   ['<cr>'] = function()
     local cursor_pos = vim.api.nvim_win_get_cursor(0)

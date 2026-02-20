@@ -1,5 +1,3 @@
-local util = require('lightboat.util')
-local big_file = require('lightboat.extra.big_file')
 local M = {}
 
 --- @param ft_list string|string[]
@@ -55,10 +53,6 @@ local spec = {
     cond = not vim.g.vscode,
     opts = {
       options = {
-        icons_enabled = true,
-        theme = 'catppuccin',
-        component_separators = { left = '', right = '' },
-        section_separators = { left = '', right = '' },
         disabled_filetypes = {
           'neo-tree',
           'Avante',
@@ -73,10 +67,10 @@ local spec = {
   },
 }
 
-function M.clear() end
-
-function M.spec() return spec end
-
-M.setup = util.setup_check_wrap('lightboat.plugin.ui.lualine', function() return spec end, M.clear)
-
-return M
+return {
+  'nvim-lualine/lualine.nvim',
+  dependencies = 'nvim-tree/nvim-web-devicons',
+  lazy = false,
+  cond = not vim.g.vscode,
+  opts = {},
+}

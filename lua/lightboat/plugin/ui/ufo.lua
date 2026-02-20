@@ -73,10 +73,10 @@ M.setup = util.setup_check_wrap('lightboat.plugin.ui.ufo', function()
   spec.keys = util.key.get_lazy_keys(operation, c.keys)
   group = vim.api.nvim_create_augroup('LightBoatUfo', {})
   vim.api.nvim_create_autocmd('User', {
-    pattern = 'BigFileDetector',
+    pattern = 'BigFileStatusChanged',
     group = group,
     callback = function(ev)
-      if not ev.data then return end
+      if not vim.b[ev.buf].big_file_status then return end
       local ok, ufo = pcall(require, 'ufo')
       if not ok then return end
       ufo.detach(ev.buf)

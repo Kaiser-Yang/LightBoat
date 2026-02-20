@@ -1,38 +1,39 @@
-local util = require('lightboat.util')
-local config = require('lightboat.config')
-local c
-local operation = {
-  ['<leader>?'] = function() require('which-key').show() end,
-}
-local spec = {
-  'folke/which-key.nvim',
+return {
+  'Kaiser-Yang/which-key.nvim',
   cond = not vim.g.vscode,
   event = 'VeryLazy',
   opts = {
-    delay = vim.o.timeoutlen,
-    sort = { 'alphanum', 'local', 'order', 'group', 'mod' },
-    -- PERF:
-    -- When enabling the registers plugin,
-    -- it will cause a performance problem when the content is large.
-    plugins = { spelling = { enabled = false }, registers = true },
+    preset = 'helix',
+    delay = function() return vim.o.timeoutlen end,
+    sort = { 'order', 'group', 'desc', 'mod' },
+    keys = { scroll_down = '', scroll_up = '' },
+    icons = { rules = false },
+    triggers = {
+      { '<auto>', mode = 'nxso' },
+      { 'b', mode = 'n' },
+    },
+    plugins = {
+      registers = {
+        format = function(value) return value:gsub('^%s+', ''):gsub('%s+$', ''):sub(1, 10) end,
+      },
+    },
     -- BUG:
     -- See https://github.com/folke/which-key.nvim/issues/1033
-    filter = function(mapping) return not mapping.lhs:match('^z.*') end,
+    filter = function(mapping)
+      if mapping.desc == 'Nop' then return false end
+      -- stylua: ignore start
+      if
+        (mapping.mode == 'n' or mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v')
+        and vim.tbl_contains(
+          { 'b', 'c', 'd', 'e', 'f', 'h', 'j', 'k', 'l', 'r', 't', 'v', 'w', 'y',
+            'B', 'E', 'F', 'G', 'T', 'V', 'W',
+            '~', '$', '%', ',', ';', '<', '>', '/', '?', '^', '0' }, mapping.lhs)
+      then
+      -- stylua: ignore end
+        return false
+      end
+      return true
+    end,
+    defer = function() return false end,
   },
-  keys = {},
 }
-
-local M = {}
-
-function M.spec() return spec end
-
-function M.clear() spec.keys = {} end
-
-M.setup = util.setup_check_wrap('lightboat.plugin.which_key', function()
-  c = config.get().which_key
-  spec.enabled = c.enabled
-  spec.keys = util.key.get_lazy_keys(operation, c.keys)
-  return spec
-end, M.clear)
-
-return M

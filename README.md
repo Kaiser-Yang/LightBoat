@@ -119,8 +119,8 @@ There are two types of mappings in `LightBoat`:
 
 For the second type of key mappings, it can be divided into two sub-types:
 
-1. Those can be customized by configuring `vim.g.lightboat_opts`.
-2. Those can not be customized by configuring `vim.g.lightboat_opts`.
+1. Those can be customized by configuring `vim.g.lightboat_opt`.
+2. Those can not be customized by configuring `vim.g.lightboat_opt`.
 
 #### Customize Type 1 Key Mappings
 
@@ -144,9 +144,9 @@ the window, you just need to update the `key` fields of the origin key mappings:
 
 ```lua
 -- Make sure the variable is not `nil`
-vim.g.lightboat_opts = {}
-vim.g.lightboat_opts.keymap = {}
-vim.g.lightboat_opts.keymap.keys = {
+vim.g.lightboat_opt = {}
+vim.g.lightboat_opt.keymap = {}
+vim.g.lightboat_opt.keymap.keys = {
   -- Use `<c-s>` to split vertically
   ['<leader>l'] = { key = '<c-s>' },
   -- Disable the `<leader>h` key mapping
@@ -201,9 +201,9 @@ To customize these above, you just need to update the `key` fields.
 For example, if you want to update `<m-/>` into `<c-/>`, you can do this below:
 
 ```lua
-vim.g.lightboat_opts = {}
-vim.g.lightboat_opts.comment = {}
-vim.g.lightboat_opts.comment.keys = {
+vim.g.lightboat_opt = {}
+vim.g.lightboat_opt.comment = {}
+vim.g.lightboat_opt.comment.keys = {
   -- NOTE:
   -- `<c-/>` is a little bit special in nvim.
   -- To know what `<c-/>` really is in your terminal,
@@ -213,5 +213,5 @@ vim.g.lightboat_opts.comment.keys = {
 ```
 
 To know what is the current configuration, you can run
-`:lua vim.api.nvim_buf_set_lines(0, 0, 0, false, vim.split(vim.inspect(vim.g.lightboat_opts), '\n'))`
+`:lua vim.api.nvim_buf_set_lines(0, 0, 0, false, vim.split(vim.inspect(vim.g.lightboat_opt), '\n'))`
 in an empty buffer, this will set current buffer with the current configuration.

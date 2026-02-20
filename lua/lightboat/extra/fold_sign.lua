@@ -1,3 +1,4 @@
+-- TODO: Check if this is needed
 local M = {}
 local util = require('lightboat.util')
 local config = require('lightboat.config')
