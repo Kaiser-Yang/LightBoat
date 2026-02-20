@@ -10,6 +10,8 @@ M.copy_to = function()
   if not check() then return end
   local api = require('nvim-tree.api')
   local file_src = api.tree.get_node_under_cursor()['absolute_path']
+  file_src = vim.fn.fnamemodify(file_src, ':h')
+  if file_src:sub(-1) ~= '/' then file_src = file_src .. '/' end
   local input_opts = { prompt = 'Copy to ', default = file_src, completion = 'file' }
 
   vim.ui.input(input_opts, function(file_out)
@@ -29,6 +31,8 @@ M.move_to = function()
   if not check() then return end
   local api = require('nvim-tree.api')
   local file_src = api.tree.get_node_under_cursor()['absolute_path']
+  file_src = vim.fn.fnamemodify(file_src, ':h')
+  if file_src:sub(-1) ~= '/' then file_src = file_src .. '/' end
   local input_opts = { prompt = 'Move to ', default = file_src, completion = 'file' }
 
   vim.ui.input(input_opts, function(file_out)
