@@ -101,7 +101,23 @@ local next_conflict = require('lightboat.handler.git')._next_conflict
 local previous_conflict = require('lightboat.handler.git')._previous_conflict
 local next_hunk = require('lightboat.handler.git')._next_hunk
 local previous_hunk = require('lightboat.handler.git')._previous_hunk
+local next_diagnostic = function() return vim.diagnostic.jump({ count = 1}) end
+local previous_diagnostic = function() return vim.diagnostic.jump({ count = -1}) end
+local cprevious = '<cmd>cprevious<cr>'
+local cnext = '<cmd>cnext<cr>'
+local lprevious = '<cmd>lprevious<cr>'
+local lnext = '<cmd>lnext<cr>'
+local bprevious = '<cmd>bprevious<cr>'
+local bnext = '<cmd>bnext<cr>'
 
+function M.next_diagnostic() return u.ensure_repmove(previous_diagnostic, next_diagnostic)[2]() end
+function M.previous_diagnostic() return u.ensure_repmove(previous_diagnostic, next_diagnostic)[1]() end
+function M.next_quickfix() return u.ensure_repmove(cprevious, cnext)[2]() end
+function M.previous_quickfix() return u.ensure_repmove(cprevious, cnext)[1]() end
+function M.next_location() return u.ensure_repmove(lprevious, lnext)[2]() end
+function M.previous_location() return u.ensure_repmove(lprevious, lnext)[1]() end
+function M.next_buffer() return u.ensure_repmove(bprevious, bnext)[2]() end
+function M.previous_buffer() return u.ensure_repmove(bprevious, bnext)[1]() end
 function M.next_conflict() return u.ensure_repmove(previous_conflict, next_conflict)[2]() end
 function M.previous_conflict() return u.ensure_repmove(previous_conflict, next_conflict)[1]() end
 function M.next_hunk() return u.ensure_repmove(previous_hunk, next_hunk)[2]() end
