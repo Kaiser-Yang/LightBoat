@@ -101,8 +101,8 @@ local next_conflict = require('lightboat.handler.git')._next_conflict
 local previous_conflict = require('lightboat.handler.git')._previous_conflict
 local next_hunk = require('lightboat.handler.git')._next_hunk
 local previous_hunk = require('lightboat.handler.git')._previous_hunk
-local next_diagnostic = function() return vim.diagnostic.jump({ count = 1}) end
-local previous_diagnostic = function() return vim.diagnostic.jump({ count = -1}) end
+local next_diagnostic = function() return vim.diagnostic.jump({ count = 1 }) end
+local previous_diagnostic = function() return vim.diagnostic.jump({ count = -1 }) end
 local cprevious = '<cmd>cprevious<cr>'
 local cnext = '<cmd>cnext<cr>'
 local lprevious = '<cmd>lprevious<cr>'
@@ -110,6 +110,43 @@ local lnext = '<cmd>lnext<cr>'
 local bprevious = '<cmd>bprevious<cr>'
 local bnext = '<cmd>bnext<cr>'
 
+local function check_nvim_tree()
+  if not u.plugin_available('nvim-tree.lua') then
+    vim.notify('nvim-tree.lua is not available', vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+  return true
+end
+function M.nvim_tree_previous_git()
+  if not check_nvim_tree() then return false end
+  return u.ensure_repmove(
+    require('nvim-tree.api').node.navigate.git.prev,
+    require('nvim-tree.api').node.navigate.git.next
+  )
+    [1]()
+end
+function M.nvim_tree_next_git()
+  if not check_nvim_tree() then return false end
+  return u.ensure_repmove(
+    require('nvim-tree.api').node.navigate.git.prev,
+    require('nvim-tree.api').node.navigate.git.next
+  )
+    [2]()
+end
+function M.nvim_tree_previous_diagnostic()
+  if not check_nvim_tree() then return false end
+  return u.ensure_repmove(
+    require('nvim-tree.api').node.navigate.diagnostics.prev,
+    require('nvim-tree.api').node.navigate.diagnostics.next
+  )[1]()
+end
+function M.nvim_tree_next_diagnostic()
+  if not check_nvim_tree() then return false end
+  return u.ensure_repmove(
+    require('nvim-tree.api').node.navigate.diagnostics.prev,
+    require('nvim-tree.api').node.navigate.diagnostics.next
+  )[2]()
+end
 function M.next_diagnostic() return u.ensure_repmove(previous_diagnostic, next_diagnostic)[2]() end
 function M.previous_diagnostic() return u.ensure_repmove(previous_diagnostic, next_diagnostic)[1]() end
 function M.next_quickfix() return u.ensure_repmove(cprevious, cnext)[2]() end

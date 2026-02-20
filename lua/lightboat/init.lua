@@ -116,11 +116,8 @@ local function override_ui_input()
     })
     -- cancel operation if cursor leaves input
     self:on(event.BufLeave, function() on_done(nil) end, { once = true })
-    -- cancel operation if <Esc> is pressed
     self:map('n', '<Esc>', function() on_done(nil) end, { noremap = true, nowait = true })
-    -- cancel operation if 'q' is pressed
     self:map('n', 'q', function() on_done(nil) end, { noremap = true, nowait = true })
-    -- cancel operation if <C-c> is pressed
     self:map('n', '<c-c>', function() on_done(nil) end, { noremap = true, nowait = true })
     self:map('i', '<c-c>', function() on_done(nil) end, { noremap = true, nowait = true })
   end

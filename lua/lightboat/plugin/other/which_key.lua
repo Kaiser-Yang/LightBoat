@@ -8,6 +8,10 @@ return {
     sort = { 'order', 'group', 'desc', 'mod' },
     keys = { scroll_down = '', scroll_up = '' },
     icons = { rules = false },
+    triggers = {
+      { '<auto>', mode = 'nxso' },
+      { 'b', mode = 'n' },
+    },
     plugins = {
       registers = {
         format = function(value) return value:gsub('^%s+', ''):gsub('%s+$', ''):sub(1, 10) end,

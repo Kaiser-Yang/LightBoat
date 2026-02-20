@@ -10,6 +10,7 @@ M = vim.tbl_deep_extend('error', M, require('lightboat.handler.repmove'))
 M = vim.tbl_deep_extend('error', M, require('lightboat.handler.blink_indent'))
 M = vim.tbl_deep_extend('error', M, require('lightboat.handler.telescope'))
 M = vim.tbl_deep_extend('error', M, require('lightboat.handler.git'))
+M = vim.tbl_deep_extend('error', M, require('lightboat.handler.nvim_tree'))
 
 local conform_available = u.plugin_available('conform.nvim')
 function M.async_format()
