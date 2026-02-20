@@ -394,6 +394,7 @@ M.setup = function()
   _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable(vim.v.lnum) and '%C' or ' ') .. ' ' end
   vim.o.statuscolumn = '%!v:lua.get_statuscol()'
   auto_start_lsp()
+  pcall(function() require('vim._extui').enable({}) end)
 end
 
 return M

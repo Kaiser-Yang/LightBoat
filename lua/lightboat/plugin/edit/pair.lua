@@ -1,20 +1,52 @@
 return {
   {
+    'saghen/blink.pairs',
+    version = '*',
+    cond = not vim.g.vscode,
+    event = { 'InsertEnter', 'CmdlineEnter' },
+    dependencies = 'saghen/blink.download',
+    opts = {
+      mappings = {
+        enabled = false,
+        cmdline = false,
+        disabled_filetypes = {},
+        pairs = {},
+      },
+      highlights = {
+        -- PERF:
+        -- https://github.com/saghen/blink.pairs/issues/72
+        enabled = false,
+        cmdline = pcall(require, 'vim._extui'),
+        groups = {
+          'BlinkPairsRed',
+          'BlinkPairsOrange',
+          'BlinkPairsYellow',
+          'BlinkPairsGreen',
+          'BlinkPairsBlue',
+          'BlinkPairsCyan',
+          'BlinkPairsPurple',
+        },
+        unmatched_group = 'BlinkPairsUnmatched',
+        matchparen = {
+          enabled = true,
+          cmdline = pcall(require, 'vim._extui'),
+          include_surrounding = false,
+          group = 'BlinkPairsMatchParen',
+          priority = 250,
+        },
+      },
+    },
+  },
+  {
+    -- PERF:
     'altermo/ultimate-autopair.nvim',
     cond = not vim.g.vscode,
-    lazy = true,
+    event = { 'InsertEnter', 'CmdlineEnter' },
     branch = 'v0.6',
     opts = {
-      bs = { space = 'balance', indent_ignore = true, delete_from_end = false },
       cr = { autoclose = true },
       tabout = { enable = true, hopout = true },
-      space2 = { enable = true },
       fastwarp = { faster = false, nocursormove = false },
-      config_internal_pairs = {
-        { '[', ']', dosuround = false },
-        { '(', ')', dosuround = false },
-        { '{', '}', dosuround = false },
-      },
     },
     config = function(_, opts)
       -- HACK:
