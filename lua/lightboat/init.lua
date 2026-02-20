@@ -58,16 +58,8 @@ local function override_ui_select()
 
     UISelect.super.init(self, popup_options, menu_options)
 
-    -- cancel operation if cursor leaves select
-    self:on(event.BufLeave, function() on_done(nil, nil) end, { once = true })
-    self:map('n', '<Esc>', function() on_done(nil, nil) end, { noremap = true, nowait = true })
-    self:map('n', 'q', function() on_done(nil, nil) end, { noremap = true, nowait = true })
-    self:map('n', '<c-c>', function() on_done(nil, nil) end, { noremap = true, nowait = true })
-    for i = 1, math.min(9, #items) do
-      self:map('n', tostring(i), function() on_done(items[i], i) end, {
-        noremap = true,
-        nowait = true,
-      })
+    if vim.g.lightboat_opt.ui_select_on_init and type(vim.g.lightboat_opt.ui_select_on_init) == 'function' then
+      vim.g.lightboat_opt.ui_select_on_init(self, items, opts, on_done)
     end
   end
 
@@ -98,7 +90,6 @@ local function override_ui_select()
 end
 local function override_ui_input()
   local Input = require('nui.input')
-  local event = require('nui.utils.autocmd').event
   local UIInput = Input:extend('UIInput')
   function UIInput:init(opts, on_done)
     local border_top_text = get_prompt_text(opts.prompt, '[Input]')
@@ -114,12 +105,9 @@ local function override_ui_input()
       on_close = function() on_done(nil) end,
       on_submit = function(value) on_done(value) end,
     })
-    -- cancel operation if cursor leaves input
-    self:on(event.BufLeave, function() on_done(nil) end, { once = true })
-    self:map('n', '<Esc>', function() on_done(nil) end, { noremap = true, nowait = true })
-    self:map('n', 'q', function() on_done(nil) end, { noremap = true, nowait = true })
-    self:map('n', '<c-c>', function() on_done(nil) end, { noremap = true, nowait = true })
-    self:map('i', '<c-c>', function() on_done(nil) end, { noremap = true, nowait = true })
+    if vim.g.lightboat_opt.ui_input_on_init and type(vim.g.lightboat_opt.ui_input_on_init) == 'function' then
+      vim.g.lightboat_opt.ui_input_on_init(self, opts, on_done)
+    end
   end
   local input_ui
   vim.ui.input = function(opts, on_confirm)
