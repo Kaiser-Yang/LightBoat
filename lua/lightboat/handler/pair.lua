@@ -12,47 +12,38 @@ local function check()
 end
 local l = {}
 function l.surround_normal()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-normal)'
 end
 function l.surround_normal_current()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-normal-cur)'
 end
 function l.surround_normal_line()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-normal-line)'
 end
 function l.surround_normal_current_line()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-normal-cur-line)'
 end
 function l.surround_insert()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-insert)'
 end
 function l.surround_insert_line()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-insert-line)'
 end
 function l.surround_delete()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-delete)'
 end
 function l.surround_change()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-change)'
 end
 function l.surround_change_line()
-  if not check() then return false end
   u.ensure_plugin('nvim-surround')
   return '<plug>(nvim-surround-change-line)'
 end
@@ -72,11 +63,9 @@ local function hack(suffix)
     res = l['surround_normal_current' .. suffix]
   end
   if not res then return false end
-  if op ~= 'g@' then
-    return '<esc>' .. tostring(vim.v.count1) .. res()
-  else
-    return '<esc>' .. tostring(last_count) .. res()
-  end
+  local key = (op == 'g@' and last_count or vim.v.count1) .. res()
+  vim.schedule_wrap(u.key.feedkeys)(key, 'n')
+  return '<esc>'
 end
 
 function M.surround_visual()

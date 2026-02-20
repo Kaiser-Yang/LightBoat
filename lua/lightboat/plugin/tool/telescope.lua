@@ -50,7 +50,6 @@ return {
       live_grep_args = {
         additional_args = additional_args,
         prompt_title = 'Live Grep',
-        auto_quoting = false,
       },
       frecency = {
         -- BUG:
