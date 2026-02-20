@@ -5,7 +5,148 @@ _G.plugin_loaded = {}
 --- @type table<string, boolean>
 local done = {}
 local util = require('lightboat.util')
+local function get_prompt_text(prompt, default_prompt)
+  local prompt_text = prompt or default_prompt
+  if prompt_text:sub(-1) == ':' then prompt_text = '[' .. prompt_text:sub(1, -2) .. ']' end
+  return prompt_text
+end
+local function override_ui_select()
+  local Menu = require('nui.menu')
+  local event = require('nui.utils.autocmd').event
+  local UISelect = Menu:extend('UISelect')
 
+  function UISelect:init(items, opts, on_done)
+    local border_top_text = get_prompt_text(opts.prompt, '[Select Item]')
+    local kind = opts.kind or 'unknown'
+    local format_item = opts.format_item or function(item) return tostring(item.__raw_item or item) end
+
+    local popup_options = {
+      relative = 'editor',
+      position = '50%',
+      border = { style = 'rounded', text = { top = border_top_text, top_align = 'left' } },
+      win_options = { winhighlight = 'NormalFloat:Normal,FloatBorder:Normal' },
+      zindex = 999,
+    }
+
+    if kind == 'codeaction' then
+      -- change position for codeaction selection
+      popup_options.relative = 'cursor'
+      popup_options.position = { row = 2, col = 0 }
+    end
+
+    local max_width = popup_options.relative == 'editor' and vim.o.columns - 4 or vim.api.nvim_win_get_width(0) - 4
+    local max_height = popup_options.relative == 'editor' and math.floor(vim.o.lines * 80 / 100)
+      or vim.api.nvim_win_get_height(0)
+
+    local menu_items = {}
+    for index, item in ipairs(items) do
+      local item_text = string.sub(format_item(item), 0, max_width)
+      if not item_text:match('%d+%. ') then item_text = string.format('%d. %s', index, item_text):sub(0, max_width) end
+      if type(item) ~= 'table' then item = { __raw_item = item } end
+      item.index = index
+      menu_items[index] = Menu.item(item_text, item)
+    end
+
+    local menu_options = {
+      min_width = vim.api.nvim_strwidth(border_top_text),
+      max_width = max_width,
+      max_height = max_height,
+      lines = menu_items,
+      on_close = function() on_done(nil, nil) end,
+      on_submit = function(item) on_done(item.__raw_item or item, item.index) end,
+    }
+
+    UISelect.super.init(self, popup_options, menu_options)
+
+    -- cancel operation if cursor leaves select
+    self:on(event.BufLeave, function() on_done(nil, nil) end, { once = true })
+    self:map('n', '<Esc>', function() on_done(nil, nil) end, { noremap = true, nowait = true })
+    self:map('n', 'q', function() on_done(nil, nil) end, { noremap = true, nowait = true })
+    self:map('n', '<c-c>', function() on_done(nil, nil) end, { noremap = true, nowait = true })
+    for i = 1, math.min(9, #items) do
+      self:map('n', tostring(i), function() on_done(items[i], i) end, {
+        noremap = true,
+        nowait = true,
+      })
+    end
+  end
+
+  local select_ui = nil
+
+  vim.ui.select = function(items, opts, on_choice)
+    assert(type(on_choice) == 'function', 'missing on_choice function')
+
+    if select_ui then
+      -- ensure single ui.select operation
+      vim.notify('Another select is pending, please finish it first.', vim.log.levels.ERROR, { title = 'Light Boat' })
+      return
+    end
+
+    select_ui = UISelect(items, opts, function(item, index)
+      if select_ui then
+        -- if it's still mounted, unmount it
+        select_ui:unmount()
+      end
+      -- pass the select value
+      on_choice(item, index)
+      -- indicate the operation is done
+      select_ui = nil
+    end)
+
+    select_ui:mount()
+  end
+end
+local function override_ui_input()
+  local Input = require('nui.input')
+  local event = require('nui.utils.autocmd').event
+  local UIInput = Input:extend('UIInput')
+  function UIInput:init(opts, on_done)
+    local border_top_text = get_prompt_text(opts.prompt, '[Input]')
+    local default_value = tostring(opts.default or '')
+    UIInput.super.init(self, {
+      relative = 'cursor',
+      position = { row = 2, col = 0 },
+      size = { width = math.floor(math.max(40, 1.5 * vim.api.nvim_strwidth(default_value))) },
+      border = { style = vim.o.winborder, text = { top = border_top_text, top_align = 'left' } },
+      win_options = { winhighlight = 'NormalFloat:Normal,FloatBorder:Normal' },
+    }, {
+      default_value = default_value,
+      on_close = function() on_done(nil) end,
+      on_submit = function(value) on_done(value) end,
+    })
+    -- cancel operation if cursor leaves input
+    self:on(event.BufLeave, function() on_done(nil) end, { once = true })
+    -- cancel operation if <Esc> is pressed
+    self:map('n', '<Esc>', function() on_done(nil) end, { noremap = true, nowait = true })
+    -- cancel operation if 'q' is pressed
+    self:map('n', 'q', function() on_done(nil) end, { noremap = true, nowait = true })
+    -- cancel operation if <C-c> is pressed
+    self:map('n', '<c-c>', function() on_done(nil) end, { noremap = true, nowait = true })
+    self:map('i', '<c-c>', function() on_done(nil) end, { noremap = true, nowait = true })
+  end
+  local input_ui
+  vim.ui.input = function(opts, on_confirm)
+    assert(type(on_confirm) == 'function', 'missing on_confirm function')
+
+    if input_ui then
+      vim.notify('Another input is pending, please finish it first.', vim.log.levels.ERROR, { title = 'Light Boat' })
+      return
+    end
+
+    input_ui = UIInput(opts, function(value)
+      if input_ui then
+        -- if it's still mounted, unmount it
+        input_ui:unmount()
+      end
+      -- pass the input value
+      on_confirm(value)
+      -- indicate the operation is done
+      input_ui = nil
+    end)
+
+    input_ui:mount()
+  end
+end
 -- HACK:
 -- This should be checked when blink.cmp updates
 -- Copied from blink.cmp
@@ -99,6 +240,11 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       _G.plugin_loaded[args.data] = true
+      if _G.plugin_loaded['nui.nvim'] and not done['nui.nvim'] then
+        done['nui.nvim'] = true
+        if vim.g.lightboat_opt.override_ui_input then override_ui_input() end
+        if vim.g.lightboat_opt.override_ui_select then override_ui_select() end
+      end
       if _G.plugin_loaded['telescope.nvim'] and not done['telescope.nvim'] then
         done['telescope.nvim'] = true
         if util.plugin_available('telescope-fzf-native.nvim') then require('telescope').load_extension('fzf') end
@@ -212,11 +358,11 @@ local setup_autocmd = function()
       if not enabled('highlight_on_yank') then return end
       local limit = vim.b.highlight_on_yank_limit or vim.g.highlight_on_yank_limit
       local timeout = vim.b.highlight_on_yank_duration or vim.g.highlight_on_yank_duration
-      local size = 0;
-      for _, line in ipairs(vim.v.event.regcontents) do size = size + #line end
-      if size > 0 and (not limit or size < limit) then
-        vim.hl.on_yank({ timeout = timeout })
+      local size = 0
+      for _, line in ipairs(vim.v.event.regcontents) do
+        size = size + #line
       end
+      if size > 0 and (not limit or size < limit) then vim.hl.on_yank({ timeout = timeout }) end
     end,
   })
   vim.api.nvim_create_autocmd('FileType', {
@@ -254,6 +400,8 @@ local setup_autocmd = function()
 end
 
 M.setup = function()
+  -- util.network.check()
+  -- util.start_to_detect_color()
   util.git.detect()
   setup_autocmd()
   -- We use this code to make the fold sign at the end of the status column and clickable as usually
