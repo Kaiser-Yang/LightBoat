@@ -212,7 +212,9 @@ local setup_autocmd = function()
       if not enabled('highlight_on_yank') then return end
       local limit = vim.b.highlight_on_yank_limit or vim.g.highlight_on_yank_limit
       local timeout = vim.b.highlight_on_yank_duration or vim.g.highlight_on_yank_duration
-      if vim.v.event.regcontents and (not limit or #vim.v.event.regcontents <= limit) then
+      local size = 0;
+      for _, line in ipairs(vim.v.event.regcontents) do size = size + #line end
+      if size > 0 and (not limit or size < limit) then
         vim.hl.on_yank({ timeout = timeout })
       end
     end,
