@@ -1,6 +1,20 @@
+local u = require('lightboat.util')
 local M = {}
+local get_visual_nodes = function()
+  local explorer = require('nvim-tree.core').get_explorer()
+  if not explorer then return nil end
+  local start_line = vim.fn.line('v')
+  local end_line = vim.fn.line('.')
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+  local nodes = explorer:get_nodes_in_range(start_line, end_line)
+  nodes = explorer.marks:filter_descendant_nodes(nodes)
+  u.key.feedkeys('<esc>', 'n')
+  return nodes
+end
 local check = function()
-  if not require('lightboat.util').plugin_available('nvim-tree.lua') then
+  if not u.plugin_available('nvim-tree.lua') then
     vim.notify('nvim-tree.lua is not available', vim.log.levels.WARN, { title = 'Light Boat' })
     return false
   end
@@ -11,7 +25,7 @@ M.copy_to = function()
   local mode = vim.api.nvim_get_mode().mode
   local api = require('nvim-tree.api')
   if mode == 'n' then
-    local file_src = api.tree.get_node_under_cursor()['absolute_path']
+    local file_src = api.tree.get_node_under_cursor().absolute_path
     local input_opts = { prompt = 'Copy to', default = file_src, completion = 'file' }
 
     vim.ui.input(input_opts, function(file_out)
@@ -28,37 +42,6 @@ M.copy_to = function()
     end)
   end
   if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
-end
-M.cut = function()
-  if not check() then return end
-  local mode = vim.api.nvim_get_mode().mode
-  local api = require('nvim-tree.api')
-  if mode == 'n' then
-    api.fs.cut()
-    return
-  end
-  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
-end
-M.toggle_mark = function()
-  if not check() then return end
-  local mode = vim.api.nvim_get_mode().mode
-  local api = require('nvim-tree.api')
-  if mode == 'n' then
-    api.marks.toggle()
-    return
-  end
-  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
-end
-M.remove = function()
-  if not check() then return end
-  local mode = vim.api.nvim_get_mode().mode
-  local api = require('nvim-tree.api')
-  if mode == 'n' then
-    api.fs.remove()
-    return
-  end
-  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
-
 end
 M.rename_full = function()
   if not check() then return end
@@ -177,7 +160,11 @@ M.open_focus_reveal = function()
     if vim.bo.filetype ~= 'NvimTree' then file = vim.api.nvim_buf_get_name(0) end
     tree.focus()
   else
-    tree.find_file({ buf = file })
+    if file and file ~= '' and vim.fn.filereadable(file) == 1 then
+      local new_cwd = vim.fs.root(file, { '.git', '.nvim' })
+      if new_cwd then vim.api.nvim_set_current_dir(new_cwd) end
+      tree.find_file({ buf = file, update_root = true })
+    end
   end
 end
 
