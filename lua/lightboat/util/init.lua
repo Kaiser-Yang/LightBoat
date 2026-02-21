@@ -1,10 +1,7 @@
 local M = {
-  search = require('lightboat.util.search'),
   buffer = require('lightboat.util.buffer'),
   key = require('lightboat.util.key'),
-  network = require('lightboat.util.network'),
   git = require('lightboat.util.git'),
-  log = require('lightboat.util.log'),
 }
 
 -- HACK:
