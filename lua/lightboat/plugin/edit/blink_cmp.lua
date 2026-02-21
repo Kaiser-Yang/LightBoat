@@ -75,7 +75,10 @@ return {
           enabled = function() return u.plugin_available('blink-ripgrep.nvim') and u.git.is_git_repository() end,
           opts = {
             prefix_min_len = 1,
-            fallback_to_regex_highlighting = true,
+            -- NOTE:
+            -- we can not enable this,
+            -- becuase it will trigger filetype autocmd for large files
+            fallback_to_regex_highlighting = false,
             backend = {
               context_size = 5,
               project_root_fallback = false,
