@@ -231,5 +231,13 @@ end
 function M.grep_word_wrap(opts)
   return function() return M.grep_word(opts) end
 end
-
+local first = true
+function M.help_tags()
+  if not check() then return false end
+  if first then
+    vim.cmd('Lazy load all')
+    first = false
+  end
+  vim.cmd('Telescope help_tags')
+end
 return M
