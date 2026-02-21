@@ -284,31 +284,35 @@ local blink_pairs_key = {
   u.key.termcodes('<cr>'),
   u.key.termcodes('<space>'),
 }
+local auto_pairs_key = {
+  ')',
+  '}',
+  ']',
+  u.key.termcodes('<m-e>'),
+  u.key.termcodes('<m-E>'),
+  u.key.termcodes('<m-)>'),
+}
+local tabout_key = {
+  u.key.termcodes('<tab>'),
+  u.key.termcodes('<s-tab>'),
+}
 function M.auto_pair_wrap(key)
   return function()
     local termcodes = u.key.termcodes(key)
-    if vim.tbl_contains(blink_pairs_key, termcodes) then
-      local res = blink_pairs(key)
-      vim.notify(vim.inspect(res))
-      return blink_pairs(key)
-    elseif u.buffer.big() then
-      if
-        not hack_auot_pair_for_big[termcodes]
-        or #vim.api.nvim_get_current_line()
-          > (type(vim.b.big_file_average_every_line_length) == 'number' and vim.b.big_file_average_every_line_length or type(
-            vim.g.big_file_average_every_line_length
-          ) == 'number' and vim.g.big_file_average_every_line_length or math.huge)
-      then
-        u.key.feedkeys(key, 'n')
-      elseif type(hack_auot_pair_for_big[termcodes]) == 'string' then
-        u.key.feedkeys(hack_auot_pair_for_big[termcodes], 'n')
-      else
-        u.key.feedkeys(hack_auot_pair_for_big[termcodes](), 'n')
-      end
+    if not u.buffer.big() and vim.tbl_contains(auto_pairs_key, termcodes) then
+      local res = auto_pair(key)
+      u.key.feedkeys(res, 'n', false)
       return true
-    else
-      return auto_pair(key)
+    elseif not u.buffer.big() and vim.tbl_contains(tabout_key, termcodes) then
+      if u.key.termcodes('<tab>') == termcodes then
+        return '<plug>(tabout)'
+      else
+        return '<plug>(reverse-tabout)'
+      end
+    elseif vim.tbl_contains(blink_pairs_key, termcodes) then
+      return blink_pairs(key)
     end
+    return false
   end
 end
 function M.surround_visual()

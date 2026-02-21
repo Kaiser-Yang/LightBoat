@@ -44,9 +44,8 @@ return {
     event = { 'InsertEnter', 'CmdlineEnter' },
     branch = 'v0.6',
     opts = {
-      cr = { autoclose = true },
       tabout = { enable = true, hopout = true },
-      fastwarp = { faster = false, nocursormove = false },
+      fastwarp = { nocursormove = false },
     },
     config = function(_, opts)
       -- HACK:
@@ -56,6 +55,29 @@ return {
       require('ultimate-autopair.core').modes = {}
       require('ultimate-autopair').setup(opts)
     end,
+  },
+  {
+    'abecodes/tabout.nvim',
+    event = { 'InsertEnter', 'CmdlineEnter' },
+    opts = {
+      tabkey = '<plug>(tabout)',
+      backwards_tabkey = '<plug>(reverse-tabout)',
+      act_as_tab = true,
+      act_as_shift_tab = false,
+      default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+      default_shift_tab = '<C-d>', -- reverse shift default action,
+      enable_backwards = true,
+      completion = true,
+      tabouts = {
+        { open = "'", close = "'" },
+        { open = '"', close = '"' },
+        { open = '`', close = '`' },
+        { open = '(', close = ')' },
+        { open = '[', close = ']' },
+        { open = '{', close = '}' },
+      },
+      ignore_beginning = true,
+    },
   },
   {
     'kylechui/nvim-surround',

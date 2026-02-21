@@ -32,7 +32,7 @@ return {
     filters = {
       git_ignored = true,
       dotfiles = not u.in_config_dir(),
-      custom = { '^\\.git' },
+      custom = { '^\\.git$' },
     },
     actions = {
       file_popup = { open_win_config = { border = vim.o.winborder } },
