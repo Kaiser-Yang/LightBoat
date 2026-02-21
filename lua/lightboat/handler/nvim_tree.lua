@@ -8,45 +8,80 @@ local check = function()
 end
 M.copy_to = function()
   if not check() then return end
+  local mode = vim.api.nvim_get_mode().mode
   local api = require('nvim-tree.api')
-  local file_src = api.tree.get_node_under_cursor()['absolute_path']
-  file_src = vim.fn.fnamemodify(file_src, ':h')
-  if file_src:sub(-1) ~= '/' then file_src = file_src .. '/' end
-  local input_opts = { prompt = 'Copy to ', default = file_src, completion = 'file' }
+  if mode == 'n' then
+    local file_src = api.tree.get_node_under_cursor()['absolute_path']
+    local input_opts = { prompt = 'Copy to', default = file_src, completion = 'file' }
 
-  vim.ui.input(input_opts, function(file_out)
-    if not file_out or file_out == '' then return end
-    local dir = vim.fn.fnamemodify(file_out, ':h')
+    vim.ui.input(input_opts, function(file_out)
+      if not file_out or file_out == '' or file_out == file_src then return end
+      local dir = vim.fn.fnamemodify(file_out, ':h')
 
-    local res = vim.fn.system({ 'mkdir', '-p', dir })
-    if vim.v.shell_error ~= 0 then
-      vim.notify(res, vim.log.levels.ERROR, { title = 'Light Boat' })
-      return
-    end
+      local res = vim.fn.system({ 'mkdir', '-p', dir })
+      if vim.v.shell_error ~= 0 then
+        vim.notify(res, vim.log.levels.ERROR, { title = 'Light Boat' })
+        return
+      end
 
-    vim.fn.system({ 'cp', '-R', file_src, file_out })
-  end)
+      vim.fn.system({ 'cp', '-R', file_src, file_out })
+    end)
+  end
+  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
 end
-M.move_to = function()
+M.cut = function()
   if not check() then return end
+  local mode = vim.api.nvim_get_mode().mode
   local api = require('nvim-tree.api')
-  local file_src = api.tree.get_node_under_cursor()['absolute_path']
-  file_src = vim.fn.fnamemodify(file_src, ':h')
-  if file_src:sub(-1) ~= '/' then file_src = file_src .. '/' end
-  local input_opts = { prompt = 'Move to ', default = file_src, completion = 'file' }
+  if mode == 'n' then
+    api.fs.cut()
+    return
+  end
+  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
+end
+M.toggle_mark = function()
+  if not check() then return end
+  local mode = vim.api.nvim_get_mode().mode
+  local api = require('nvim-tree.api')
+  if mode == 'n' then
+    api.marks.toggle()
+    return
+  end
+  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
+end
+M.remove = function()
+  if not check() then return end
+  local mode = vim.api.nvim_get_mode().mode
+  local api = require('nvim-tree.api')
+  if mode == 'n' then
+    api.fs.remove()
+    return
+  end
+  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
 
-  vim.ui.input(input_opts, function(file_out)
-    if not file_out or file_out == '' then return end
-    local dir = vim.fn.fnamemodify(file_out, ':h')
+end
+M.rename_full = function()
+  if not check() then return end
+  local mode = vim.api.nvim_get_mode().mode
+  local api = require('nvim-tree.api')
+  if mode == 'n' then
+    local file_src = api.tree.get_node_under_cursor()['absolute_path']
+    local input_opts = { prompt = 'Rename', default = file_src, completion = 'file' }
 
-    local res = vim.fn.system({ 'mkdir', '-p', dir })
-    if vim.v.shell_error ~= 0 then
-      vim.notify(res, vim.log.levels.ERROR, { title = 'NvimTree' })
-      return
-    end
+    vim.ui.input(input_opts, function(file_out)
+      if not file_out or file_out == '' or file_out == file_src then return end
+      local dir = vim.fn.fnamemodify(file_out, ':h')
 
-    vim.fn.system({ 'mv', file_src, file_out })
-  end)
+      local res = vim.fn.system({ 'mkdir', '-p', dir })
+      if vim.v.shell_error ~= 0 then
+        vim.notify(res, vim.log.levels.ERROR, { title = 'NvimTree' })
+        return
+      end
+
+      vim.fn.system({ 'mv', file_src, file_out })
+    end)
+  end
+  if not vim.tbl_contains({ 'v', 'V', '' }, mode) then return false end
 end
 M.collapse_or_go_to_parent = function()
   if not check() then return end
