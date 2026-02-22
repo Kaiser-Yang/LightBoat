@@ -26,7 +26,10 @@ return {
   dependencies = {
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope-frecency.nvim',
-    'nvim-telescope/telescope-live-grep-args.nvim',
+    {
+      'nvim-telescope/telescope-live-grep-args.nvim',
+      enabled = vim.fn.executable('rg') == 1,
+    },
     {
       'nvim-telescope/telescope-fzf-native.nvim',
       build = 'make',
