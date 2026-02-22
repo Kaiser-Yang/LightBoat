@@ -232,7 +232,9 @@ function M.ensure_repmove(previous, next, comma, semicolon, rp)
 end
 
 function M.treesitter_available(name)
-  return vim.treesitter.query.get(vim.treesitter.language.get_lang(vim.bo.filetype), name) ~= nil
+  local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
+  if lang == nil then return false end
+  return vim.treesitter.query.get(lang, name) ~= nil
 end
 
 function M.ensure_plugin(name)
