@@ -72,7 +72,7 @@ M.collapse_or_go_to_parent = function()
   local node = api.tree.get_node_under_cursor()
   if node == nil or node.parent == nil then return false end
   if node.nodes ~= nil and node.open then
-    api.node.collapse()
+    api.node.open.edit(node)
   else
     api.node.navigate.parent()
   end
