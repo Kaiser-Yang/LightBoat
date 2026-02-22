@@ -288,6 +288,7 @@ local auto_pairs_key = {
   ')',
   '}',
   ']',
+  u.key.termcodes('<cr>'),
   u.key.termcodes('<m-e>'),
   u.key.termcodes('<m-E>'),
   u.key.termcodes('<m-)>'),
@@ -299,11 +300,11 @@ local tabout_key = {
 function M.auto_pair_wrap(key)
   return function()
     local termcodes = u.key.termcodes(key)
-    if not u.buffer.big() and vim.tbl_contains(auto_pairs_key, termcodes) then
+    if vim.tbl_contains(auto_pairs_key, termcodes) then
       local res = auto_pair(key)
       u.key.feedkeys(res, 'n', false)
       return true
-    elseif not u.buffer.big() and vim.tbl_contains(tabout_key, termcodes) then
+    elseif vim.tbl_contains(tabout_key, termcodes) then
       if u.key.termcodes('<tab>') == termcodes then
         return '<plug>(tabout)'
       else
