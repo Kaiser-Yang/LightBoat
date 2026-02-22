@@ -3,7 +3,7 @@ return {
     'saghen/blink.pairs',
     version = '*',
     cond = not vim.g.vscode,
-    event = { 'InsertEnter', 'CmdlineEnter' },
+    event = { 'InsertCharPre', 'CmdlineEnter' },
     dependencies = 'saghen/blink.download',
     opts = {
       mappings = {
@@ -41,7 +41,7 @@ return {
     -- PERF:
     'altermo/ultimate-autopair.nvim',
     cond = not vim.g.vscode,
-    event = { 'InsertEnter', 'CmdlineEnter' },
+    event = { 'InsertCharPre', 'CmdlineEnter' },
     branch = 'v0.6',
     opts = {
       tabout = { enable = true, hopout = true },
