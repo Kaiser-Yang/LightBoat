@@ -389,8 +389,11 @@ M.setup = function()
   util.git.detect()
   setup_autocmd()
   -- We use this code to make the fold sign at the end of the status column and clickable as usually
-  local function fold_clickable(lnum) return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) and vim.v.virtnum <= 0 end
-  _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable(vim.v.lnum) and '%C' or ' ') .. ' ' end
+  local function fold_clickable()
+    local lnum = vim.v.lnum
+    return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) and vim.v.virtnum == 0
+  end
+  _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable() and '%C' or ' ') .. ' ' end
   vim.o.statuscolumn = '%!v:lua.get_statuscol()'
   auto_start_lsp()
   pcall(function() require('vim._extui').enable({}) end)
