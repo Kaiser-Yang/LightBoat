@@ -233,6 +233,7 @@ function M.toggle_lazygit()
       end,
     })
     vim.cmd('startinsert')
+    vim.cmd('nohlsearch')
   end
 end
 
