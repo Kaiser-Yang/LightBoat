@@ -1,6 +1,7 @@
 local u = require('lightboat.util')
 return {
   'nvim-tree/nvim-tree.lua',
+  dependencies = 'nvim-tree/nvim-web-devicons',
   cond = not vim.g.vscode,
   cmd = {
     'NvimTreeOpen',
