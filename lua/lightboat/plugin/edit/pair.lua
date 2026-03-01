@@ -60,12 +60,12 @@ return {
     'abecodes/tabout.nvim',
     event = { 'InsertEnter', 'CmdlineEnter' },
     opts = {
-      tabkey = '<plug>(tabout)',
-      backwards_tabkey = '<plug>(reverse-tabout)',
+      tabkey = '',
+      backwards_tabkey = '',
       act_as_tab = true,
       act_as_shift_tab = false,
-      default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-      default_shift_tab = '<C-d>', -- reverse shift default action,
+      default_tab = '<tab>',
+      default_shift_tab = '<s-tab>',
       enable_backwards = true,
       completion = true,
       tabouts = {

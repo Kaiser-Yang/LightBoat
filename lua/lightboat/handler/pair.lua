@@ -77,6 +77,7 @@ local function check_autopair()
 end
 
 --- @param key string
+--- @return string|boolean
 local function auto_pair(key)
   if not check_autopair() then return false end
   local core = require('ultimate-autopair.core')
@@ -302,13 +303,15 @@ function M.auto_pair_wrap(key)
     local termcodes = u.key.termcodes(key)
     if vim.tbl_contains(auto_pairs_key, termcodes) then
       local res = auto_pair(key)
+      if not res then return res end
+      assert(type(res) == 'string')
       u.key.feedkeys(res, 'n', false)
       return true
     elseif vim.tbl_contains(tabout_key, termcodes) then
       if u.key.termcodes('<tab>') == termcodes then
-        return '<plug>(tabout)'
+        return '<plug>(Tabout)'
       else
-        return '<plug>(reverse-tabout)'
+        return '<plug>(TaboutBack)'
       end
     elseif vim.tbl_contains(blink_pairs_key, termcodes) then
       return blink_pairs(key)

@@ -2,5 +2,5 @@ return {
   'NMAC427/guess-indent.nvim',
   event = 'BufReadPre',
   cmd = 'GuessIndent',
-  opts = { on_tab_options = { shiftwidth = 0, expandtab = false } },
+  opts = { on_tab_options = { shiftwidth = 0, expandtab = false, softtabstop = 0 } },
 }
