@@ -6,17 +6,12 @@ return {
   dependencies = {
     'Kaiser-Yang/blink-cmp-dictionary',
     'rafamadriz/friendly-snippets',
-    {
-      'mikavilpas/blink-ripgrep.nvim',
-      enabled = vim.fn.executable('rg') == 1,
-    },
   },
   event = { 'InsertEnter', 'CmdlineEnter' },
   opts = {
     sources = {
       default = function()
         local res = { 'snippets', 'lsp', 'path', 'buffer' }
-        if u.plugin_available('blink-ripgrep.nvim') then table.insert(res, 'ripgrep') end
         if u.plugin_available('blink-cmp-dictionary') then table.insert(res, 'dictionary') end
         return res
       end,
@@ -67,27 +62,6 @@ return {
           enabled = function() return u.plugin_available('blink-cmp-dictionary') end,
           min_keyword_length = 1,
           opts = { dictionary_files = { u.get_light_boat_root() .. '/dict/en_dict.txt' } },
-        },
-        ripgrep = {
-          name = 'RG',
-          score_offset = -10,
-          module = 'blink-ripgrep',
-          enabled = function() return u.plugin_available('blink-ripgrep.nvim') and u.git.is_git_repository() end,
-          opts = {
-            prefix_min_len = 1,
-            -- NOTE:
-            -- we can not enable this,
-            -- becuase it will trigger filetype autocmd for large files
-            fallback_to_regex_highlighting = false,
-            backend = {
-              context_size = 5,
-              project_root_fallback = false,
-              ripgrep = {
-                search_casing = '--smart-case',
-                additional_rg_options = { '-m', '100' },
-              },
-            },
-          },
         },
       },
     },
