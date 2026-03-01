@@ -70,12 +70,4 @@ end
 
 function M.is_git_repository() return vim.fs.root(0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(), '.git') end
 
-function M.has_conflict()
-  if not M.is_git_repository() then return false end
-  conflict_opts.cwd = vim.fn.getcwd()
-  if vim.system(conflict_cmd, conflict_opts):wait().code == 1 then return true end
-  conflict_opts.cwd = vim.fn.expand('%:h')
-  return vim.system(conflict_cmd, conflict_opts):wait().code == 1
-end
-
 return M

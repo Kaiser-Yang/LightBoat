@@ -1,22 +1,4 @@
 local M = {}
---- @param mode string|string[]
---- @return boolean
-function M.has_map(mode, lhs)
-  local _has_map = function(m)
-    for _, map in ipairs(vim.api.nvim_get_keymap(m)) do
-      if map.lhs == lhs or map.lhsraw == lhs or map.lhsrawalt == lhs then return true end
-    end
-    for _, map in ipairs(vim.api.nvim_buf_get_keymap(0, m)) do
-      if map.lhs == lhs or map.lhsraw == lhs or map.lhsrawalt == lhs then return true end
-    end
-    return false
-  end
-  local util = require('lightboat.util')
-  for _, m in ipairs(util.ensure_list(mode)) do
-    if _has_map(m) then return true end
-  end
-  return false
-end
 
 --- @type string?
 local last_key = nil

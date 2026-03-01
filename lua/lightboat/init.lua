@@ -407,8 +407,6 @@ local setup_autocmd = function()
 end
 
 M.setup = function()
-  -- util.network.check()
-  -- util.start_to_detect_color()
   util.git.detect()
   setup_autocmd()
   auto_start_lsp()

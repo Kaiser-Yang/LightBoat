@@ -12,39 +12,39 @@ local function check()
 end
 local l = {}
 function l.surround_normal()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-normal)'
 end
 function l.surround_normal_current()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-normal-cur)'
 end
 function l.surround_normal_line()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-normal-line)'
 end
 function l.surround_normal_current_line()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-normal-cur-line)'
 end
 function l.surround_insert()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-insert)'
 end
 function l.surround_insert_line()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-insert-line)'
 end
 function l.surround_delete()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-delete)'
 end
 function l.surround_change()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-change)'
 end
 function l.surround_change_line()
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-change-line)'
 end
 local function hack(suffix)
@@ -230,7 +230,7 @@ local function check_tabout()
 end
 local function tabout(key)
   if not check_tabout() then return false end
-  u.ensure_plugin('tabout.nvim')
+  require('tabout.nvim')
   if u.key.termcodes('<tab>') == u.key.termcodes(key) then
     return '<plug>(Tabout)'
   else
@@ -336,12 +336,12 @@ function M.auto_pair_wrap(key)
 end
 function M.surround_visual()
   if not check() then return false end
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-visual)'
 end
 function M.surround_visual_line()
   if not check() then return false end
-  u.ensure_plugin('nvim-surround')
+  require('nvim-surround')
   return '<plug>(nvim-surround-visual-line)'
 end
 function M.hack_wrap(suffix)

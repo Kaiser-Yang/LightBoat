@@ -4,8 +4,6 @@ local M = {
   git = require('lightboat.util.git'),
 }
 
--- HACK:
--- Better way to do this?
 function M.get_light_boat_root() return M.lazy_path() .. '/LightBoat' end
 
 function M.lazy_path() return vim.fn.stdpath('data') .. '/lazy' end
@@ -38,112 +36,6 @@ function M.in_config_dir()
     end
   end
   return false
-end
-
-local cache = {}
-local color_group
-function M.start_to_detect_color()
-  if vim.fn.executable('rg') == 0 or color_group then return end
-  color_group = vim.api.nvim_create_augroup('LightBoatColorDetection', {})
-  vim.api.nvim_create_autocmd('User', {
-    group = color_group,
-    pattern = 'LazyLoad',
-    callback = function(ev)
-      if ev.data ~= 'nvim-highlight-colors' then return end
-      M.clear_color_detection()
-    end,
-  })
-  vim.api.nvim_create_autocmd('BufUnload', {
-    group = color_group,
-    callback = function(ev)
-      local file = vim.api.nvim_buf_get_name(ev.buf)
-      cache[file] = nil
-    end,
-  })
-  vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
-    group = color_group,
-    callback = function(ev)
-      if require('lightboat.extra.big_file').is_big_file() then return end
-      local file = vim.api.nvim_buf_get_name(ev.buf)
-      if file == '' then return end
-      local current_mtime = vim.fn.getftime(file)
-      if cache[file] and cache[file] == current_mtime then return end
-      cache[file] = current_mtime
-      local patterns = {
-        [[#(?:[0-9a-fA-F]{3,4}){1,2}\b]],
-        [[\b(?:rgb|rgba|hsl|hsla)\s*\([^)]+\)]],
-        [[var\(--[a-zA-Z0-9\-]+\)]],
-        [[\b(?:text|bg|border|from|to|via|ring|stroke|fill|shadow|outline|accent|caret|divide|decoration|underline|overline|placeholder|selection|indigo|rose|pink|fuchsia|purple|violet|blue|sky|cyan|teal|emerald|green|lime|yellow|amber|orange|red|stone|neutral|zinc|gray|slate)-(?:[a-z]+-)?[0-9]{2,3}\b]],
-      }
-      local args = { '--color=never', '--no-heading', '--with-filename', '--max-count=1' }
-      for _, pat in ipairs(patterns) do
-        table.insert(args, '-e')
-        table.insert(args, pat)
-      end
-      table.insert(args, file)
-
-      vim.system({ 'rg', unpack(args) }, { text = true }, function(res)
-        if res.code == 0 and res.stdout and res.stdout ~= '' then
-          vim.schedule(function()
-            M.clear_color_detection()
-            vim.api.nvim_exec_autocmds('User', { pattern = 'ColorDetected' })
-          end)
-        end
-      end)
-    end,
-  })
-end
-
--- HACK:
--- Find a better way to check if we are inside some types
---- @param types string[]
---- @return boolean|nil
---- Returns true if the cursor is inside a block of the specified types,
---- false if not, or nil if unable to determine.
-function M.inside_block(types)
-  local node_under_cursor = vim.treesitter.get_node()
-  local parser = vim.treesitter.get_parser(nil, nil, { error = false })
-  if not parser or not node_under_cursor then return nil end
-  local query = vim.treesitter.query.get(parser:lang(), 'highlights')
-  if not query then return nil end
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  row = row - 1
-  for id, node, _ in query:iter_captures(node_under_cursor, 0, row, row + 1) do
-    for _, t in ipairs(types) do
-      if query.captures[id]:find(t) then
-        local start_row, start_col, end_row, end_col = node:range()
-        if start_row <= row and row <= end_row then
-          if start_row == row and end_row == row then
-            if start_col <= col and col <= end_col then return true end
-          elseif start_row == row then
-            if start_col <= col then return true end
-          elseif end_row == row then
-            if col <= end_col then return true end
-          else
-            return true
-          end
-        end
-      end
-    end
-  end
-  return false
-end
-
-function M.clear_color_detection()
-  cache = {}
-  if color_group then
-    vim.api.nvim_del_augroup_by_id(color_group)
-    color_group = nil
-  end
-end
-
-function M.reverse_list(list)
-  if not list or #list == 0 then return list end
-  local reversed = {}
-  for i = #list, 1, -1 do
-    table.insert(reversed, list[i])
-  end
-  return reversed
 end
 
 function M.toggle_notify(name, state, opts)
@@ -235,10 +127,6 @@ function M.treesitter_available(name)
   local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
   if lang == nil then return false end
   return vim.treesitter.query.get(lang, name) ~= nil
-end
-
-function M.ensure_plugin(name)
-  if not _G.plugin_loaded[name] then require(name) end
 end
 
 function M.in_macro_recording() return vim.fn.reg_recording() ~= '' end

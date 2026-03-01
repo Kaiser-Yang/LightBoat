@@ -1,3 +1,4 @@
+-- BUG: https://github.com/saghen/blink.indent/issues/47
 return {
   'saghen/blink.indent',
   lazy = false,

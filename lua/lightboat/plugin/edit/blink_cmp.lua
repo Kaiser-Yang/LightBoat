@@ -29,7 +29,7 @@ return {
         path = { opts = { show_hidden_files_by_default = true } },
         snippets = { name = 'Snip' },
         buffer = {
-          name = 'Buff',
+          name = 'Buf',
           score_offset = -10,
           transform_items = function(context, items)
             -- Do not convert case when searching

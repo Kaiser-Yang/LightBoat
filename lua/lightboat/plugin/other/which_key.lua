@@ -20,10 +20,10 @@ return {
     -- BUG:
     -- See https://github.com/folke/which-key.nvim/issues/1033
     filter = function(mapping)
-      if mapping.desc == 'Nop' then return false end
+      if mapping.desc and mapping.desc:match('[Nn]op') then return false end
       -- stylua: ignore start
       if
-        (mapping.mode == 'n' or mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v')
+        (mapping.mode == 'n' or mapping.mode == 'o' or mapping.mode == 'x' or mapping.mode == 'v' or mapping.mode == 's')
         and vim.tbl_contains(
           { 'b', 'c', 'd', 'e', 'f', 'h', 'j', 'k', 'l', 'r', 't', 'v', 'w', 'y',
             'B', 'E', 'F', 'G', 'T', 'V', 'W',
@@ -36,4 +36,5 @@ return {
     end,
     defer = function() return false end,
   },
+  opts_extend = { 'triggers' },
 }

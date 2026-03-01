@@ -9,7 +9,7 @@ return {
       mappings = {
         enabled = false,
         cmdline = false,
-        disabled_filetypes = {},
+        disabled_filetypes = { 'TelescopePrompt' },
         pairs = {},
       },
       highlights = {
