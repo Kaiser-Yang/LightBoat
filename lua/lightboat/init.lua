@@ -212,8 +212,6 @@ local setup_autocmd = function()
         vim.b.big_file_status = is_big
         if type(vim.b.big_file_callback) == 'function' then
           vim.b.big_file_callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
-        elseif type(vim.g.big_file_callback) == 'function' then
-          vim.g.big_file_callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
         end
       end,
     })
