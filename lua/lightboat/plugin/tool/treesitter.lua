@@ -1,5 +1,6 @@
 return {
   'nvim-treesitter/nvim-treesitter',
+  event = 'VeryLazy',
   cond = not vim.g.vscode and vim.fn.executable('tar') == 1 and vim.fn.executable('curl') == 1 and vim.fn.executable(
     'tree-sitter'
   ) == 1,
