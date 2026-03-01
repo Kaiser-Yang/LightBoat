@@ -21,7 +21,6 @@ local function get_prompt_text(prompt, default_prompt)
 end
 local function override_ui_select()
   local Menu = require('nui.menu')
-  local event = require('nui.utils.autocmd').event
   local UISelect = Menu:extend('UISelect')
 
   function UISelect:init(items, opts, on_done)
