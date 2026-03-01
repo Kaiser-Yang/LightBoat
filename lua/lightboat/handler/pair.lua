@@ -317,7 +317,10 @@ local tabout_key = {
 function M.auto_pair_wrap(key)
   return function()
     local termcodes = u.key.termcodes(key)
-    if vim.tbl_contains(auto_pairs_key, termcodes) then
+    local _, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+    local char_after = col ~= #line and line:sub(col + 1, col + 1) or ''
+    if vim.tbl_contains(auto_pairs_key, termcodes) and not vim.tbl_contains(auto_pairs_key, char_after) then
       local res = auto_pair(key)
       if not res then return res end
       assert(type(res) == 'string')
