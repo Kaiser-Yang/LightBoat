@@ -4,5 +4,3 @@ return {
   require('lightboat.plugin.edit.guess_indent'),
   require('lightboat.plugin.edit.pair'),
 }
-
-  -- require('lightboat.plugin.edit.jdtls'),
