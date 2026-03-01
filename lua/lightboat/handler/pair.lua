@@ -230,7 +230,7 @@ local function check_tabout()
 end
 local function tabout(key)
   if not check_tabout() then return false end
-  require('tabout.nvim')
+  require('tabout')
   if u.key.termcodes('<tab>') == u.key.termcodes(key) then
     return '<plug>(Tabout)'
   else
