@@ -186,7 +186,23 @@ local capabilities = {
   },
 }
 
-local function auto_start_lsp()
+local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil and vim.g[name] == true end
+
+local setup_conform_expr = function()
+  if enabled('conform_formatexpr_auto_set') then
+    if not util.plugin_available('conform.nvim') then
+      vim.notify(
+        'conform.nvim is not available, please disable conform_formatexpr_auto_set',
+        vim.log.levels.WARN,
+        { title = 'Light Boat' }
+      )
+    else
+      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+    end
+  end
+end
+
+local function start_lsp()
   vim.lsp.config('*', vim.tbl_deep_extend('force', capabilities, vim.lsp.config['*'].capabilities or {}))
   -- Make sure the lspconfig is loaded
   if util.plugin_available('nvim-lspconfig') and not _G.plugin_loaded['nvim-lspconfig'] then require('lspconfig') end
@@ -197,8 +213,6 @@ local function auto_start_lsp()
   servers = vim.tbl_map(function(path) return vim.fn.fnamemodify(path, ':t:r') end, servers)
   if #servers > 0 then vim.lsp.enable(servers) end
 end
-
-local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil and vim.g[name] == true end
 
 local setup_autocmd = function()
   local group = vim.api.nvim_create_augroup('LightBoatAutoCmd', { clear = true })
@@ -389,27 +403,20 @@ local setup_autocmd = function()
       end
     end,
   })
-  local setup_conform_expr = function()
-    if enabled('conform_formatexpr_auto_set') then
-      if not util.plugin_available('conform.nvim') then
-        vim.notify(
-          'conform.nvim is not available, please disable conform_formatexpr_auto_set',
-          vim.log.levels.WARN,
-          { title = 'Light Boat' }
-        )
-      else
-        vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-      end
-    end
-  end
   setup_conform_expr()
   vim.api.nvim_create_autocmd('LspAttach', { group = group, callback = setup_conform_expr })
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'VeryLazy',
+    once = true,
+    callback = function()
+      util.git.detect()
+      start_lsp()
+    end,
+  })
 end
 
 M.setup = function()
-  util.git.detect()
   setup_autocmd()
-  auto_start_lsp()
   pcall(function() require('vim._extui').enable({}) end)
 end
 
