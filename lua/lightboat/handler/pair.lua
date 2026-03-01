@@ -221,6 +221,22 @@ local hack_auot_pair_for_big = {
   end,
 }
 
+local function check_tabout()
+  if not u.plugin_available('tabout.nvim') then
+    vim.notify('tabout.nvim is not available', vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+  return true
+end
+local function tabout(key)
+  if not check_tabout() then return false end
+  u.ensure_plugin('tabout.nvim')
+  if u.key.termcodes('<tab>') == u.key.termcodes(key) then
+    return '<plug>(Tabout)'
+  else
+    return '<plug>(TaboutBack)'
+  end
+end
 local function check_blink_pairs()
   if not u.plugin_available('blink.pairs') then
     vim.notify('blink.pairs is not available', vim.log.levels.WARN, { title = 'Light Boat' })
@@ -308,11 +324,7 @@ function M.auto_pair_wrap(key)
       u.key.feedkeys(res, 'n', false)
       return true
     elseif vim.tbl_contains(tabout_key, termcodes) then
-      if u.key.termcodes('<tab>') == termcodes then
-        return '<plug>(Tabout)'
-      else
-        return '<plug>(TaboutBack)'
-      end
+      return tabout(key)
     elseif vim.tbl_contains(blink_pairs_key, termcodes) then
       return blink_pairs(key)
     end

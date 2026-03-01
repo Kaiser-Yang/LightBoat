@@ -58,7 +58,7 @@ return {
   },
   {
     'abecodes/tabout.nvim',
-    event = { 'InsertEnter', 'CmdlineEnter' },
+    event = { 'InsertEnter' },
     opts = {
       tabkey = '',
       backwards_tabkey = '',
