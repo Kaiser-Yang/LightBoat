@@ -348,7 +348,10 @@ local setup_autocmd = function()
       if not enabled('highlight_on_yank') then return end
       local limit = vim.b.highlight_on_yank_limit or vim.g.highlight_on_yank_limit
       local timeout = vim.b.highlight_on_yank_duration or vim.g.highlight_on_yank_duration
-      local size = 0
+      assert(vim.v.event.regcontents)
+      local size = #vim.v.event.regcontents
+      assert(type(vim.v.event.regcontents) == 'table')
+      ---@diagnostic disable-next-line: param-type-mismatch
       for _, line in ipairs(vim.v.event.regcontents) do
         size = size + #line
       end
@@ -358,7 +361,6 @@ local setup_autocmd = function()
   vim.api.nvim_create_autocmd('FileType', {
     group = group,
     callback = function()
-      -- PERF:
       if util.treesitter_available('highlights') and enabled('treesitter_highlight_auto_start') then
         vim.treesitter.start()
       end
@@ -379,14 +381,21 @@ local setup_autocmd = function()
       end
     end,
   })
-  if enabled('conform_formatexpr_auto_set') then vim.o.formatexpr = "v:lua.require'conform'.formatexpr()" end
-  vim.api.nvim_create_autocmd('LspAttach', {
-    group = group,
-    callback = function()
-      if not enabled('conform_formatexpr_auto_set') then return end
-      vim.bo.formatexpr = "v:lua.require'conform'.formatexpr()"
-    end,
-  })
+  local setup_conform_expr = function()
+    if enabled('conform_formatexpr_auto_set') then
+      if not util.plugin_available('conform.nvim') then
+        vim.notify(
+          'conform.nvim is not available, please disable conform_formatexpr_auto_set',
+          vim.log.levels.WARN,
+          { title = 'Light Boat' }
+        )
+      else
+        vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+      end
+    end
+  end
+  setup_conform_expr()
+  vim.api.nvim_create_autocmd('LspAttach', { group = group, callback = setup_conform_expr })
 end
 
 M.setup = function()
@@ -394,13 +403,6 @@ M.setup = function()
   -- util.start_to_detect_color()
   util.git.detect()
   setup_autocmd()
-  -- We use this code to make the fold sign at the end of the status column and clickable as usually
-  local function fold_clickable()
-    local lnum = vim.v.lnum
-    return vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) and vim.v.virtnum == 0
-  end
-  _G.get_statuscol = function() return '%s%l%=' .. (fold_clickable() and '%C' or ' ') .. ' ' end
-  vim.o.statuscolumn = '%!v:lua.get_statuscol()'
   auto_start_lsp()
   pcall(function() require('vim._extui').enable({}) end)
 end
