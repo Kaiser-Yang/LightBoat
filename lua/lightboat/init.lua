@@ -1,5 +1,14 @@
 local M = {}
 
+vim.g.lightboat_opt = vim.g.lightboat_opt
+  or {
+    big_file_detection = {},
+    treesitter_ensure_installed = {},
+    mason_ensure_installed = {},
+    override_ui_input = false,
+    override_ui_select = false,
+  }
+
 --- @type table<string, boolean>
 _G.plugin_loaded = {}
 --- @type table<string, boolean>
