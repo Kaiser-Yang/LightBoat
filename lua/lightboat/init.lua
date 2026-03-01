@@ -351,11 +351,19 @@ local setup_autocmd = function()
       assert(vim.v.event.regcontents)
       local size = #vim.v.event.regcontents
       assert(type(vim.v.event.regcontents) == 'table')
+      local should_hl = size > 0
       ---@diagnostic disable-next-line: param-type-mismatch
       for _, line in ipairs(vim.v.event.regcontents) do
         size = size + #line
+        if not limit or type(limit) ~= 'number' then
+          if size > 0 then should_hl = true end
+          if should_hl then break end
+        elseif size > limit then
+          should_hl = false
+          break
+        end
       end
-      if size > 0 and (not limit or size < limit) then vim.hl.on_yank({ timeout = timeout }) end
+      if should_hl then vim.hl.on_yank({ timeout = timeout }) end
     end,
   })
   vim.api.nvim_create_autocmd('FileType', {
