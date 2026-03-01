@@ -62,7 +62,7 @@ return {
       live_grep = { additional_args = additional_args },
     },
     extensions = {
-      live_grep_args = { additional_args = additional_args, prompt_title = 'Live Grep' },
+      live_grep_args = { auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep' },
       frecency = {
         -- BUG:
         -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/316
