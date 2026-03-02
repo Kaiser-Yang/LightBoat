@@ -4,6 +4,12 @@ return {
   opts = {
     disable_mouse = false,
     restriction_mode = 'hint',
+    disabled_keys = {
+      ['<Up>'] = { 'n', 'x' },
+      ['<Down>'] = { 'n', 'x' },
+      ['<Left>'] = { 'n', 'x' },
+      ['<Right>'] = { 'n', 'x' },
+    },
     hints = {
       ['dl'] = { message = function() return 'Use x instead of dl' end, length = 2 },
       ['cl'] = { message = function() return 'Use s instead of cl' end, length = 2 },
