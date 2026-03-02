@@ -1,3 +1,4 @@
+vim.g.nvim_surround_no_mappings = true
 return {
   {
     'saghen/blink.pairs',
@@ -83,21 +84,6 @@ return {
     'kylechui/nvim-surround',
     version = '*',
     lazy = true,
-    opts = {
-      move_cursor = 'sticky',
-      keymaps = {
-        insert = false,
-        insert_line = false,
-        normal = false,
-        normal_cur = false,
-        normal_line = false,
-        normal_cur_line = false,
-        visual = false,
-        visual_line = false,
-        delete = false,
-        change = false,
-        change_line = false,
-      },
-    },
+    opts = { move_cursor = 'sticky' },
   },
 }
