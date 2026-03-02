@@ -7,6 +7,7 @@ vim.g.lightboat_opt = vim.g.lightboat_opt
     mason_ensure_installed = {},
     override_ui_input = false,
     override_ui_select = false,
+    blink_cmp_unique_priority = {},
   }
 
 --- @type table<string, boolean>
@@ -310,13 +311,7 @@ local setup_autocmd = function()
             seen[item.label] = true
             return true
           end
-          local priority = {}
-          if vim.b.blink_cmp_unique_priority then
-            priority = util.get(vim.b.blink_cmp_unique_priority, ctx)
-          elseif vim.g.blink_cmp_unique_priority then
-            priority = util.get(vim.g.blink_cmp_unique_priority, ctx)
-          end
-          for id in vim.iter(priority) do
+          for id in vim.iter(util.get(vim.g.lightboat_opt.blink_cmp_unique_priority, ctx)) do
             items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
           end
           return original(ctx, items_by_source)
