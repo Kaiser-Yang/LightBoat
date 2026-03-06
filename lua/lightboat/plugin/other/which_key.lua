@@ -36,5 +36,4 @@ return {
     end,
     defer = function() return false end,
   },
-  opts_extend = { 'triggers' },
 }
