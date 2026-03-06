@@ -29,9 +29,9 @@ local function get_input(buffer)
     if line:sub(1, 1) == '"' then
       local idx = find_closing_quote(line)
       if idx == nil then return line end
-      return line:sub(1, idx - 1)
+      return line:sub(2, idx - 1)
     else
-      return line:match('^%S*')
+      return line:match('[^-]*')
     end
   end
   return line
