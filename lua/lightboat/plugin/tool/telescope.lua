@@ -21,13 +21,6 @@ local function ivy(opts)
     layout_config = { height = 0.4 },
   }, opts or {})
 end
-local function dropdown(opts)
-  return vim.tbl_deep_extend('force', {
-    theme = 'dropdown',
-    previewer = false,
-    layout_config = { anchor = 'N', anchor_padding = 0 },
-  }, opts)
-end
 return {
   'nvim-telescope/telescope.nvim',
   dependencies = {
@@ -63,12 +56,11 @@ return {
       lsp_type_definitions = cursor(),
       lsp_documentation_symbols = ivy(),
       registers = cursor({ initial_mode = 'normal' }),
-      grep_string = ivy({ additional_args = additional_args }),
-      find_files = dropdown({ prompt_title = 'Find File Dropdown', find_command = find_command }),
-      live_grep = ivy({ additional_args = additional_args }),
+      grep_string = { additional_args = additional_args },
+      find_files = { prompt_title = 'Find File', find_command = find_command },
     },
     extensions = {
-      live_grep_args = ivy({ auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep Ivy' }),
+      live_grep_args = { auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep Arg' },
     },
   },
 }

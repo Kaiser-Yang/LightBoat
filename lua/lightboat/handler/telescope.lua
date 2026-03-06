@@ -1,6 +1,10 @@
 local u = require('lightboat.util')
 local M = {}
 
+local live_grep_arg_ivy
+local find_word_ivy
+local find_file_dropdown
+
 local function find_closing_quote(s, q)
   q = q or '"'
   local n = #s
@@ -41,7 +45,7 @@ local function check()
   return true
 end
 
-local function check_live_grep_args()
+local function check_live_grep_arg()
   if not u.plugin_available('telescope-live-grep-args.nvim') then
     vim.notify('telescope-live-grep-args.nvim is not available', vim.log.levels.WARN, { title = 'Light Boat' })
     return false
@@ -143,86 +147,110 @@ function M.smart_select_all(buffer)
   return true
 end
 
-function M.toggle_frecency(buffer, opts)
-  if not check() or not check_frecency() then return false end
+function M.toggle_find_file(buffer, opts)
+  if not check() then return false end
   local input = get_input(buffer)
-  local picker = require('telescope.actions.state').get_current_picker(buffer)
-  local is_frecency = picker.prompt_title:match('Find File Frecency') ~= nil
-  opts = opts or {}
-  opts.default_text = opts.default_text or input
+  opts = vim.tbl_deep_extend('force', {
+    default_text = input,
+  }, opts or {})
+  find_word_ivy = nil
+  live_grep_arg_ivy = nil
   require('telescope.actions').close(buffer)
-  if is_frecency then
+  if find_file_dropdown then
+    find_file_dropdown = false
     require('telescope.builtin').find_files(opts)
   else
-    return M.find_file_frecency(opts)
+    return M.find_file(opts)
   end
   return true
 end
 
-function M.find_file_frecency(opts)
-  opts = opts or {}
-  opts.previewer = opts.previewer or false
-  opts.layout_config = opts.layout_config or {}
-  opts.layout_config.anchor = opts.layout_config.anchor or 'N'
-  opts.layout_config.anchor_padding = opts.layout_config.anchor_padding or 0
+function M.find_file(opts)
+  if not check() then return false end
+  find_file_dropdown = true
+  opts = vim.tbl_deep_extend('force', {
+    previewer = false,
+    layout_config = { anchor = 'N', anchor_padding = 0 },
+  }, opts or {})
   opts = require('telescope.themes').get_dropdown(opts)
-  require('telescope').extensions.frecency.frecency(opts)
+  require('telescope.builtin').find_files(opts)
   return true
 end
 
-function M.find_file_frecency_wrap(opts)
-  return function() return M.find_file_frecency(opts) end
+function M.find_file_wrap(opts)
+  return function() return M.find_file(opts) end
 end
 
-function M.toggle_frecency_wrap(opts)
-  return function(buffer) return M.toggle_frecency(buffer, opts) end
+function M.toggle_find_file_wrap(opts)
+  return function(buffer) return M.toggle_find_file(buffer, opts) end
 end
 
-function M.toggle_live_grep_frecency(buffer, opts)
-  if not check() or not check_frecency() or not check_live_grep_args() then return false end
-  local input = get_input(buffer)
-  local picker = require('telescope.actions.state').get_current_picker(buffer)
-  local is_frecency = picker.prompt_title:match('Live Grep Frecency') ~= nil
-  opts = opts or {}
-  opts.default_text = opts.default_text or input
+function M.toggle_live_grep_arg(buffer, opts)
+  if not check() or not check_live_grep_arg() then return false end
+  local input = require('telescope.actions.state').get_current_line()
+  opts = vim.tbl_deep_extend('force', { default_text = input }, opts or {})
   require('telescope.actions').close(buffer)
-  if is_frecency then
+  find_file_dropdown = nil
+  find_word_ivy = nil
+  if live_grep_arg_ivy then
+    live_grep_arg_ivy = false
     require('telescope').extensions.live_grep_args.live_grep_args(opts)
   else
-    M.live_grep_frecency(opts)
+    M.live_grep_arg(opts)
   end
   return true
 end
 
-function M.toggle_live_grep_frecency_wrap(opts)
-  return function(buffer) return M.toggle_live_grep_frecency(buffer, opts) end
+function M.toggle_live_grep_arg_wrap(opts)
+  return function(buffer) return M.toggle_live_grep_arg(buffer, opts) end
 end
 
-function M.live_grep_frecency(opts)
-  if not check() or not check_frecency() or not check_live_grep_args() then return false end
-  opts = opts or {}
-  opts.prompt_title = opts.prompt_title or 'Live Grep Frecency'
-  opts.search_dirs = opts.search_dirs or require('frecency').query()
-  opts.layout_config = opts.layout_config or {}
-  opts.layout_config.height = opts.layout_config.height or 0.4
+function M.live_grep_arg(opts)
+  if not check() or not check_live_grep_arg() then return false end
+  live_grep_arg_ivy = true
+  opts = vim.tbl_deep_extend('force', {
+    layout_config = { height = 0.4 },
+  }, opts or {})
   opts = require('telescope.themes').get_ivy(opts)
   require('telescope').extensions.live_grep_args.live_grep_args(opts)
   return true
 end
 
-function M.live_grep_frecency_wrap(opts)
-  return function() return M.live_grep_frecency(opts) end
+function M.live_grep_arg_wrap(opts)
+  return function() return M.live_grep_arg(opts) end
 end
 
-function M.grep_word(opts)
+function M.find_word(opts)
   if not check() then return false end
+  find_word_ivy = true
+  opts = vim.tbl_deep_extend('force', {
+    layout_config = { height = 0.4 },
+  }, opts or {})
+  opts = require('telescope.themes').get_ivy(opts)
   require('telescope.builtin').grep_string(opts)
   return true
 end
 
-function M.grep_word_wrap(opts)
-  return function() return M.grep_word(opts) end
+function M.find_word_wrap(opts)
+  return function() return M.find_word(opts) end
 end
+
+function M.toggle_find_word(buffer, opts)
+  if not check() then return false end
+  local input = get_input(buffer)
+  opts = vim.tbl_deep_extend('force', { default_text = input }, opts or {})
+  require('telescope.actions').close(buffer)
+  find_file_dropdown = nil
+  live_grep_arg_ivy = nil
+  if find_word_ivy then
+    find_word_ivy = false
+    require('telescope.builtin').grep_string(opts)
+  else
+    return M.find_word(opts)
+  end
+  return true
+end
+
 local first = true
 function M.help_tags()
   if not check() then return false end
