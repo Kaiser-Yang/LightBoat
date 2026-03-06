@@ -21,11 +21,17 @@ local function ivy(opts)
     layout_config = { height = 0.4 },
   }, opts or {})
 end
+local function dropdown(opts)
+  return vim.tbl_deep_extend('force', {
+    theme = 'dropdown',
+    previewer = false,
+    layout_config = { anchor = 'N', anchor_padding = 0 },
+  }, opts)
+end
 return {
   'nvim-telescope/telescope.nvim',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'nvim-telescope/telescope-frecency.nvim',
     {
       'nvim-telescope/telescope-live-grep-args.nvim',
       enabled = vim.fn.executable('rg') == 1,
@@ -58,27 +64,11 @@ return {
       lsp_documentation_symbols = ivy(),
       registers = cursor({ initial_mode = 'normal' }),
       grep_string = ivy({ additional_args = additional_args }),
-      find_files = { prompt_title = 'Find File', find_command = find_command },
-      live_grep = { additional_args = additional_args },
+      find_files = dropdown({ prompt_title = 'Find File Dropdown', find_command = find_command }),
+      live_grep = ivy({ additional_args = additional_args }),
     },
     extensions = {
-      live_grep_args = { auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep' },
-      frecency = {
-        -- BUG:
-        -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/316
-        theme = 'dropdown',
-        previewer = false,
-        layout_config = { anchor = 'N', anchor_padding = 0 },
-        prompt_title = 'Find File Frecency',
-        -- HACK:
-        -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/335
-        workspace_scan_cmd = find_command(),
-        db_version = 'v2',
-        preceding = 'opened',
-        hide_current_buffer = true,
-        show_filter_column = false,
-        ignore_register = function(buffer) return not vim.bo[buffer].buflisted or vim.bo[buffer].buftype ~= '' end,
-      },
+      live_grep_args = ivy({ auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep Ivy' }),
     },
   },
 }

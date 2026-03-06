@@ -29,9 +29,7 @@ return {
       hidden_display = 'all',
     },
     diagnostics = { enable = true, show_on_dirs = true },
-    -- PERF:
-    -- See https://github.com/nvim-tree/nvim-tree.lua/issues/3284
-    modified = { enable = false },
+    modified = { enable = true },
     filters = {
       git_ignored = true,
       dotfiles = not u.in_config_dir(),

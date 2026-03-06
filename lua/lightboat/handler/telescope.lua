@@ -41,14 +41,6 @@ local function check()
   return true
 end
 
-local function check_frecency()
-  if not u.plugin_available('telescope-frecency.nvim') then
-    vim.notify('telescope-frecency.nvim is not available', vim.log.levels.WARN, { title = 'Light Boat' })
-    return false
-  end
-  return true
-end
-
 local function check_live_grep_args()
   if not u.plugin_available('telescope-live-grep-args.nvim') then
     vim.notify('telescope-live-grep-args.nvim is not available', vim.log.levels.WARN, { title = 'Light Boat' })
