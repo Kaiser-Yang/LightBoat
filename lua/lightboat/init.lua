@@ -215,6 +215,17 @@ local function start_lsp()
   if #servers > 0 then vim.lsp.enable(servers) end
 end
 
+local function check_network()
+  local sock = vim.uv.new_tcp()
+  if not sock then return end
+  local domain = '114.114.114.114'
+  sock:connect(domain, 53, function(err)
+    if sock then sock:close() end
+    if err then return end
+    vim.schedule(function() vim.api.nvim_exec_autocmds('User', { pattern = 'NetworkAvailable' }) end)
+  end)
+end
+
 local setup_autocmd = function()
   local group = vim.api.nvim_create_augroup('LightBoatAutoCmd', { clear = true })
   if vim.g.lightboat_opt.big_file_detection and #vim.g.lightboat_opt.big_file_detection > 0 then
@@ -405,6 +416,7 @@ local setup_autocmd = function()
     callback = function()
       util.git.detect()
       start_lsp()
+      check_network()
     end,
   })
 end
