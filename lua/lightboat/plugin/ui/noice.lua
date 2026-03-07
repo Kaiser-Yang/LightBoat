@@ -14,7 +14,8 @@ return {
       command_palette = { views = { cmdline_popup = { position = { row = 1, col = '50%' } } } },
     },
     popupmenu = { enabled = false },
-    messages = { view_search = false },
+    messages = { enabled = false },
+    notify = { enabled = false },
     routes = {
       -- BUG:
       -- See https://github.com/folke/noice.nvim/issues/1097
