@@ -1,6 +1,4 @@
 local util = require('lightboat.util')
-local feedkeys = util.key.feedkeys
-local disabled_filetype = { 'snacks_picker_input' }
 local rep_move = require('lightboat.extra.rep_move')
 local prev_matchup, next_matchup = rep_move.make('<plug>(matchup-g%)', '<plug>(matchup-%)')
 local prev_multi_matchup, next_multi_matchup = rep_move.make('<plug>(matchup-[%)', '<plug>(matchup-]%)')
