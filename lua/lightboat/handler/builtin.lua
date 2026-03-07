@@ -385,4 +385,14 @@ function M.toggle_treesitter()
   return true
 end
 
+function M.sync_register()
+  if vim.v.operator ~= 'y' then return false end
+  local target = vim.v.register
+  if target == '' then target = '"' end
+  local origin = target == '+' and '"' or '+'
+  vim.fn.setreg(target, vim.fn.getreg(origin), vim.fn.getregtype(origin))
+  vim.notify('Synchronized ' .. target .. ' from ' .. origin)
+  return '<esc>'
+end
+
 return M
