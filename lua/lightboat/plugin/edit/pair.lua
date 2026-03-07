@@ -1,7 +1,7 @@
 vim.g.nvim_surround_no_mappings = true
 return {
   {
-    'saghen/blink.pairs',
+    'Kaiser-Yang/blink.pairs',
     version = '*',
     cond = not vim.g.vscode,
     lazy = true,
