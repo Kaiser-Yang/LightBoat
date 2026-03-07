@@ -41,6 +41,7 @@ return {
         window_picker = {
           exclude = {
             filetype = {
+              'CompetiTest',
               'notify',
               'packer',
               'qf',
