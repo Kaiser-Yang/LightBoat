@@ -368,9 +368,8 @@ local setup_autocmd = function()
       local limit = vim.b.highlight_on_yank_limit or vim.g.highlight_on_yank_limit
       local timeout = vim.b.highlight_on_yank_duration or vim.g.highlight_on_yank_duration
       assert(vim.v.event.regcontents)
-      local size = #vim.v.event.regcontents
-      assert(type(vim.v.event.regcontents) == 'table')
-      local should_hl = size > 0
+      local size = 0
+      local should_hl = nil
       ---@diagnostic disable-next-line: param-type-mismatch
       for _, line in ipairs(vim.v.event.regcontents) do
         size = size + #line
@@ -382,6 +381,7 @@ local setup_autocmd = function()
           break
         end
       end
+      if should_hl == nil then should_hl = size > 0 end
       if should_hl then vim.hl.on_yank({ timeout = timeout }) end
     end,
   })
