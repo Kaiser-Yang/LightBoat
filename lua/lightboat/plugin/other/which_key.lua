@@ -11,6 +11,7 @@ return {
     triggers = {
       { '<auto>', mode = 'nxso' },
       { 'b', mode = 'n' },
+      { '<c-x>', mode = 'ic' },
     },
     plugins = {
       registers = {

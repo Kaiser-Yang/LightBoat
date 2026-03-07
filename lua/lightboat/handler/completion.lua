@@ -28,6 +28,9 @@ function M.show_completion()
   if not check() then return false end
   return require('blink.cmp').show()
 end
+function M.show_completion_wrap(opts)
+  return function() require('blink.cmp').show(opts) end
+end
 function M.hide_completion()
   if not check() then return false end
   return require('blink.cmp').hide()
