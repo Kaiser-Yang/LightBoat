@@ -109,6 +109,8 @@ local lprevious = '<cmd>lprevious<cr>'
 local lnext = '<cmd>lnext<cr>'
 local bprevious = '<cmd>bprevious<cr>'
 local bnext = '<cmd>bnext<cr>'
+local previous_file = '<cmd>previous<cr>'
+local next_file = '<cmd>next<cr>'
 
 local function check_nvim_tree()
   if not u.plugin_available('nvim-tree.lua') then
@@ -155,6 +157,8 @@ function M.next_location() return u.ensure_repmove(lprevious, lnext)[2]() end
 function M.previous_location() return u.ensure_repmove(lprevious, lnext)[1]() end
 function M.next_buffer() return u.ensure_repmove(bprevious, bnext)[2]() end
 function M.previous_buffer() return u.ensure_repmove(bprevious, bnext)[1]() end
+function M.next_file() return u.ensure_repmove(previous_file, next_file)[2]() end
+function M.previous_file() return u.ensure_repmove(previous_file, next_file)[1]() end
 function M.next_conflict() return u.ensure_repmove(previous_conflict, next_conflict)[2]() end
 function M.previous_conflict() return u.ensure_repmove(previous_conflict, next_conflict)[1]() end
 function M.next_hunk() return u.ensure_repmove(previous_hunk, next_hunk)[2]() end
