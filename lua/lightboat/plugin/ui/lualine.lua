@@ -8,5 +8,6 @@ return {
       always_divide_middle = true,
       disabled_filetypes = { statusline = { 'NvimTree' } },
     },
+    extensions = { 'quickfix' },
   },
 }
