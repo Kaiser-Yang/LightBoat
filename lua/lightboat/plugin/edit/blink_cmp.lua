@@ -67,6 +67,7 @@ return {
     },
     keymap = { preset = 'none' },
     completion = {
+      accept = { auto_brackets = { enabled = false } },
       menu = {
         scrolloff = 0,
         max_height = 15,
