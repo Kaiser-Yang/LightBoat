@@ -23,4 +23,35 @@ function M.async_format()
   return true
 end
 
+--- @param border 'top' | 'bottom' | 'left' | 'right'
+function M.resize_wrap(border, reverse, abs_delta, first_left_or_right, first_top_or_bottom)
+  first_left_or_right = first_left_or_right or 'right'
+  first_top_or_bottom = first_top_or_bottom or 'top'
+  local second_left_or_right = first_left_or_right == 'right' and 'left' or 'right'
+  local second_top_or_bottom = first_top_or_bottom == 'bottom' and 'top' or 'bottom'
+  abs_delta = abs_delta or 3
+  local delta = (border == first_left_or_right or border == first_top_or_bottom) and abs_delta or -abs_delta
+  local first = (border == first_left_or_right or border == second_left_or_right) and first_left_or_right
+    or first_top_or_bottom
+  local second = first == first_left_or_right and second_left_or_right or second_top_or_bottom
+  return function()
+    if not u.plugin_available('win-resizer.nvim') then
+      vim.notify('win-resizer.nvim is not available', vim.log.levels.WARN, { title = 'Light Boat' })
+    end
+    local resize = require('win.resizer').resize
+    local actual_delta = delta * vim.v.count1
+    if reverse then
+      return resize(0, second, -actual_delta, false)
+        or resize(0, first, actual_delta, false)
+        or resize(0, second, -actual_delta, true)
+        or resize(0, first, actual_delta, true)
+    else
+      return resize(0, first, actual_delta, true)
+        or resize(0, second, -actual_delta, true)
+        or resize(0, first, actual_delta, false)
+        or resize(0, second, -actual_delta, false)
+    end
+  end
+end
+
 return M

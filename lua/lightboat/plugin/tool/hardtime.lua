@@ -1,14 +1,15 @@
 return {
   'm4xshen/hardtime.nvim',
   dependencies = 'MunifTanjim/nui.nvim',
+  event = 'VeryLazy',
   opts = {
     disable_mouse = false,
     restriction_mode = 'hint',
     disabled_keys = {
-      ['<Up>'] = { 'n', 'x' },
-      ['<Down>'] = { 'n', 'x' },
-      ['<Left>'] = { 'n', 'x' },
-      ['<Right>'] = { 'n', 'x' },
+      ['<Up>'] = false,
+      ['<Down>'] = false,
+      ['<Left>'] = false,
+      ['<Right>'] = false,
     },
     hints = {
       ['dl'] = { message = function() return 'Use x instead of dl' end, length = 2 },
