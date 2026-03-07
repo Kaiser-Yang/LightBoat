@@ -16,6 +16,7 @@ return {
     popupmenu = { enabled = false },
     messages = { enabled = false },
     notify = { enabled = false },
+    views = { mini = { position = { row = -1 - vim.o.cmdheight } } },
     routes = {
       -- BUG:
       -- See https://github.com/folke/noice.nvim/issues/1097
