@@ -40,38 +40,7 @@ local function try_to_paste_image_wrap(put_after, use_curl)
   end
 end
 
-local function big_file_check_wrap(keys, mode)
-  return function()
-    if not require('lightboat.extra.big_file').is_big_file() then return false end
-    if not keys then
-      vim.notify('File is too big, and the operation is aborted', vim.log.levels.WARN)
-    else
-      require('lightboat.util').key.feedkeys(keys, mode and mode or 'n')
-    end
-    return true
-  end
-end
-
 return {
-  big_file_check_wrap = big_file_check_wrap,
-  disable_snacks_animate_scroll_once = function()
-    if not Snacks or vim.g.snacks_animate_scroll == false then return end
-    local origin = vim.g.snacks_animate_scroll
-    local buf = vim.api.nvim_get_current_buf()
-    vim.g.snacks_animate_scroll = false
-    vim.defer_fn(function()
-      vim.g.snacks_animate_scroll = origin
-      for _, win in ipairs(vim.api.nvim_list_wins()) do
-        if vim.api.nvim_win_get_buf(win) == buf then Snacks.scroll.check(win) end
-      end
-    end, 20)
-  end,
-  big_file_check = big_file_check_wrap(),
-  check_markdown_fts = function()
-    local fts = require('lightboat.config').get().extra.markdown_fts
-    return not vim.tbl_contains(fts, vim.bo.filetype)
-  end,
-  disable_in_gitcommit = function() return vim.bo.filetype == 'gitcommit' end,
   try_to_paste_image_p = try_to_paste_image_wrap(true),
   try_to_paste_image_P = try_to_paste_image_wrap(false),
   try_to_paste_image_p_with_curl = try_to_paste_image_wrap(true, true),
