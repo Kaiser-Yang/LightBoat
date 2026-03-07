@@ -184,7 +184,6 @@ end
 
 local lazygit_win = nil
 local lazygit_buf = nil
-local original_cmdheight = nil
 function M.toggle_lazygit()
   if vim.fn.executable('lazygit') == 0 then
     vim.notify('lazygit is not installed or not in PATH', vim.log.levels.WARN, { title = 'Light Boat' })
@@ -193,48 +192,23 @@ function M.toggle_lazygit()
   if lazygit_win and vim.api.nvim_win_is_valid(lazygit_win) then
     vim.api.nvim_win_hide(lazygit_win)
   else
-    if not lazygit_buf or not vim.api.nvim_buf_is_valid(lazygit_buf) then
-      lazygit_buf = vim.api.nvim_create_buf(false, true)
-    end
-    local width = vim.o.columns
-    local height = vim.o.lines
-    lazygit_win = vim.api.nvim_open_win(lazygit_buf, true, {
-      relative = 'editor',
-      width = width,
-      height = height,
-      row = 0,
-      col = 0,
-      zindex = 50,
-      style = 'minimal',
-      border = 'none',
-    })
-    if lazygit_win == 0 then
-      vim.notify('Failed to open lazygit window', vim.log.levels.ERROR, { title = 'Light Boat' })
-      return false
-    end
-    vim.wo[lazygit_win].cursorcolumn = false
-    vim.wo[lazygit_win].signcolumn = 'no'
-    vim.wo[lazygit_win].winhl = 'NormalFloat:Normal'
-    if vim.bo[lazygit_buf].buftype ~= 'terminal' then
-      vim.cmd('terminal lazygit')
-      vim.bo[lazygit_buf].filetype = 'lazygit'
-      vim.bo[lazygit_buf].buflisted = false
-      vim.bo[lazygit_buf].swapfile = false
-      vim.bo[lazygit_buf].bufhidden = 'hide'
-    end
-    original_cmdheight = vim.o.cmdheight
-    vim.o.cmdheight = 0
-    vim.api.nvim_create_autocmd('BufLeave', {
-      buffer = lazygit_buf,
-      once = true,
-      callback = function()
-        vim.o.cmdheight = original_cmdheight
-        original_cmdheight = nil
-      end,
-    })
-    vim.cmd('startinsert')
-    vim.cmd('nohlsearch')
+    lazygit_buf, lazygit_win = u.terminal('lazygit', lazygit_buf)
+    return lazygit_buf and lazygit_win
   end
+  return true
+end
+
+function M.run_single_file()
+  if not vim.g.lightboat_opt.run_single_file_command then
+    vim.notify('run_single_file_command not set', vim.log.levels.WARN, { title = 'Light Boat' })
+  end
+  local cmd = vim.g.lightboat_opt.run_single_file_command(vim.bo.filetype, vim.fn.expand('%:p'))
+  if not cmd then
+    vim.notify('Unsupported filetype: ' .. vim.inspect(vim.bo.filetype), vim.log.levels.WARN, { title = 'Light Boat' })
+    return false
+  end
+  local buf, win = u.terminal(cmd)
+  return buf and win
 end
 
 function M.cursor_to_eol()
