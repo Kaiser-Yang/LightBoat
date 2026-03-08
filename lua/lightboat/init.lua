@@ -8,6 +8,7 @@ vim.g.lightboat_opt = vim.g.lightboat_opt
     override_ui_input = false,
     override_ui_select = false,
     blink_cmp_unique_priority = {},
+    dap = { adapter = {}, configuration = {} },
   }
 
 --- @type table<string, boolean>
@@ -257,6 +258,22 @@ local setup_autocmd = function()
     pattern = 'LazyLoad',
     callback = function(args)
       _G.plugin_loaded[args.data] = true
+      if _G.plugin_loaded['nvim-dap'] and not done['nvim-dap'] then
+        done['nvim-dap'] = true
+        local dap = require('dap')
+        dap.adapters = vim.tbl_extend('force', dap.adapters, vim.g.lightboat_opt.dap.adapter)
+        dap.configurations = vim.tbl_extend('force', dap.configurations, vim.g.lightboat_opt.dap.configuration)
+        require('dap.ext.vscode').json_decode = function(str)
+          return vim.json.decode(require('plenary.json').json_strip_comments(str))
+        end
+      end
+      if _G.plugin_loaded['nvim-dap-ui'] and not done['nvim-dap-ui'] then
+        done['nvim-dap-ui'] = true
+        local dap = require('dap')
+        local dapui = require('dapui')
+        local before_start = function()
+        end
+      end
       if _G.plugin_loaded['nui.nvim'] and not done['nui.nvim'] then
         done['nui.nvim'] = true
         if vim.g.lightboat_opt.override_ui_input then override_ui_input() end

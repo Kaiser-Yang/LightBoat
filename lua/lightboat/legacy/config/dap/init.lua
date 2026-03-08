@@ -1,8 +1,5 @@
 --- @class LightBoat.Opts.Extra.Dap
 local M = {
-  enabled = true,
-  adapters = require('lightboat.config.dap.adapters'),
-  configurations = require('lightboat.config.dap.configurations'),
   keys = {
     ['<leader>du'] = { key = '<leader>du', desc = 'Toggle debug ui' },
     ['<leader>b'] = { key = '<leader>b', desc = 'Toggle breakpoint' },

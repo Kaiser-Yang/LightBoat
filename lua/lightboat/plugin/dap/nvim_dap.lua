@@ -1,0 +1,20 @@
+return {
+  'mfussenegger/nvim-dap',
+  cond = not vim.g.vscode,
+  lazy = true,
+  cmd = {
+    'DapShowLog',
+    'DapContinue',
+    'DapToggleBreakpoint',
+    'DapClearBreakpoints',
+    'DapToggleRepl',
+    'DapStepOver',
+    'DapStepInto',
+    'DapStepOut',
+    'DapPause',
+    'DapTerminate',
+    'DapDisconnect',
+    'DapRestartFrame',
+  },
+  dependencies = 'nvim-lua/plenary.nvim',
+}
