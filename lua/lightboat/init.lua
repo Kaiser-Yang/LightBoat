@@ -263,11 +263,14 @@ local setup_autocmd = function()
         local dap = require('dap')
         dap.adapters = vim.tbl_extend('force', dap.adapters, vim.g.lightboat_opt.dap.adapter)
         dap.configurations = vim.tbl_extend('force', dap.configurations, vim.g.lightboat_opt.dap.configuration)
-        require('dap.ext.vscode').json_decode = function(str)
-          return vim.json.decode(require('plenary.json').json_strip_comments(str))
+        if util.plugin_available('plenary.nvim') then
+          require('dap.ext.vscode').json_decode = function(str)
+            return vim.json.decode(require('plenary.json').json_strip_comments(str))
+          end
         end
         if util.plugin_available('nvim-dap-ui') then
           local before_start = function()
+            if not _G.plugin_loaded['nvim-dap-virtual-text'] then require('nvim-dap-virtual-text') end
             if _G.plugin_loaded['nvim-tree.lua'] then
               local tree = require('nvim-tree.api').tree
               if tree.is_visible() then tree.toggle() end
