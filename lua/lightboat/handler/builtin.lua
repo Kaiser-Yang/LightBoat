@@ -192,7 +192,7 @@ function M.toggle_lazygit()
   if lazygit_win and vim.api.nvim_win_is_valid(lazygit_win) then
     vim.api.nvim_win_hide(lazygit_win)
   else
-    lazygit_buf, lazygit_win = u.terminal('lazygit', lazygit_buf)
+    lazygit_buf, lazygit_win = u.terminal('lazygit', lazygit_buf, 'none')
     return lazygit_buf and lazygit_win
   end
   return true

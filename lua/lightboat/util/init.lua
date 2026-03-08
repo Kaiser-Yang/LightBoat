@@ -138,8 +138,9 @@ function M.in_macro() return M.in_macro_recording() or M.in_macro_executing() en
 local original_cmdheight = nil
 --- @param cmd string
 --- @param bufnr integer|nil
+--- @param border string|nil
 --- @return integer|nil bufnr, integer|nil winid
-function M.terminal(cmd, bufnr)
+function M.terminal(cmd, bufnr, border)
   if cmd == nil or cmd == '' and bufnr == nil then
     vim.notify('No command provided', vim.log.levels.ERROR, { title = 'Light Boat' })
     return nil, nil
@@ -148,6 +149,8 @@ function M.terminal(cmd, bufnr)
   local term_buf = bufnr
   if term_buf == nil or not vim.api.nvim_buf_is_valid(term_buf) then term_buf = vim.api.nvim_create_buf(false, true) end
 
+  border = border or vim.o.winborder
+  border = border == '' and 'none' or border
   local term_win = vim.api.nvim_open_win(term_buf, true, {
     relative = 'editor',
     width = vim.o.columns,
@@ -156,7 +159,8 @@ function M.terminal(cmd, bufnr)
     col = 0,
     zindex = 50,
     style = 'minimal',
-    border = 'none',
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    border = border,
   })
   if term_win == 0 then
     vim.notify('Failed to open terminal window', vim.log.levels.ERROR, { title = 'Light Boat' })
