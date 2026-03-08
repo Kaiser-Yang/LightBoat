@@ -1,6 +1,5 @@
 return {
   require('lightboat.plugin.tool.conform'),
-  require('lightboat.plugin.tool.hardtime'),
   require('lightboat.plugin.tool.lspconfig'),
   require('lightboat.plugin.tool.mason'),
   require('lightboat.plugin.tool.nvim_tree'),
