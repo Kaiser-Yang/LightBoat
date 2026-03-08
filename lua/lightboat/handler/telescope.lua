@@ -168,6 +168,8 @@ end
 function M.find_file(opts)
   if not check() then return false end
   find_file_dropdown = true
+  find_word_ivy = nil
+  live_grep_arg_ivy = nil
   opts = vim.tbl_deep_extend('force', {
     previewer = false,
     layout_config = { anchor = 'N', anchor_padding = 0 },
@@ -208,6 +210,8 @@ end
 function M.live_grep_arg(opts)
   if not check() or not check_live_grep_arg() then return false end
   live_grep_arg_ivy = true
+  find_word_ivy = nil
+  find_file_dropdown = nil
   opts = vim.tbl_deep_extend('force', {
     layout_config = { height = 0.4 },
   }, opts or {})
@@ -223,6 +227,8 @@ end
 function M.find_word(opts)
   if not check() then return false end
   find_word_ivy = true
+  live_grep_arg_ivy = nil
+  find_file_dropdown = nil
   opts = vim.tbl_deep_extend('force', {
     layout_config = { height = 0.4 },
   }, opts or {})
