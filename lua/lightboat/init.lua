@@ -353,7 +353,6 @@ local setup_autocmd = function()
       end
     end,
   })
-  local guessed = {}
   local conform_available = util.plugin_available('conform.nvim')
   local guess_indent_available = util.plugin_available('guess-indent.nvim')
   vim.api.nvim_create_autocmd('BufWritePre', {
@@ -377,8 +376,7 @@ local setup_autocmd = function()
               vim.log.levels.WARN,
               { title = 'Light Boat' }
             )
-          elseif not err and not guessed[buffer] then
-            guessed[buffer] = true
+          elseif not err then
             require('guess-indent').set_from_buffer(buffer, true, false)
           end
         end
