@@ -374,7 +374,7 @@ local setup_autocmd = function()
               { title = 'Light Boat' }
             )
           elseif not err then
-            require('guess-indent').set_from_buffer(buffer, true, false)
+            vim.schedule_wrap(require('guess-indent').set_from_buffer)(buffer, true, true)
           end
         end
       end)
