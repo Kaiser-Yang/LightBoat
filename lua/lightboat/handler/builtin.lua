@@ -349,7 +349,7 @@ function M.toggle_treesitter()
   if status then
     local ok, error = pcall(vim.treesitter.start, buf)
     if not ok then
-      vim.notify(error, vim.log.levels.ERROR, { title = 'Treesitter' })
+      vim.notify(error or 'Unknown Error', vim.log.levels.ERROR, { title = 'Treesitter' })
       return false
     end
   else
