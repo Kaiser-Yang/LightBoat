@@ -266,12 +266,16 @@ local setup_autocmd = function()
         require('dap.ext.vscode').json_decode = function(str)
           return vim.json.decode(require('plenary.json').json_strip_comments(str))
         end
-      end
-      if _G.plugin_loaded['nvim-dap-ui'] and not done['nvim-dap-ui'] then
-        done['nvim-dap-ui'] = true
-        local dap = require('dap')
-        local dapui = require('dapui')
-        local before_start = function()
+        if util.plugin_available('nvim-dap-ui') then
+          local before_start = function()
+            if _G.plugin_loaded['nvim-tree.lua'] then
+              local tree = require('nvim-tree.api').tree
+              if tree.is_visible() then tree.toggle() end
+            end
+            require('dapui').open({ reset = true })
+          end
+          dap.listeners.before.attach.dapui = before_start
+          dap.listeners.before.launch.dapui = before_start
         end
       end
       if _G.plugin_loaded['nui.nvim'] and not done['nui.nvim'] then

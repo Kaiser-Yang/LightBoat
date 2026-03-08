@@ -1,7 +1,6 @@
 -- TODO:
 -- completion for dap commands
 local M = {}
-
 --- Wrap a function to prompt for input and execute a callback with the input.
 --- If the input is empty, it will notify the user and abort the operation.
 --- @param prompt string The prompt message to display.
@@ -55,22 +54,13 @@ function M.continue_or_run_last()
   end
 end
 
-local function persistent_breakpoints_wrap(callback)
-  return function(...)
-    local persistent_breakpoints = require('persistent-breakpoints.api')
-    callback(...)
-    persistent_breakpoints.breakpoints_changed_in_current_buffer()
-  end
-end
-
 local operation = {
   ['<leader>du'] = M.dap_ui_toggle,
-  ['<leader>b'] = persistent_breakpoints_wrap(function() require('dap').toggle_breakpoint() end),
-  ['<leader>B'] = persistent_breakpoints_wrap(M.set_condition_breakpoint),
+  ['<leader>db'] = function() require('dap').toggle_breakpoint() end,
+  ['<leader>dB'] = M.set_condition_breakpoint,
   ['<leader>dc'] = function() require('persistent-breakpoints.api').clear_all_breakpoints() end,
   ['<leader>df'] = function() require('dapui').float_element() end,
   ['<leader>de'] = M.eval_expression,
-  ['<leader>dl'] = persistent_breakpoints_wrap(M.set_log_point),
   ['<leader>dt'] = function()
     if vim.bo.filetype == 'java' then
       local ok, jdtls = pcall(require, 'jdtls')
@@ -83,6 +73,7 @@ local operation = {
       vim.notify('Not support for current filetype: ' .. vim.bo.filetype, vim.log.levels.WARN)
     end
   end,
+  ['<leader>dl'] = M.set_log_point,
   ['<f4>'] = function() require('dap').terminate() end,
   ['<f5>'] = M.continue_or_run_last,
   ['<f6>'] = function() require('dap').restart() end,
@@ -90,24 +81,5 @@ local operation = {
   ['<f10>'] = function() require('dap').step_over() end,
   ['<f11>'] = function() require('dap').step_into() end,
   ['<f12>'] = function() require('dap').step_out() end,
+  require('dap.ui.widgets').hover(),
 }
-M.setup = util.setup_check_wrap('lightboat.plugin.edit.dap', function()
-  util.set_hls({
-    { 0, 'DapStopped', { fg = '#98C379' } },
-    { 0, 'DapStoppedLine', { bg = '#31353F' } },
-    { 0, 'DapBreakpointRejected', { fg = '#888888' } },
-    { 0, 'DapLogPoint', { fg = '#89dceb' } },
-    { 0, 'DapBreakpoint', { fg = '#f38ba8' } },
-    { 0, 'DapBreakpointCondition', { fg = '#f9e2af' } },
-  })
-  util.define_signs({
-    { 'DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'DapStoppedLine' } },
-    { 'DapLogPoint', { text = '', texthl = 'DapLogPoint' } },
-    { 'DapBreakpoint', { text = '●', texthl = 'DapBreakpoint' } },
-    { 'DapBreakpointRejected', { text = 'x', texthl = 'DapBreakpointRejected' } },
-    { 'DapBreakpointCondition', { text = '○', texthl = 'DapBreakpointCondition' } },
-  })
-  return spec
-end, M.clear)
-
-return M
