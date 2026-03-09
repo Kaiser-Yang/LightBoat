@@ -16,5 +16,5 @@ return {
     'DapDisconnect',
     'DapRestartFrame',
   },
-  dependencies = 'nvim-lua/plenary.nvim',
+  dependencies = { 'nvim-lua/plenary.nvim', 'igorlfs/nvim-dap-view' },
 }
