@@ -260,23 +260,22 @@ local setup_autocmd = function()
       if _G.plugin_loaded['nvim-dap'] and not done['nvim-dap'] then
         done['nvim-dap'] = true
         local dap = require('dap')
-        if util.plugin_available('plenary.nvim') then
-          require('dap.ext.vscode').json_decode = function(str)
-            return vim.json.decode(require('plenary.json').json_strip_comments(str))
-          end
+        require('dap.ext.vscode').json_decode = function(str)
+          if util.plugin_available('plenary.nvim') then str = require('plenary.json').json_strip_comments(str) end
+          return vim.json.decode(str)
         end
-        if util.plugin_available('nvim-dap-ui') then
-          local before_start = function()
-            if not _G.plugin_loaded['nvim-dap-virtual-text'] then require('nvim-dap-virtual-text') end
-            if _G.plugin_loaded['nvim-tree.lua'] then
-              local tree = require('nvim-tree.api').tree
-              if tree.is_visible() then tree.toggle() end
-            end
-            require('dapui').open({ reset = true })
+        local before_start = function()
+          if not _G.plugin_loaded['nvim-dap-virtual-text'] and util.plugin_available('nvim-dap-virtual-text') then
+            require('nvim-dap-virtual-text')
           end
-          dap.listeners.before.attach.dapui = before_start
-          dap.listeners.before.launch.dapui = before_start
+          if _G.plugin_loaded['nvim-tree.lua'] then
+            local tree = require('nvim-tree.api').tree
+            if tree.is_visible() then tree.toggle() end
+          end
+          if util.plugin_available('nvim-dap-view') then require('dap-view').open() end
         end
+        dap.listeners.before.attach.view = before_start
+        dap.listeners.before.launch.view = before_start
       end
       if _G.plugin_loaded['nui.nvim'] and not done['nui.nvim'] then
         done['nui.nvim'] = true

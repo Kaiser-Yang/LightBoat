@@ -1,19 +1,16 @@
 local M = {}
 local u = require('lightboat.util')
 
-function M.toggle_dap_ui()
-  local dap_ui = require('dapui')
-  local dap_win_num = #u.buffer.get_win_with_filetype('dap')
-  if dap_win_num < 6 then
-    if dap_win_num ~= 0 then dap_ui.close() end
+function M.toggle_dap_view()
+  local dap_view = require('dap-view')
+  local dap_win_num = #u.buffer.get_win_with_filetype('dap%-view')
+  if dap_win_num == 0 then
     if _G.plugin_loaded['nvim-tree.lua'] then
       local tree = require('nvim-tree.api').tree
       if tree.is_visible() then tree.toggle() end
     end
-    dap_ui.open({ reset = true })
-  else
-    dap_ui.close()
   end
+  dap_view.toggle()
   return true
 end
 
