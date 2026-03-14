@@ -4,7 +4,7 @@ return {
     'saghen/blink.pairs',
     version = '*',
     cond = not vim.g.vscode,
-    lazy = true,
+    event = 'VeryLazy',
     dependencies = 'saghen/blink.download',
     opts = {
       mappings = {

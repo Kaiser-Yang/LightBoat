@@ -60,7 +60,7 @@ return {
           score_offset = -10,
           module = 'blink-cmp-dictionary',
           enabled = function() return u.plugin_available('blink-cmp-dictionary') end,
-          min_keyword_length = 1,
+          min_keyword_length = 3,
           opts = { dictionary_files = { u.get_light_boat_root() .. '/dict/en_dict.txt' } },
         },
       },
