@@ -1,13 +1,11 @@
 vim.g.nvim_surround_no_mappings = true
-local has_cargo = vim.fn.executable('cargo') == 1
 return {
   {
     'saghen/blink.pairs',
-    version = has_cargo and nil or '*',
-    build = has_cargo and 'cargo build --release' or nil,
+    version = '*',
     cond = not vim.g.vscode,
     event = 'VeryLazy',
-    dependencies = has_cargo and nil or 'saghen/blink.download',
+    dependencies = 'saghen/blink.download',
     opts = {
       mappings = {
         enabled = false,
