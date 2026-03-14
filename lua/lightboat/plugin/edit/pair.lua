@@ -14,9 +14,7 @@ return {
         pairs = {},
       },
       highlights = {
-        -- PERF:
-        -- https://github.com/saghen/blink.pairs/issues/72
-        enabled = false,
+        enabled = true,
         cmdline = pcall(require, 'vim._extui'),
         groups = {
           'BlinkPairsRed',
