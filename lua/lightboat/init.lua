@@ -235,9 +235,9 @@ local setup_autocmd = function()
         if vim.b.big_file_status == nil then vim.b.big_file_status = false end
         local is_big = util.buffer.big(ev.buf, ev.event)
         local old_status = vim.b.big_file_status
-        vim.b.big_file_status = is_big
-        if type(vim.b.big_file_callback) == 'function' then
-          vim.b.big_file_callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
+        local callback = vim.b.big_file_callback or vim.g.big_file_callback
+        if type(callback) == 'function' then
+          callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
         end
       end,
     })
