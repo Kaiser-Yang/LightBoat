@@ -82,6 +82,14 @@ return {
     'kylechui/nvim-surround',
     version = '*',
     lazy = true,
-    opts = { move_cursor = 'sticky' },
+    opts = {
+      surrounds = {
+        [')'] = { change = { target = '^(. ?)().-( ?.)()$' } },
+        ['}'] = { change = { target = '^(. ?)().-( ?.)()$' } },
+        ['>'] = { change = { target = '^(. ?)().-( ?.)()$' } },
+        [']'] = { change = { target = '^(. ?)().-( ?.)()$' } },
+      },
+      move_cursor = 'sticky',
+    },
   },
 }
