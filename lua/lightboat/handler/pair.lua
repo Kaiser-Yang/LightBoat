@@ -307,7 +307,6 @@ local auto_pairs_key = {
   ']',
   u.key.termcodes('<bs>'),
   u.key.termcodes('<cr>'),
-  u.key.termcodes('<space>'),
   u.key.termcodes('<m-e>'),
   u.key.termcodes('<m-E>'),
   u.key.termcodes('<m-)>'),
@@ -319,6 +318,7 @@ table.insert(t, '{')
 table.insert(t, '"')
 table.insert(t, "'")
 table.insert(t, '`')
+table.insert(t, u.key.termcodes('<space>'))
 local tabout_key = {
   u.key.termcodes('<tab>'),
   u.key.termcodes('<s-tab>'),
@@ -329,6 +329,7 @@ function M.auto_pair_wrap(key)
     local _, col = unpack(vim.api.nvim_win_get_cursor(0))
     local line = vim.api.nvim_get_current_line()
     local char_after = col ~= #line and line:sub(col + 1, col + 1) or ''
+    local at_eol = col == #line
     if u.buffer.big() then
       if not vim.tbl_contains(t, termcodes) then return false end
       local res = auto_pair(key)
@@ -337,7 +338,11 @@ function M.auto_pair_wrap(key)
         return true
       end
       return res
-    elseif vim.tbl_contains(auto_pairs_key, termcodes) and key ~= char_after then
+    elseif
+      vim.tbl_contains(auto_pairs_key, termcodes)
+      and key ~= char_after
+      and (termcodes ~= u.key.termcodes('<bs>') or at_eol)
+    then
       local res = auto_pair(key)
       if type(res) == 'string' then
         u.key.feedkeys(res, 'n', false)
