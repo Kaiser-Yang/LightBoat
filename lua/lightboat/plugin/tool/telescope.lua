@@ -34,6 +34,14 @@ return {
       build = 'make',
       enabled = vim.fn.executable('make') == 1 and (vim.fn.executable('gcc') == 1 or vim.fn.executable('clang') == 1),
     },
+    {
+      'prochri/telescope-all-recent.nvim',
+      dependencies = {
+        'nvim-telescope/telescope.nvim',
+        'kkharji/sqlite.lua',
+      },
+      opts = {},
+    },
   },
   cmd = { 'Telescope' },
   opts = {
