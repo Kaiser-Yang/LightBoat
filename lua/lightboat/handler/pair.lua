@@ -176,29 +176,29 @@ local function quotation_wrap(sym)
     local sym_before = line:sub(1, col):match(sym .. '*$') or ''
     local sym_after = line:sub(col + 1):match('^' .. sym .. '*') or ''
     if #sym_before == 0 then
-      if #sym_after == 1 then return '<right>' end
+      if #sym_after == 1 then return '<c-g>U<right>' end
     elseif #sym_before == 1 then
       if #sym_after == 1 then
         if double_quotation[sym] and vim.tbl_contains(double_quotation[sym], vim.bo.filetype) then
-          return sym .. sym .. '<left>'
+          return sym .. sym .. '<c-g>U<left>'
         else
-          return '<right>'
+          return '<c-g>U<right>'
         end
       end
     elseif #sym_before == 2 then
       if #sym_after == 0 then
         if triple_quotation[sym] and vim.tbl_contains(triple_quotation[sym], vim.bo.filetype) then
-          return sym .. sym .. sym .. sym .. string.rep('<left>', 3)
+          return sym .. sym .. sym .. sym .. string.rep('<c-g>U<left>', 3)
         end
       end
     end
-    return sym .. sym .. '<left>'
+    return sym .. sym .. '<c-g>U<left>'
   end
 end
-local hack_auot_pair_for_big = {
-  ['('] = '<c-g>u()<left>',
-  ['['] = '<c-g>u[]<left>',
-  ['{'] = '<c-g>u{}<left>',
+local hack_auto_pair_for_big = {
+  ['('] = '()<c-g>U<left>',
+  ['['] = '[]<c-g>U<left>',
+  ['{'] = '{}<c-g>U<left>',
   [')'] = close_pair_wrap(')', '[%s%]%}]*%)'),
   [']'] = close_pair_wrap(']', '[%s%}%)]*%]'),
   ['}'] = close_pair_wrap('}', '[%s%]%)]*%}'),
@@ -312,14 +312,6 @@ local auto_pairs_key = {
   u.key.termcodes('<m-E>'),
   u.key.termcodes('<m-)>'),
 }
-local t = vim.deepcopy(auto_pairs_key)
-table.insert(t, '(')
-table.insert(t, '[')
-table.insert(t, '{')
-table.insert(t, '"')
-table.insert(t, "'")
-table.insert(t, '`')
-table.insert(t, u.key.termcodes('<space>'))
 local tabout_key = {
   u.key.termcodes('<tab>'),
   u.key.termcodes('<s-tab>'),
@@ -332,13 +324,9 @@ function M.auto_pair_wrap(key)
     local char_after = col ~= #line and line:sub(col + 1, col + 1) or ''
     local at_eol = col == #line
     if u.buffer.big() then
-      if not vim.tbl_contains(t, termcodes) then return false end
-      local res = auto_pair(key)
-      if type(res) == 'string' then
-        u.key.feedkeys(res, 'n', false)
-        return true
-      end
-      return res
+      local handler = hack_auto_pair_for_big[termcodes]
+      if type(handler) == 'function' then return handler() end
+      return handler
     elseif
       vim.tbl_contains(auto_pairs_key, termcodes)
       and key ~= char_after
