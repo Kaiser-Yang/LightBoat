@@ -45,6 +45,7 @@ return {
     opts = {
       tabout = { enable = true, hopout = true },
       fastwarp = { nocursormove = false },
+      bs = { delete_from_end = false },
     },
     config = function(_, opts)
       -- HACK:
