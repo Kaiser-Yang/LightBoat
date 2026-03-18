@@ -351,6 +351,12 @@ local setup_autocmd = function()
   })
   local conform_available = util.plugin_available('conform.nvim')
   local guess_indent_available = util.plugin_available('guess-indent.nvim')
+  if guess_indent_available then
+    vim.api.nvim_create_autocmd('FileType', {
+      group = group,
+      callback = function(args) require('guess-indent').set_from_buffer(args.buf, true, true) end,
+    })
+  end
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = group,
     callback = function(args)
