@@ -232,12 +232,11 @@ local setup_autocmd = function()
     vim.api.nvim_create_autocmd(vim.g.lightboat_opt.big_file_detection, {
       group = group,
       callback = function(ev)
-        if vim.b.big_file_status == nil then vim.b.big_file_status = false end
-        local is_big = util.buffer.big(ev.buf, ev.event)
-        local old_status = vim.b.big_file_status
+        local old_status = vim.b.big_file_status or false
+        vim.b.big_file_status = util.buffer.big(ev.buf, ev.event)
         local callback = vim.b.big_file_callback or vim.g.big_file_callback
         if type(callback) == 'function' then
-          callback({ buffer = ev.buf, old_status = old_status, new_status = is_big })
+          callback({ buffer = ev.buf, old_status = old_status, new_status = vim.b.big_file_status })
         end
       end,
     })
@@ -248,7 +247,7 @@ local setup_autocmd = function()
       if not enabled('nohlsearch_auto_run') or util.in_macro_executing() then return end
       if vim.tbl_contains({ 'i', 'ic', 'ix', 'R', 'Rc', 'Rx', 'Rv', 'Rvc', 'Rvx' }, vim.api.nvim_get_mode().mode) then
         -- We must schedule here
-        vim.schedule_wrap(vim.cmd)('nohlsearch')
+        vim.schedule(function() vim.cmd('nohlsearch') end)
       end
     end,
   })
