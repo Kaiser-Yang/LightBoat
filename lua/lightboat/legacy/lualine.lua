@@ -47,23 +47,5 @@ local spec = {
     cond = not vim.g.vscode,
     enabled = vim.fn.executable('node') == 1 and vim.fn.executable('curl') == 1,
   },
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    cond = not vim.g.vscode,
-    opts = {
-      options = {
-        disabled_filetypes = {
-          'neo-tree',
-          'Avante',
-          'AvanteInput',
-          'help',
-        },
-        globalstatus = false,
-      },
-      sections = sections,
-      inactive_sections = sections,
-    },
-  },
 }
 
