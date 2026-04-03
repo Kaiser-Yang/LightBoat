@@ -22,53 +22,53 @@ local function ivy(opts)
   }, opts or {})
 end
 return {
-  'nvim-telescope/telescope.nvim',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    {
-      'nvim-telescope/telescope-live-grep-args.nvim',
-      enabled = vim.fn.executable('rg') == 1,
-    },
-    {
-      'nvim-telescope/telescope-fzf-native.nvim',
-      build = 'make',
-      enabled = vim.fn.executable('make') == 1 and (vim.fn.executable('gcc') == 1 or vim.fn.executable('clang') == 1),
-    },
-    {
-      'prochri/telescope-all-recent.nvim',
-      dependencies = {
-        'nvim-telescope/telescope.nvim',
-        'kkharji/sqlite.lua',
+  {
+    'nvim-telescope/telescope.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      {
+        'nvim-telescope/telescope-live-grep-args.nvim',
+        enabled = vim.fn.executable('rg') == 1,
       },
-      opts = {},
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        build = 'make',
+        enabled = vim.fn.executable('make') == 1 and (vim.fn.executable('gcc') == 1 or vim.fn.executable('clang') == 1),
+      },
+    },
+    cmd = { 'Telescope' },
+    opts = {
+      defaults = {
+        dynamic_preview_title = true,
+        sorting_strategy = 'ascending',
+        default_mappings = {},
+        layout_config = {
+          horizontal = { prompt_position = 'top' },
+          width = { padding = 0 },
+          height = { padding = 0 },
+        },
+        cache_picker = { ignore_empty_prompt = true },
+      },
+      pickers = {
+        lsp_references = cursor(),
+        lsp_implementations = cursor(),
+        lsp_incoming_calls = cursor(),
+        lsp_outgoing_calls = cursor(),
+        lsp_type_definitions = cursor(),
+        lsp_documentation_symbols = ivy(),
+        registers = cursor({ initial_mode = 'normal' }),
+        grep_string = { additional_args = additional_args },
+        find_files = { prompt_title = 'Find File', find_command = find_command },
+      },
+      extensions = {
+        live_grep_args = { auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep Arg' },
+      },
     },
   },
-  cmd = { 'Telescope' },
-  opts = {
-    defaults = {
-      dynamic_preview_title = true,
-      sorting_strategy = 'ascending',
-      default_mappings = {},
-      layout_config = {
-        horizontal = { prompt_position = 'top' },
-        width = { padding = 0 },
-        height = { padding = 0 },
-      },
-      cache_picker = { ignore_empty_prompt = true },
-    },
-    pickers = {
-      lsp_references = cursor(),
-      lsp_implementations = cursor(),
-      lsp_incoming_calls = cursor(),
-      lsp_outgoing_calls = cursor(),
-      lsp_type_definitions = cursor(),
-      lsp_documentation_symbols = ivy(),
-      registers = cursor({ initial_mode = 'normal' }),
-      grep_string = { additional_args = additional_args },
-      find_files = { prompt_title = 'Find File', find_command = find_command },
-    },
-    extensions = {
-      live_grep_args = { auto_quoting = false, additional_args = additional_args, prompt_title = 'Live Grep Arg' },
-    },
+  {
+    'prochri/telescope-all-recent.nvim',
+    lazy = true,
+    dependencies = { 'kkharji/sqlite.lua' },
+    opts = {},
   },
 }

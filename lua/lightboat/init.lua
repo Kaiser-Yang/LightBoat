@@ -285,6 +285,9 @@ local setup_autocmd = function()
         local t = require('telescope')
         if util.plugin_available('telescope-fzf-native.nvim') then t.load_extension('fzf') end
         if util.plugin_available('telescope-live-grep-args.nvim') then t.load_extension('live_grep_args') end
+        if util.plugin_available('telescope-all-recent.nvim') and not plugin_loaded['telescope-all-recent.nvim'] then
+          require('telescope-all-recent.nvim')
+        end
       end
       -- TODO: try to find a better one to use
       if _G.plugin_loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
