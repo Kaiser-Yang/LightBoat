@@ -1,5 +1,6 @@
 return {
   'igorlfs/nvim-dap-view',
+  cond = not vim.g.vscode,
   cmd = {
     'DapViewOpen',
     'DapViewClose',

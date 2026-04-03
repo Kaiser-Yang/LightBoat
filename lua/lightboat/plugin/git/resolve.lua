@@ -1,3 +1,4 @@
+-- TODO: when will this be merged?
 return {
   'Kaiser-Yang/resolve.nvim',
   event = { { event = 'User', pattern = 'GitConflictDetected' } },

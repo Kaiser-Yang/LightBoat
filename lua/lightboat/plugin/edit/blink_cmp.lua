@@ -5,6 +5,7 @@ return {
   version = '1.*',
   dependencies = {
     'Kaiser-Yang/blink-cmp-dictionary',
+    -- TODO: try to remove this one
     'rafamadriz/friendly-snippets',
   },
   event = { 'InsertEnter', 'CmdlineEnter' },
@@ -18,6 +19,7 @@ return {
       providers = {
         lsp = {
           fallbacks = {},
+          -- TODO: check if we should keep snippets
           transform_items = function(_, items)
             -- Remove snippets
             return vim.tbl_filter(

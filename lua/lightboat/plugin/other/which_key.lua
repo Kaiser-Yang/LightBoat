@@ -1,3 +1,5 @@
+-- TODO: when will this be merged?
+-- FIXME: this plugin has many bugs
 return {
   'Kaiser-Yang/which-key.nvim',
   cond = not vim.g.vscode,

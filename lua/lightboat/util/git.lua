@@ -54,18 +54,18 @@ function M.detect()
   if started then return end
   started = true
   -- Detect once for the current directory
-  start_git_repo_detection()
   git_repo_detector = vim.api.nvim_create_augroup('LightBoatGitRepoDetector', {})
   vim.api.nvim_create_autocmd({ 'BufReadPre', 'DirChanged', 'FileChangedShell' }, {
     group = group,
     callback = start_git_repo_detection,
   })
-  start_git_conflict_detection()
   git_conflict_detector = vim.api.nvim_create_augroup('LightBoatGitConflictDetector', {})
   vim.api.nvim_create_autocmd({ 'BufReadPre', 'DirChanged', 'FileChangedShell' }, {
     group = git_conflict_detector,
     callback = start_git_conflict_detection,
   })
+  start_git_repo_detection()
+  start_git_conflict_detection()
 end
 
 function M.is_git_repository() return vim.fs.root(0, '.git') ~= nil or vim.fs.root(vim.fn.getcwd(), '.git') end

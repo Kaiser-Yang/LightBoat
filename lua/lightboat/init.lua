@@ -190,16 +190,15 @@ local capabilities = {
 local enabled = function(name) return vim.b[name] == true or vim.b[name] == nil and vim.g[name] == true end
 
 local setup_conform_expr = function()
-  if enabled('conform_formatexpr_auto_set') then
-    if not util.plugin_available('conform.nvim') then
-      vim.notify(
-        'conform.nvim is not available, please disable conform_formatexpr_auto_set',
-        vim.log.levels.WARN,
-        { title = 'Light Boat' }
-      )
-    else
-      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-    end
+  if not enabled('conform_formatexpr_auto_set') then return end
+  if not util.plugin_available('conform.nvim') then
+    vim.notify(
+      'conform.nvim is not available, please disable conform_formatexpr_auto_set',
+      vim.log.levels.WARN,
+      { title = 'Light Boat' }
+    )
+  else
+    vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
   end
 end
 
@@ -287,6 +286,7 @@ local setup_autocmd = function()
         if util.plugin_available('telescope-fzf-native.nvim') then t.load_extension('fzf') end
         if util.plugin_available('telescope-live-grep-args.nvim') then t.load_extension('live_grep_args') end
       end
+      -- TODO: try to find a better one to use
       if _G.plugin_loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
         done['nvim-treesitter-endwise'] = true
         require('nvim-treesitter-endwise').init()
@@ -395,10 +395,10 @@ local setup_autocmd = function()
       ---@diagnostic disable-next-line: param-type-mismatch
       for _, line in ipairs(vim.v.event.regcontents) do
         size = size + #line
-        if not limit or type(limit) ~= 'number' then
-          if size > 0 then should_hl = true end
-          if should_hl then break end
-        elseif size > limit then
+        if type(limit) ~= 'number' and size > 0 then
+          should_hl = true
+          break
+        elseif type(limit) == 'number' and size > limit then
           should_hl = false
           break
         end

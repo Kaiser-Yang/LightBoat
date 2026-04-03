@@ -1,5 +1,6 @@
 vim.g.nvim_surround_no_mappings = true
 return {
+  -- TODO: find a better one
   {
     'saghen/blink.pairs',
     version = '*',
@@ -36,6 +37,7 @@ return {
       },
     },
   },
+  -- TODO: find a better one
   {
     -- PERF:
     'altermo/ultimate-autopair.nvim',
@@ -56,6 +58,7 @@ return {
       require('ultimate-autopair').setup(opts)
     end,
   },
+  -- TODO: find a better one
   {
     'abecodes/tabout.nvim',
     lazy = true,

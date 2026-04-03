@@ -1,3 +1,4 @@
+-- TODO: maybe we do not need this one
 return {
   'folke/todo-comments.nvim',
   cond = not vim.g.vscode,

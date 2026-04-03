@@ -1,6 +1,33 @@
 local M = {}
 local cache = {}
 local color_group
+
+--- Normalize the tab page number to its real tab page identity.
+--- @param tab number? The tab page number, defaults to the current tab page.
+--- @return number The normalized tab page number.
+function M.normalize_tab(tab)
+  tab = tab or 0
+  if tab == 0 then tab = vim.api.nvim_get_current_tabpage() end
+  return tab
+end
+
+--- Get a list of windows of specific tab page with specific file types.
+--- @param fts string|string[] A file type or a list of file types to match.
+--- @param tab number? The tab page number to check, defaults to the current tab page.
+--- @return number[] A list of window numbers that match the specified file types.
+function M.get_win_with_filetype(fts, tab)
+  local res = {}
+  --- @type string[]
+  fts = type(fts) == 'table' and fts or { fts }
+  tab = M.normalize_tab(tab)
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+    for _, ft in ipairs(fts) do
+      if vim.bo[vim.api.nvim_win_get_buf(win)].filetype:match(ft) then table.insert(res, win) end
+    end
+  end
+  return res
+end
+
 function M.start_to_detect_color()
   if vim.fn.executable('rg') == 0 or color_group then return end
   color_group = vim.api.nvim_create_augroup('LightBoatColorDetection', {})

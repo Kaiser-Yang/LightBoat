@@ -11,12 +11,10 @@ function M.lazy_path() return vim.fn.stdpath('data') .. '/lazy' end
 function M.ensure_list(value)
   if type(value) == 'table' then
     return value
-  elseif type(value) == 'string' or type(value) == 'function' then
-    return { value }
-  elseif not value then
+  elseif value == nil then
     return {}
   else
-    vim.notify('Expected a table or string, got: ' .. type(value), vim.log.levels.ERROR, { title = 'LightBoat' })
+    return { value }
   end
 end
 
