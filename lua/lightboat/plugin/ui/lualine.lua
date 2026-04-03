@@ -21,5 +21,9 @@ return {
         },
       },
     },
+    sections = {
+      lualine_c = { 'filename', 'filesize' },
+      lualine_x = { 'lsp_status', 'encoding', 'fileformat', 'filetype' },
+    },
   },
 }
