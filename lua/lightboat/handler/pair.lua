@@ -250,32 +250,32 @@ local key_to_function
 local function blink_pairs(key)
   if not check_blink_pairs() then return false end
   if key_to_function == nil then
-    local m = require('blink.pairs.mappings')
+    local ops = require('blink.pairs.mappings.ops')
     local rule_lib = require('blink.pairs.rule')
     local config = require('blink.pairs.config')
     local rule_definitions = config.mappings.pairs
     local rules_by_key = rule_lib.parse(rule_definitions)
     local all_rules = rule_lib.get_all(rules_by_key)
     key_to_function = {
-      ['<bs>'] = m.backspace(all_rules),
-      ['<cr>'] = m.enter(all_rules),
-      ['<space>'] = m.space(all_rules),
-      ['<'] = m.on_key('<', rules_by_key['<']),
-      ['>'] = m.on_key('>', rules_by_key['>']),
-      ['('] = m.on_key('(', rules_by_key['(']),
-      [')'] = m.on_key(')', rules_by_key[')']),
-      ['['] = m.on_key('[', rules_by_key['[']),
-      [']'] = m.on_key(']', rules_by_key[']']),
-      ['{'] = m.on_key('{', rules_by_key['{']),
-      ['}'] = m.on_key('}', rules_by_key['}']),
-      ['"'] = m.on_key('"', rules_by_key['"']),
-      ["'"] = m.on_key("'", rules_by_key["'"]),
-      ['`'] = m.on_key('`', rules_by_key['`']),
-      ['!'] = m.on_key('!', rules_by_key['!']),
-      ['-'] = m.on_key('-', rules_by_key['-']),
-      ['_'] = m.on_key('_', rules_by_key['_']),
-      ['*'] = m.on_key('*', rules_by_key['*']),
-      ['$'] = m.on_key('$', rules_by_key['$']),
+      ['<bs>'] = ops.backspace(all_rules),
+      ['<cr>'] = ops.enter(all_rules),
+      ['<space>'] = ops.space(all_rules),
+      ['<'] = ops.on_key('<', rules_by_key['<']),
+      ['>'] = ops.on_key('>', rules_by_key['>']),
+      ['('] = ops.on_key('(', rules_by_key['(']),
+      [')'] = ops.on_key(')', rules_by_key[')']),
+      ['['] = ops.on_key('[', rules_by_key['[']),
+      [']'] = ops.on_key(']', rules_by_key[']']),
+      ['{'] = ops.on_key('{', rules_by_key['{']),
+      ['}'] = ops.on_key('}', rules_by_key['}']),
+      ['"'] = ops.on_key('"', rules_by_key['"']),
+      ["'"] = ops.on_key("'", rules_by_key["'"]),
+      ['`'] = ops.on_key('`', rules_by_key['`']),
+      ['!'] = ops.on_key('!', rules_by_key['!']),
+      ['-'] = ops.on_key('-', rules_by_key['-']),
+      ['_'] = ops.on_key('_', rules_by_key['_']),
+      ['*'] = ops.on_key('*', rules_by_key['*']),
+      ['$'] = ops.on_key('$', rules_by_key['$']),
     }
   end
   key = key:lower()
