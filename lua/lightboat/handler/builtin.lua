@@ -1,14 +1,23 @@
 local M = {}
 local u = require('lightboat.util')
 
--- FIX: when cursor is at the end of the word
 local function delete_to_eow_insert()
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local orig_row, orig_col = unpack(vim.api.nvim_win_get_cursor(0))
+  local bufnr = 0
   local line = vim.api.nvim_get_current_line()
-  local line_number = vim.api.nvim_buf_line_count(0)
-  if row == line_number and col == #line then return false end
-  vim.bo.undolevels = vim.bo.undolevels
-  vim.cmd('normal! de')
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+
+  if orig_row == line_count and orig_col == #line then return false end
+
+  vim.cmd('normal! wge')
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_win_set_cursor(0, { orig_row, orig_col })
+  if row == orig_row and col == orig_col then
+    return '<del>'
+  else
+    vim.cmd('normal! de')
+  end
+  vim.api.nvim_win_set_cursor(0, { orig_row, orig_col })
   return true
 end
 
