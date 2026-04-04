@@ -1,4 +1,9 @@
 local u = require('lightboat.util')
+local function sql_sources()
+  local res = { 'snippets', 'buffer' }
+  if u.plugin_available('vim-dadbod-completion') then table.insert(res, 'dadbod') end
+  return res
+end
 return {
   'saghen/blink.cmp',
   cond = not vim.g.vscode,
@@ -16,6 +21,11 @@ return {
         if u.plugin_available('blink-cmp-dictionary') then table.insert(res, 'dictionary') end
         return res
       end,
+      per_filetype = {
+        sql = sql_sources,
+        mysql = sql_sources,
+        plsql = sql_sources,
+      },
       providers = {
         lsp = {
           fallbacks = {},
@@ -56,6 +66,10 @@ return {
             end
             return out
           end,
+        },
+        dadbod = {
+          name = 'Dadbod',
+          module = 'vim_dadbod_completion.blink',
         },
         dictionary = {
           name = 'Dict',
