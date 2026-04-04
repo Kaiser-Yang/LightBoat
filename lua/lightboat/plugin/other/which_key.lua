@@ -1,5 +1,7 @@
 -- TODO: when will this be merged?
--- FIXME: this plugin has many bugs
+-- BUG:
+-- this plugin has many bugs
+-- In insert mode, <C-O> with some other keys may not work as expected
 return {
   'Kaiser-Yang/which-key.nvim',
   cond = not vim.g.vscode,

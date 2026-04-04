@@ -1,7 +1,6 @@
 return {
   'nvim-treesitter/nvim-treesitter-context',
   cond = not vim.g.vscode,
-  -- INFO: we can lazy load this plugin
   event = 'VeryLazy',
   opts = {
     max_liens = vim.o.scrolloff,

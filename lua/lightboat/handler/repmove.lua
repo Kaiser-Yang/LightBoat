@@ -34,8 +34,7 @@ local function previous_section_start()
   require('vim.treesitter._headings').jump({ count = -1 })
   return true
 end
--- TODO:
--- Find a better way to do this
+
 local previous_section_end = previous_section_start
 local next_section_end = next_section_start
 local go_to = require('lightboat.handler.treesitter').go_to

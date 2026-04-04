@@ -143,7 +143,7 @@ local function override_ui_input()
 end
 -- HACK:
 -- This should be checked when blink.cmp updates
--- Copied from blink.cmp
+-- Copied from blink.cmp: lua/blink/cmp/sources/lib/init.lua
 local capabilities = {
   textDocument = {
     completion = {
@@ -289,7 +289,7 @@ local setup_autocmd = function()
           require('telescope-all-recent')
         end
       end
-      -- TODO: try to find a better one to use
+      -- TODO: find a better one to use
       if _G.plugin_loaded['nvim-treesitter-endwise'] and not done['nvim-treesitter-endwise'] then
         done['nvim-treesitter-endwise'] = true
         require('nvim-treesitter-endwise').init()
