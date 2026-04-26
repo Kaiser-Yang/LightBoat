@@ -1,18 +1,19 @@
 local u = require('lightboat.util')
-local function sql_sources()
-  local res = { 'snippets', 'buffer' }
-  if u.plugin_available('vim-dadbod-completion') then table.insert(res, 'dadbod') end
-  return res
-end
+local sql_sources = { inherit_defaults = false, 'snippets', 'buffer', 'dadbod' }
 return {
   'saghen/blink.cmp',
   cond = not vim.g.vscode,
-  version = '1.*',
   dependencies = {
+    'saghen/blink.lib',
     'Kaiser-Yang/blink-cmp-dictionary',
     -- TODO: try to remove this one
     'rafamadriz/friendly-snippets',
   },
+  build = function()
+    -- build the fuzzy matcher, wait up to 60 seconds
+    -- you can use `gb` in `:Lazy` to rebuild the plugin as needed
+    require('blink.cmp').build():wait(60000)
+  end,
   event = { 'InsertEnter', 'CmdlineEnter' },
   opts = {
     sources = {
