@@ -26,33 +26,6 @@ local spec = {
     opts = {},
     keys = {},
   },
-  {
-    'Kaiser-Yang/nvim-ts-autotag',
-    ft = {
-      'astro',
-      'glimmer',
-      'handlebars',
-      'html',
-      'javascript',
-      'jsx',
-      'liquid',
-      'markdown',
-      'php',
-      'rescript',
-      'svelte',
-      'tsx',
-      'twig',
-      'typescript',
-      'vue',
-      'xml',
-    },
-    opts = { opts = { enable_close_on_slash = true } },
-  },
-  {
-    'HiPhish/rainbow-delimiters.nvim',
-    cond = not vim.g.vscode,
-    lazy = false,
-  },
 }
 
 M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
@@ -65,12 +38,4 @@ M.setup = util.setup_check_wrap('lightboat.plugin.code.pair', function()
       internal.detach(ev.buf)
     end,
   })
-  vim.g.rainbow_delimiters = vim.tbl_extend('force', {
-    -- PERF:
-    -- This plugin may cause performance issues with large files.
-    condition = function(buf)
-      return (not c.pair.rainbow_limit_lines or vim.api.nvim_buf_line_count(buf) <= c.pair.rainbow_limit_lines)
-        and not big_file.is_big_file(buf)
-    end,
-  }, vim.g.rainbow_delimiters or {})
 end, M.clear)
